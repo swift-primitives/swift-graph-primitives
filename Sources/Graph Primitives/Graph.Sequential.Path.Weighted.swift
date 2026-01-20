@@ -59,7 +59,7 @@ extension Graph.Sequential.Path {
         distances[source.rawValue] = 0
         heap.push(Entry(node: source, distance: 0))
 
-        while let entry = heap.takeMin() {
+        while let entry = heap.take.min {
             // Skip if already visited (we may have duplicate entries with worse distances)
             guard !visited[entry.node.rawValue] else { continue }
             visited[entry.node.rawValue] = true
