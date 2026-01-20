@@ -31,7 +31,7 @@ struct ReachabilityTests {
 
         let graph = builder.build()
 
-        let reachable = graph.reachable(from: a, using: TestPayload.extract)
+        let reachable = graph.analyze(using: TestPayload.extract).reachable(from: a)
         #expect(reachable.count == 4)
         #expect(reachable.contains(a))
         #expect(reachable.contains(b))
@@ -50,7 +50,7 @@ struct ReachabilityTests {
 
         let graph = builder.build()
 
-        let reachable = graph.reachable(from: b, using: TestPayload.extract)
+        let reachable = graph.analyze(using: TestPayload.extract).reachable(from: b)
         #expect(reachable.count == 2)
         #expect(reachable.contains(b))
         #expect(reachable.contains(d))
@@ -70,7 +70,7 @@ struct ReachabilityTests {
 
         let graph = builder.build()
 
-        let reachable = graph.reachable(from: [a, c], using: TestPayload.extract)
+        let reachable = graph.analyze(using: TestPayload.extract).reachable(from: [a, c])
         #expect(reachable.count == 4)
     }
 
@@ -84,7 +84,7 @@ struct ReachabilityTests {
 
         let graph = builder.build()
 
-        let reachable = graph.reachable(from: c, using: TestPayload.extract)
+        let reachable = graph.analyze(using: TestPayload.extract).reachable(from: c)
         #expect(reachable.count == 1)
         #expect(reachable.contains(c))
     }
@@ -104,8 +104,8 @@ struct CycleDetectionTests {
 
         let graph = builder.build()
 
-        #expect(!graph.hasCycles(from: a, using: TestPayload.extract))
-        #expect(!graph.hasCycles(using: TestPayload.extract))
+        #expect(!graph.analyze(using: TestPayload.extract).hasCycles(from: a))
+        #expect(!graph.analyze(using: TestPayload.extract).hasCycles())
     }
 
     @Test("Self-loop detected")
@@ -117,7 +117,7 @@ struct CycleDetectionTests {
 
         let graph = builder.build()
 
-        #expect(graph.hasCycles(from: a, using: TestPayload.extract))
+        #expect(graph.analyze(using: TestPayload.extract).hasCycles(from: a))
     }
 
     @Test("Cycle in graph detected")
@@ -133,7 +133,7 @@ struct CycleDetectionTests {
 
         let graph = builder.build()
 
-        #expect(graph.hasCycles(from: a, using: TestPayload.extract))
+        #expect(graph.analyze(using: TestPayload.extract).hasCycles(from: a))
     }
 }
 
@@ -151,7 +151,7 @@ struct SCCTests {
 
         let graph = builder.build()
 
-        let sccs = graph.stronglyConnectedComponents(from: a, using: TestPayload.extract)
+        let sccs = graph.analyze(using: TestPayload.extract).scc(from: a)
 
         // Each node is its own SCC in a DAG
         #expect(sccs.count == 3)
@@ -171,7 +171,7 @@ struct SCCTests {
 
         let graph = builder.build()
 
-        let sccs = graph.stronglyConnectedComponents(from: a, using: TestPayload.extract)
+        let sccs = graph.analyze(using: TestPayload.extract).scc(from: a)
 
         // All three nodes form one SCC
         #expect(sccs.count == 1)
@@ -193,7 +193,7 @@ struct SCCTests {
 
         let graph = builder.build()
 
-        let sccs = graph.stronglyConnectedComponents(from: a, using: TestPayload.extract)
+        let sccs = graph.analyze(using: TestPayload.extract).scc(from: a)
 
         // Two SCCs: {A, B} and {C, D}
         #expect(sccs.count == 2)
@@ -209,7 +209,7 @@ struct SCCTests {
 
         let graph = builder.build()
 
-        let sccs = graph.stronglyConnectedComponents(from: a, using: TestPayload.extract)
+        let sccs = graph.analyze(using: TestPayload.extract).scc(from: a)
 
         #expect(sccs.count == 1)
         #expect(sccs[0] == [a])

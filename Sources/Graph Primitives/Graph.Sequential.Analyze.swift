@@ -1,0 +1,35 @@
+public import Identity_Primitives
+
+extension Graph.Sequential {
+    /// Returns an analyze accessor with the given adjacency extract.
+    @inlinable
+    public func analyze<Adjacent: Sequence<Graph.Node<Tag>>>(
+        using extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
+    ) -> Analyze<Adjacent> {
+        Analyze(graph: self, extract: extract)
+    }
+
+    /// Accessor for graph analysis operations.
+    public struct Analyze<Adjacent: Sequence<Graph.Node<Tag>>> {
+        @usableFromInline
+        let graph: Graph.Sequential<Tag, Payload>
+
+        @usableFromInline
+        let extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
+
+        @usableFromInline
+        init(graph: Graph.Sequential<Tag, Payload>, extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>) {
+            self.graph = graph
+            self.extract = extract
+        }
+    }
+}
+
+// Convenience for List payload
+extension Graph.Sequential where Payload == Graph.Adjacency.List<Tag> {
+    /// Analyze accessor using the canonical List extract.
+    @inlinable
+    public var analyze: Analyze<[Graph.Node<Tag>]> {
+        analyze(using: .list)
+    }
+}
