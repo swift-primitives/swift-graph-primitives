@@ -67,15 +67,18 @@ extension Graph.Sequential {
 
 // MARK: - Hole Support
 
-extension Graph.Sequential.Builder where Payload: Graph.Defaultable {
+extension Graph.Sequential.Builder {
     /// Allocates a new node with a default (hole) payload.
     ///
     /// Use this when the payload will be filled in later via `fill(_:with:)`.
     ///
+    /// - Parameter default: The default value witness providing the hole value.
     /// - Returns: The identity of the newly allocated node.
     @inlinable
-    public mutating func allocateHole() -> Graph.Node<Tag> {
-        allocate(.graphDefault)
+    public mutating func allocateHole(
+        using default: Graph.Default.Value<Payload>
+    ) -> Graph.Node<Tag> {
+        allocate(`default`.value)
     }
 
     /// Fills a previously allocated hole with a payload.
@@ -86,5 +89,16 @@ extension Graph.Sequential.Builder where Payload: Graph.Defaultable {
     @inlinable
     public mutating func fill(_ node: Graph.Node<Tag>, with payload: Payload) {
         storage[node.rawValue] = payload
+    }
+}
+
+// Convenience for List payload
+extension Graph.Sequential.Builder where Payload == Graph.Adjacency.List<Tag> {
+    /// Allocates a new node with an empty adjacency list.
+    ///
+    /// - Returns: The identity of the newly allocated node.
+    @inlinable
+    public mutating func allocateHole() -> Graph.Node<Tag> {
+        allocateHole(using: Graph.Default.list())
     }
 }

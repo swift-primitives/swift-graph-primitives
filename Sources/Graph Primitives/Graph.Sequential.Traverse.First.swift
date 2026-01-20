@@ -1,16 +1,26 @@
-extension Graph.Sequential.Traverse where Payload: Graph.Adjacency, Payload.Tag == Tag {
-    /// Accessor for first-visit traversal strategies.
+public import Identity_Primitives
+
+extension Graph.Sequential.Traverse {
+    /// Returns a first-visit accessor with the given adjacency extract.
     @inlinable
-    public var first: First { First(graph: graph) }
+    public func first<Adjacent: Sequence<Graph.Node<Tag>>>(
+        using extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
+    ) -> First<Adjacent> {
+        First(graph: graph, extract: extract)
+    }
 
     /// Accessor type providing first-visit traversal strategies.
-    public struct First: Sendable where Payload: Sendable {
+    public struct First<Adjacent: Sequence<Graph.Node<Tag>>> {
         @usableFromInline
         let graph: Graph.Sequential<Tag, Payload>
 
         @usableFromInline
-        init(graph: Graph.Sequential<Tag, Payload>) {
+        let extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
+
+        @usableFromInline
+        init(graph: Graph.Sequential<Tag, Payload>, extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>) {
             self.graph = graph
+            self.extract = extract
         }
 
         /// Returns a depth-first traversal starting from the given roots.
@@ -20,8 +30,8 @@ extension Graph.Sequential.Traverse where Payload: Graph.Adjacency, Payload.Tag 
         @inlinable
         public func depth(
             from roots: some Sequence<Graph.Node<Tag>>
-        ) -> Graph.Traversal.First.Depth<Tag, Payload> {
-            Graph.Traversal.First.Depth(storage: graph.storage, roots: roots)
+        ) -> Graph.Traversal.First.Depth<Tag, Payload, Adjacent> {
+            Graph.Traversal.First.Depth(storage: graph.storage, roots: roots, extract: extract)
         }
 
         /// Returns a depth-first traversal starting from a single root.
@@ -31,7 +41,7 @@ extension Graph.Sequential.Traverse where Payload: Graph.Adjacency, Payload.Tag 
         @inlinable
         public func depth(
             from root: Graph.Node<Tag>
-        ) -> Graph.Traversal.First.Depth<Tag, Payload> {
+        ) -> Graph.Traversal.First.Depth<Tag, Payload, Adjacent> {
             depth(from: CollectionOfOne(root))
         }
 
@@ -42,8 +52,8 @@ extension Graph.Sequential.Traverse where Payload: Graph.Adjacency, Payload.Tag 
         @inlinable
         public func breadth(
             from roots: some Sequence<Graph.Node<Tag>>
-        ) -> Graph.Traversal.First.Breadth<Tag, Payload> {
-            Graph.Traversal.First.Breadth(storage: graph.storage, roots: roots)
+        ) -> Graph.Traversal.First.Breadth<Tag, Payload, Adjacent> {
+            Graph.Traversal.First.Breadth(storage: graph.storage, roots: roots, extract: extract)
         }
 
         /// Returns a breadth-first traversal starting from a single root.
@@ -53,8 +63,17 @@ extension Graph.Sequential.Traverse where Payload: Graph.Adjacency, Payload.Tag 
         @inlinable
         public func breadth(
             from root: Graph.Node<Tag>
-        ) -> Graph.Traversal.First.Breadth<Tag, Payload> {
+        ) -> Graph.Traversal.First.Breadth<Tag, Payload, Adjacent> {
             breadth(from: CollectionOfOne(root))
         }
+    }
+}
+
+// Convenience for List payload
+extension Graph.Sequential.Traverse where Payload == Graph.Adjacency.List<Tag> {
+    /// Accessor for first-visit traversal strategies using the canonical List extract.
+    @inlinable
+    public var first: First<[Graph.Node<Tag>]> {
+        first(using: .list)
     }
 }

@@ -5,19 +5,20 @@ import Testing
 
 private enum TestTag {}
 
-private struct TestPayload: Graph.Adjacency, Graph.Defaultable, Graph.Remappable, Sendable {
-    typealias Tag = TestTag
-    typealias Adjacent = [Graph.Node<TestTag>]
-
+private struct TestPayload: Sendable {
     let name: String
     let successors: [Graph.Node<TestTag>]
+}
 
-    var adjacent: Adjacent { successors }
+extension TestPayload {
+    /// Extract for TestPayload adjacency.
+    static var extract: Graph.Adjacency.Extract<TestPayload, TestTag, [Graph.Node<TestTag>]> {
+        Graph.Adjacency.Extract { $0.successors }
+    }
 
-    static var graphDefault: Self { TestPayload(name: "hole", successors: []) }
-
-    func mapNodes(_ transform: (Graph.Node<TestTag>) -> Graph.Node<TestTag>) -> Self {
-        TestPayload(name: name, successors: successors.map(transform))
+    /// Default value for TestPayload holes.
+    static var defaultValue: Graph.Default.Value<TestPayload> {
+        Graph.Default.Value(TestPayload(name: "hole", successors: []))
     }
 }
 
@@ -96,7 +97,7 @@ struct BuilderTests {
     @Test("Hole allocation and fill")
     func holeAllocationAndFill() {
         var builder = Graph.Sequential<TestTag, TestPayload>.Builder()
-        let hole = builder.allocateHole()
+        let hole = builder.allocateHole(using: TestPayload.defaultValue)
         #expect(builder[hole].name == "hole")
 
         builder.fill(hole, with: TestPayload(name: "Filled", successors: []))
@@ -108,7 +109,7 @@ struct BuilderTests {
         var builder = Graph.Sequential<TestTag, TestPayload>.Builder()
 
         // Allocate hole for forward reference
-        let a = builder.allocateHole()
+        let a = builder.allocateHole(using: TestPayload.defaultValue)
         let b = builder.allocate(TestPayload(name: "B", successors: [a]))
 
         // Fill the hole with reference to b

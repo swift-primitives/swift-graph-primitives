@@ -1,0 +1,16 @@
+extension Graph.Sequential {
+    /// Returns a transform accessor for this graph.
+    @inlinable
+    public var transform: Transform { Transform(graph: self) }
+
+    /// Accessor for graph transformation operations.
+    public struct Transform {
+        @usableFromInline
+        let graph: Graph.Sequential<Tag, Payload>
+
+        @usableFromInline
+        init(graph: Graph.Sequential<Tag, Payload>) {
+            self.graph = graph
+        }
+    }
+}

@@ -1,45 +1,50 @@
 public import Identity_Primitives
+public import Stack_Primitives
+public import Bit_Primitives
 
 // MARK: - Reachability
 
-extension Graph.Sequential where Payload: Graph.Adjacency, Payload.Tag == Tag {
+extension Graph.Sequential {
     /// Returns the set of nodes reachable from the given roots.
     ///
     /// This includes the roots themselves if they are valid nodes.
     ///
-    /// - Parameter roots: The nodes to start reachability analysis from.
+    /// - Parameters:
+    ///   - roots: The nodes to start reachability analysis from.
+    ///   - extract: The adjacency extract for the payload type.
     /// - Returns: All nodes reachable from any root.
     @inlinable
-    public func reachable(
-        from roots: some Sequence<Graph.Node<Tag>>
+    public func reachable<Adjacent: Sequence<Graph.Node<Tag>>>(
+        from roots: some Sequence<Graph.Node<Tag>>,
+        using extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
     ) -> Set<Graph.Node<Tag>> {
         let count = storage.count
         guard count > 0 else { return [] }
 
-        // Array-backed visited state: O(1) lookup by node.rawValue
-        var visited = [Bool](repeating: false, count: count)
-        var stack = [Graph.Node<Tag>]()
+        // Bit-packed visited state: O(1) lookup by node.rawValue with 8x memory savings
+        var visited = try! Bit.Array(count: count)
+        var stack = Stack<Graph.Node<Tag>>()
 
         for root in roots {
             let rootIndex = root.rawValue
             if !visited[rootIndex] {
-                stack.append(root)
+                stack.push(root)
             }
         }
 
         var result = Set<Graph.Node<Tag>>()
         result.reserveCapacity(count)
 
-        while let node = stack.popLast() {
+        while let node = stack.pop() {
             let nodeIndex = node.rawValue
             guard !visited[nodeIndex] else { continue }
             visited[nodeIndex] = true
             result.insert(node)
 
             let payload = storage[nodeIndex]
-            for adjacent in payload.adjacent {
+            for adjacent in extract.adjacent(payload) {
                 if !visited[adjacent.rawValue] {
-                    stack.append(adjacent)
+                    stack.push(adjacent)
                 }
             }
         }
@@ -49,59 +54,116 @@ extension Graph.Sequential where Payload: Graph.Adjacency, Payload.Tag == Tag {
 
     /// Returns the set of nodes reachable from a single root.
     ///
-    /// - Parameter root: The node to start reachability analysis from.
+    /// - Parameters:
+    ///   - root: The node to start reachability analysis from.
+    ///   - extract: The adjacency extract for the payload type.
     /// - Returns: All nodes reachable from the root.
     @inlinable
+    public func reachable<Adjacent: Sequence<Graph.Node<Tag>>>(
+        from root: Graph.Node<Tag>,
+        using extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
+    ) -> Set<Graph.Node<Tag>> {
+        reachable(from: CollectionOfOne(root), using: extract)
+    }
+}
+
+// Convenience for List payload
+extension Graph.Sequential where Payload == Graph.Adjacency.List<Tag> {
+    /// Returns the set of nodes reachable from the given roots.
+    @inlinable
+    public func reachable(
+        from roots: some Sequence<Graph.Node<Tag>>
+    ) -> Set<Graph.Node<Tag>> {
+        reachable(from: roots, using: .list)
+    }
+
+    /// Returns the set of nodes reachable from a single root.
+    @inlinable
     public func reachable(from root: Graph.Node<Tag>) -> Set<Graph.Node<Tag>> {
-        reachable(from: CollectionOfOne(root))
+        reachable(from: CollectionOfOne(root), using: .list)
     }
 }
 
 // MARK: - Cycle Detection
 
-extension Graph.Sequential where Payload: Graph.Adjacency, Payload.Tag == Tag {
+extension Graph.Sequential {
     /// Whether the graph contains any cycles reachable from the given roots.
     ///
-    /// - Parameter roots: The nodes to start cycle detection from.
+    /// - Parameters:
+    ///   - roots: The nodes to start cycle detection from.
+    ///   - extract: The adjacency extract for the payload type.
     /// - Returns: `true` if a cycle is detected, `false` otherwise.
     @inlinable
-    public func hasCycles(from roots: some Sequence<Graph.Node<Tag>>) -> Bool {
-        topological(from: roots).hasCycles
+    public func hasCycles<Adjacent: Sequence<Graph.Node<Tag>>>(
+        from roots: some Sequence<Graph.Node<Tag>>,
+        using extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
+    ) -> Bool {
+        traverse.topological(from: roots, using: extract).hasCycles
     }
 
     /// Whether the graph contains any cycles reachable from a single root.
     ///
-    /// - Parameter root: The node to start cycle detection from.
+    /// - Parameters:
+    ///   - root: The node to start cycle detection from.
+    ///   - extract: The adjacency extract for the payload type.
     /// - Returns: `true` if a cycle is detected, `false` otherwise.
     @inlinable
-    public func hasCycles(from root: Graph.Node<Tag>) -> Bool {
-        hasCycles(from: CollectionOfOne(root))
+    public func hasCycles<Adjacent: Sequence<Graph.Node<Tag>>>(
+        from root: Graph.Node<Tag>,
+        using extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
+    ) -> Bool {
+        hasCycles(from: CollectionOfOne(root), using: extract)
     }
 
     /// Whether the graph contains any cycles.
     ///
-    /// Checks for cycles among all nodes in the graph.
-    ///
+    /// - Parameter extract: The adjacency extract for the payload type.
     /// - Returns: `true` if a cycle is detected, `false` otherwise.
     @inlinable
+    public func hasCycles<Adjacent: Sequence<Graph.Node<Tag>>>(
+        using extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
+    ) -> Bool {
+        traverse.topological(using: extract).hasCycles
+    }
+}
+
+// Convenience for List payload
+extension Graph.Sequential where Payload == Graph.Adjacency.List<Tag> {
+    /// Whether the graph contains any cycles reachable from the given roots.
+    @inlinable
+    public func hasCycles(from roots: some Sequence<Graph.Node<Tag>>) -> Bool {
+        hasCycles(from: roots, using: .list)
+    }
+
+    /// Whether the graph contains any cycles reachable from a single root.
+    @inlinable
+    public func hasCycles(from root: Graph.Node<Tag>) -> Bool {
+        hasCycles(from: CollectionOfOne(root), using: .list)
+    }
+
+    /// Whether the graph contains any cycles.
+    @inlinable
     public func hasCycles() -> Bool {
-        topological().hasCycles
+        hasCycles(using: .list)
     }
 }
 
 // MARK: - Strongly Connected Components
 
-extension Graph.Sequential where Payload: Graph.Adjacency, Payload.Tag == Tag {
+extension Graph.Sequential {
     /// Returns the strongly connected components of the graph.
     ///
     /// Uses Tarjan's algorithm (iterative) to find all SCCs. Components are returned in
     /// reverse topological order (sinks first).
     ///
-    /// - Parameter roots: The nodes to start SCC analysis from.
+    /// - Parameters:
+    ///   - roots: The nodes to start SCC analysis from.
+    ///   - extract: The adjacency extract for the payload type.
     /// - Returns: An array of SCCs, each being an array of nodes.
     @inlinable
-    public func stronglyConnectedComponents(
-        from roots: some Sequence<Graph.Node<Tag>>
+    public func stronglyConnectedComponents<Adjacent: Sequence<Graph.Node<Tag>>>(
+        from roots: some Sequence<Graph.Node<Tag>>,
+        using extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
     ) -> [[Graph.Node<Tag>]] {
         let count = storage.count
         guard count > 0 else { return [] }
@@ -110,15 +172,16 @@ extension Graph.Sequential where Payload: Graph.Adjacency, Payload.Tag == Tag {
         // Use -1 as "not yet visited" sentinel for nodeIndex
         var nodeIndex = [Int](repeating: -1, count: count)
         var lowLink = [Int](repeating: 0, count: count)
-        var onStack = [Bool](repeating: false, count: count)
+        // Bit-packed onStack: 8x memory savings
+        var onStack = try! Bit.Array(count: count)
 
         var index = 0
-        var sccStack = [Graph.Node<Tag>]()
+        var sccStack = Stack<Graph.Node<Tag>>()
         var components = [[Graph.Node<Tag>]]()
 
-        // Call stack frame: (node, iterator, phase)
+        // Call stack frame: (node, adjacents as array, current index, phase)
         // phase: true = entering, false = processing adjacents / leaving
-        var callStack: [(node: Graph.Node<Tag>, iterator: Payload.Adjacent.Iterator, phase: Bool)] = []
+        var callStack: [(node: Graph.Node<Tag>, adjacents: [Graph.Node<Tag>], adjIndex: Int, phase: Bool)] = []
 
         for root in roots {
             let rootIndex = root.rawValue
@@ -126,11 +189,12 @@ extension Graph.Sequential where Payload: Graph.Adjacency, Payload.Tag == Tag {
 
             // Push root
             let rootPayload = storage[rootIndex]
-            callStack.append((root, rootPayload.adjacent.makeIterator(), true))
+            let rootAdjacents = Array(extract.adjacent(rootPayload))
+            callStack.append((root, rootAdjacents, 0, true))
 
             while !callStack.isEmpty {
                 let frameIndex = callStack.count - 1
-                let frame = callStack[frameIndex]
+                var frame = callStack[frameIndex]
                 let nodeIdx = frame.node.rawValue
 
                 if frame.phase {
@@ -138,21 +202,27 @@ extension Graph.Sequential where Payload: Graph.Adjacency, Payload.Tag == Tag {
                     nodeIndex[nodeIdx] = index
                     lowLink[nodeIdx] = index
                     index += 1
-                    sccStack.append(frame.node)
+                    sccStack.push(frame.node)
                     onStack[nodeIdx] = true
 
                     // Switch to processing phase
                     callStack[frameIndex].phase = false
+                    frame.phase = false
                 }
 
                 // Process adjacents
                 var pushedChild = false
-                while let adjacent = callStack[frameIndex].iterator.next() {
+                while frame.adjIndex < frame.adjacents.count {
+                    let adjacent = frame.adjacents[frame.adjIndex]
+                    callStack[frameIndex].adjIndex += 1
+                    frame.adjIndex += 1
+
                     let adjIdx = adjacent.rawValue
                     if nodeIndex[adjIdx] == -1 {
                         // Not yet visited: push and recurse
                         let adjPayload = storage[adjIdx]
-                        callStack.append((adjacent, adjPayload.adjacent.makeIterator(), true))
+                        let adjAdjacents = Array(extract.adjacent(adjPayload))
+                        callStack.append((adjacent, adjAdjacents, 0, true))
                         pushedChild = true
                         break
                     } else if onStack[adjIdx] {
@@ -173,7 +243,7 @@ extension Graph.Sequential where Payload: Graph.Adjacency, Payload.Tag == Tag {
                     // Node is SCC root: pop component
                     var component = [Graph.Node<Tag>]()
                     repeat {
-                        let w = sccStack.removeLast()
+                        let w = sccStack.pop()!
                         onStack[w.rawValue] = false
                         component.append(w)
                     } while component.last != frame.node
@@ -193,20 +263,51 @@ extension Graph.Sequential where Payload: Graph.Adjacency, Payload.Tag == Tag {
 
     /// Returns the strongly connected components reachable from a single root.
     ///
-    /// - Parameter root: The node to start SCC analysis from.
+    /// - Parameters:
+    ///   - root: The node to start SCC analysis from.
+    ///   - extract: The adjacency extract for the payload type.
     /// - Returns: An array of SCCs, each being an array of nodes.
     @inlinable
-    public func stronglyConnectedComponents(
-        from root: Graph.Node<Tag>
+    public func stronglyConnectedComponents<Adjacent: Sequence<Graph.Node<Tag>>>(
+        from root: Graph.Node<Tag>,
+        using extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
     ) -> [[Graph.Node<Tag>]] {
-        stronglyConnectedComponents(from: CollectionOfOne(root))
+        stronglyConnectedComponents(from: CollectionOfOne(root), using: extract)
     }
 
     /// Returns all strongly connected components in the graph.
     ///
+    /// - Parameter extract: The adjacency extract for the payload type.
     /// - Returns: An array of SCCs, each being an array of nodes.
     @inlinable
+    public func stronglyConnectedComponents<Adjacent: Sequence<Graph.Node<Tag>>>(
+        using extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
+    ) -> [[Graph.Node<Tag>]] {
+        stronglyConnectedComponents(from: nodes, using: extract)
+    }
+}
+
+// Convenience for List payload
+extension Graph.Sequential where Payload == Graph.Adjacency.List<Tag> {
+    /// Returns the strongly connected components of the graph.
+    @inlinable
+    public func stronglyConnectedComponents(
+        from roots: some Sequence<Graph.Node<Tag>>
+    ) -> [[Graph.Node<Tag>]] {
+        stronglyConnectedComponents(from: roots, using: .list)
+    }
+
+    /// Returns the strongly connected components reachable from a single root.
+    @inlinable
+    public func stronglyConnectedComponents(
+        from root: Graph.Node<Tag>
+    ) -> [[Graph.Node<Tag>]] {
+        stronglyConnectedComponents(from: CollectionOfOne(root), using: .list)
+    }
+
+    /// Returns all strongly connected components in the graph.
+    @inlinable
     public func stronglyConnectedComponents() -> [[Graph.Node<Tag>]] {
-        stronglyConnectedComponents(from: nodes)
+        stronglyConnectedComponents(from: nodes, using: .list)
     }
 }

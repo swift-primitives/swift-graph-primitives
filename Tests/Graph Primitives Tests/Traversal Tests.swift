@@ -3,14 +3,16 @@ import Testing
 
 private enum TestTag {}
 
-private struct TestPayload: Graph.Adjacency, Sendable {
-    typealias Tag = TestTag
-    typealias Adjacent = [Graph.Node<TestTag>]
-
+private struct TestPayload: Sendable {
     let name: String
     let successors: [Graph.Node<TestTag>]
+}
 
-    var adjacent: Adjacent { successors }
+extension TestPayload {
+    /// Extract for TestPayload adjacency.
+    static var extract: Graph.Adjacency.Extract<TestPayload, TestTag, [Graph.Node<TestTag>]> {
+        Graph.Adjacency.Extract { $0.successors }
+    }
 }
 
 // MARK: - Test Graph Builder
@@ -57,7 +59,7 @@ struct DepthFirstTests {
     func linearGraph() {
         let (graph, a, _, _) = buildLinearGraph()
 
-        let visited = graph.traverse.first.depth(from: a).map { $0.payload.name }
+        let visited = graph.traverse.first(using: TestPayload.extract).depth(from: a).map { $0.payload.name }
         #expect(visited == ["A", "B", "C"])
     }
 
@@ -65,7 +67,7 @@ struct DepthFirstTests {
     func diamondGraph() {
         let (graph, a, _, _, _) = buildDiamondGraph()
 
-        let visited = graph.traverse.first.depth(from: a).map { $0.payload.name }
+        let visited = graph.traverse.first(using: TestPayload.extract).depth(from: a).map { $0.payload.name }
 
         // D should appear exactly once despite being reachable via B and C
         #expect(visited.count == 4)
@@ -79,7 +81,7 @@ struct DepthFirstTests {
     func multipleRoots() {
         let (graph, _, b, c, _) = buildDiamondGraph()
 
-        let visited = graph.traverse.first.depth(from: [b, c]).map { $0.payload.name }
+        let visited = graph.traverse.first(using: TestPayload.extract).depth(from: [b, c]).map { $0.payload.name }
 
         // Should visit B, C, D (D once even though reachable from both)
         #expect(visited.count == 3)
@@ -92,7 +94,7 @@ struct DepthFirstTests {
     func emptyRoots() {
         let (graph, _, _, _) = buildLinearGraph()
 
-        let visited = Array(graph.traverse.first.depth(from: [] as [Graph.Node<TestTag>]))
+        let visited = Array(graph.traverse.first(using: TestPayload.extract).depth(from: [] as [Graph.Node<TestTag>]))
         #expect(visited.isEmpty)
     }
 }
@@ -105,7 +107,7 @@ struct BreadthFirstTests {
     func linearGraph() {
         let (graph, a, _, _) = buildLinearGraph()
 
-        let visited = graph.traverse.first.breadth(from: a).map { $0.payload.name }
+        let visited = graph.traverse.first(using: TestPayload.extract).breadth(from: a).map { $0.payload.name }
         #expect(visited == ["A", "B", "C"])
     }
 
@@ -113,7 +115,7 @@ struct BreadthFirstTests {
     func diamondGraph() {
         let (graph, a, _, _, _) = buildDiamondGraph()
 
-        let visited = graph.traverse.first.breadth(from: a).map { $0.payload.name }
+        let visited = graph.traverse.first(using: TestPayload.extract).breadth(from: a).map { $0.payload.name }
 
         // Should visit in level order: A, then B and C, then D
         #expect(visited.count == 4)
@@ -125,7 +127,7 @@ struct BreadthFirstTests {
     func levelOrder() {
         let (graph, a, _, _, _) = buildDiamondGraph()
 
-        let visited = graph.traverse.first.breadth(from: a).map { $0.payload.name }
+        let visited = graph.traverse.first(using: TestPayload.extract).breadth(from: a).map { $0.payload.name }
 
         // A is at level 0, B and C at level 1, D at level 2
         let aIndex = visited.firstIndex(of: "A")!
@@ -148,7 +150,7 @@ struct TopologicalTests {
     func dagTopologicalOrder() {
         let (graph, a, b, c, d) = buildDiamondGraph()
 
-        let order = graph.traverse.topological(from: a)
+        let order = graph.traverse.topological(from: a, using: TestPayload.extract)
         #expect(!order.hasCycles)
 
         let nodes = order.map { $0.node }
@@ -179,7 +181,7 @@ struct TopologicalTests {
 
         let cyclicGraph = builder.build()
 
-        let order = cyclicGraph.traverse.topological(from: a)
+        let order = cyclicGraph.traverse.topological(from: a, using: TestPayload.extract)
         #expect(order.hasCycles)
     }
 
@@ -187,7 +189,7 @@ struct TopologicalTests {
     func linearTopologicalOrder() {
         let (graph, a, _, _) = buildLinearGraph()
 
-        let order = graph.traverse.topological(from: a)
+        let order = graph.traverse.topological(from: a, using: TestPayload.extract)
         #expect(!order.hasCycles)
 
         let names = order.map { $0.payload.name }

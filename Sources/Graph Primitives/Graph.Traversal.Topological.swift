@@ -1,4 +1,6 @@
 public import Identity_Primitives
+public import Stack_Primitives
+public import Bit_Primitives
 
 extension Graph.Traversal {
     /// Topological ordering of nodes in a directed acyclic graph.
@@ -20,42 +22,46 @@ extension Graph.Traversal {
     ///     }
     /// }
     /// ```
-    public struct Topological<Tag, Payload: Graph.Adjacency>: Sequence
-    where Payload.Tag == Tag {
+    public struct Topological<Tag, Payload, Adjacent: Sequence<Graph.Node<Tag>>>: Sequence {
         public typealias Element = (node: Graph.Node<Tag>, payload: Payload)
 
         @usableFromInline
         let elements: [(node: Graph.Node<Tag>, payload: Payload)]?
 
         @usableFromInline
-        init(storage: [Payload], roots: some Sequence<Graph.Node<Tag>>) {
-            self.elements = Self.computeOrder(storage: storage, roots: roots)
+        init(
+            storage: [Payload],
+            roots: some Sequence<Graph.Node<Tag>>,
+            extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
+        ) {
+            self.elements = Self.computeOrder(storage: storage, roots: roots, extract: extract)
         }
 
         @usableFromInline
         static func computeOrder(
             storage: [Payload],
-            roots: some Sequence<Graph.Node<Tag>>
+            roots: some Sequence<Graph.Node<Tag>>,
+            extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
         ) -> [Element]? {
             let count = storage.count
             guard count > 0 else { return [] }
 
-            // Array-backed state: O(1) lookup by node.rawValue
-            var visited = [Bool](repeating: false, count: count)
-            var visiting = [Bool](repeating: false, count: count)
+            // Bit-packed state: O(1) lookup by node.rawValue with 8x memory savings
+            var visited = try! Bit.Array(count: count)
+            var visiting = try! Bit.Array(count: count)
             var result: [Element] = []
             result.reserveCapacity(count)
 
             // Stack uses two phases: true = entering, false = leaving
-            var stack: [(node: Graph.Node<Tag>, entering: Bool)] = []
+            var stack = Stack<(node: Graph.Node<Tag>, entering: Bool)>()
 
             for root in roots {
                 let rootIndex = root.rawValue
                 if visited[rootIndex] { continue }
 
-                stack.append((root, true))
+                stack.push((root, true))
 
-                while let (node, entering) = stack.popLast() {
+                while let (node, entering) = stack.pop() {
                     let nodeIndex = node.rawValue
 
                     if entering {
@@ -69,14 +75,14 @@ extension Graph.Traversal {
                         visiting[nodeIndex] = true
 
                         // Push leave action first (will be processed after all adjacents)
-                        stack.append((node, false))
+                        stack.push((node, false))
 
                         // Push adjacents to visit
                         let payload = storage[nodeIndex]
-                        for adjacent in payload.adjacent {
+                        for adjacent in extract.adjacent(payload) {
                             let adjIndex = adjacent.rawValue
                             if !visited[adjIndex] && !visiting[adjIndex] {
-                                stack.append((adjacent, true))
+                                stack.push((adjacent, true))
                             } else if visiting[adjIndex] {
                                 // Cycle detected
                                 return nil
@@ -103,41 +109,5 @@ extension Graph.Traversal {
         public func makeIterator() -> IndexingIterator<[Element]> {
             (elements ?? []).makeIterator()
         }
-    }
-}
-
-extension Graph.Sequential where Payload: Graph.Adjacency, Payload.Tag == Tag {
-    /// Returns a topological ordering of nodes reachable from the given roots.
-    ///
-    /// The returned sequence iterates nodes in an order where each node appears
-    /// before any nodes it references. If the graph contains cycles, the sequence
-    /// will be empty and `hasCycles` will be true.
-    ///
-    /// - Parameter roots: The nodes to start from.
-    /// - Returns: A topological ordering, or an empty sequence if cycles exist.
-    @inlinable
-    public func topological(
-        from roots: some Sequence<Graph.Node<Tag>>
-    ) -> Graph.Traversal.Topological<Tag, Payload> {
-        Graph.Traversal.Topological(storage: storage, roots: roots)
-    }
-
-    /// Returns a topological ordering of nodes reachable from a single root.
-    ///
-    /// - Parameter root: The node to start from.
-    /// - Returns: A topological ordering, or an empty sequence if cycles exist.
-    @inlinable
-    public func topological(
-        from root: Graph.Node<Tag>
-    ) -> Graph.Traversal.Topological<Tag, Payload> {
-        topological(from: CollectionOfOne(root))
-    }
-
-    /// Returns a topological ordering of all nodes in the graph.
-    ///
-    /// - Returns: A topological ordering, or an empty sequence if cycles exist.
-    @inlinable
-    public func topological() -> Graph.Traversal.Topological<Tag, Payload> {
-        topological(from: nodes)
     }
 }

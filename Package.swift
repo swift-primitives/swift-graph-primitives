@@ -19,12 +19,20 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../swift-identity-primitives"),
+        .package(path: "../swift-bit-primitives"),
+        .package(path: "../swift-stack-primitives"),
+        .package(path: "../swift-set-primitives"),
+        .package(path: "../swift-heap-primitives"),
     ],
     targets: [
         .target(
             name: "Graph Primitives",
             dependencies: [
                 .product(name: "Identity Primitives", package: "swift-identity-primitives"),
+                .product(name: "Bit Primitives", package: "swift-bit-primitives"),
+                .product(name: "Stack Primitives", package: "swift-stack-primitives"),
+                .product(name: "Set Primitives", package: "swift-set-primitives"),
+                .product(name: "Heap Primitives", package: "swift-heap-primitives"),
             ],
             swiftSettings: [
                 .strictMemorySafety()

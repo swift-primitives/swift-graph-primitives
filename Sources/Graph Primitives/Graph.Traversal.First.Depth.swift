@@ -1,4 +1,6 @@
 public import Identity_Primitives
+public import Stack_Primitives
+public import Bit_Primitives
 
 extension Graph.Traversal.First {
     /// Depth-first traversal over a graph.
@@ -19,36 +21,44 @@ extension Graph.Traversal.First {
     ///     print(payload)
     /// }
     /// ```
-    public struct Depth<Tag, Payload: Graph.Adjacency>: Sequence, IteratorProtocol
-    where Payload.Tag == Tag {
+    public struct Depth<Tag, Payload, Adjacent: Sequence<Graph.Node<Tag>>>: Sequence, IteratorProtocol {
         public typealias Element = (node: Graph.Node<Tag>, payload: Payload)
 
         @usableFromInline
         let storage: [Payload]
 
         @usableFromInline
-        var stack: [Graph.Node<Tag>]
+        let extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
 
         @usableFromInline
-        var visited: Set<Graph.Node<Tag>>
+        var stack: Stack<Graph.Node<Tag>>
 
         @usableFromInline
-        init(storage: [Payload], roots: some Sequence<Graph.Node<Tag>>) {
+        var visited: Bit.Array
+
+        @usableFromInline
+        init(
+            storage: [Payload],
+            roots: some Sequence<Graph.Node<Tag>>,
+            extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
+        ) {
             self.storage = storage
-            self.stack = Array(roots)
-            self.visited = []
+            self.extract = extract
+            self.stack = Stack(roots)
+            self.visited = try! Bit.Array(count: storage.count)
         }
 
         @inlinable
         public mutating func next() -> Element? {
-            while let node = stack.popLast() {
-                guard visited.insert(node).inserted else { continue }
+            while let node = stack.pop() {
+                guard !visited[node.rawValue] else { continue }
+                visited[node.rawValue] = true
 
                 let payload = storage[node.rawValue]
 
-                for adjacent in payload.adjacent {
-                    if !visited.contains(adjacent) {
-                        stack.append(adjacent)
+                for adjacent in extract.adjacent(payload) {
+                    if !visited[adjacent.rawValue] {
+                        stack.push(adjacent)
                     }
                 }
 
@@ -56,29 +66,5 @@ extension Graph.Traversal.First {
             }
             return nil
         }
-    }
-}
-
-extension Graph.Sequential where Payload: Graph.Adjacency, Payload.Tag == Tag {
-    /// Returns a depth-first traversal starting from the given roots.
-    ///
-    /// - Parameter roots: The nodes to start traversal from.
-    /// - Returns: A sequence yielding (node, payload) pairs in depth-first order.
-    @inlinable
-    public func depth(
-        from roots: some Sequence<Graph.Node<Tag>>
-    ) -> Graph.Traversal.First.Depth<Tag, Payload> {
-        Graph.Traversal.First.Depth(storage: storage, roots: roots)
-    }
-
-    /// Returns a depth-first traversal starting from a single root.
-    ///
-    /// - Parameter root: The node to start traversal from.
-    /// - Returns: A sequence yielding (node, payload) pairs in depth-first order.
-    @inlinable
-    public func depth(
-        from root: Graph.Node<Tag>
-    ) -> Graph.Traversal.First.Depth<Tag, Payload> {
-        depth(from: CollectionOfOne(root))
     }
 }

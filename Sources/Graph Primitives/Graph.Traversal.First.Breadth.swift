@@ -1,4 +1,5 @@
 public import Identity_Primitives
+public import Bit_Primitives
 
 extension Graph.Traversal.First {
     /// Breadth-first traversal over a graph.
@@ -13,12 +14,14 @@ extension Graph.Traversal.First {
     ///     print(payload)
     /// }
     /// ```
-    public struct Breadth<Tag, Payload: Graph.Adjacency>: Sequence, IteratorProtocol
-    where Payload.Tag == Tag {
+    public struct Breadth<Tag, Payload, Adjacent: Sequence<Graph.Node<Tag>>>: Sequence, IteratorProtocol {
         public typealias Element = (node: Graph.Node<Tag>, payload: Payload)
 
         @usableFromInline
         let storage: [Payload]
+
+        @usableFromInline
+        let extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
 
         @usableFromInline
         var queue: [Graph.Node<Tag>]
@@ -27,17 +30,23 @@ extension Graph.Traversal.First {
         var queueIndex: Int
 
         @usableFromInline
-        var visited: Set<Graph.Node<Tag>>
+        var visited: Bit.Array
 
         @usableFromInline
-        init(storage: [Payload], roots: some Sequence<Graph.Node<Tag>>) {
+        init(
+            storage: [Payload],
+            roots: some Sequence<Graph.Node<Tag>>,
+            extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
+        ) {
             self.storage = storage
+            self.extract = extract
             self.queue = []
             self.queueIndex = 0
-            self.visited = []
+            self.visited = try! Bit.Array(count: storage.count)
 
             for root in roots {
-                if visited.insert(root).inserted {
+                if !visited[root.rawValue] {
+                    visited[root.rawValue] = true
                     queue.append(root)
                 }
             }
@@ -52,37 +61,14 @@ extension Graph.Traversal.First {
 
             let payload = storage[node.rawValue]
 
-            for adjacent in payload.adjacent {
-                if visited.insert(adjacent).inserted {
+            for adjacent in extract.adjacent(payload) {
+                if !visited[adjacent.rawValue] {
+                    visited[adjacent.rawValue] = true
                     queue.append(adjacent)
                 }
             }
 
             return (node, payload)
         }
-    }
-}
-
-extension Graph.Sequential where Payload: Graph.Adjacency, Payload.Tag == Tag {
-    /// Returns a breadth-first traversal starting from the given roots.
-    ///
-    /// - Parameter roots: The nodes to start traversal from.
-    /// - Returns: A sequence yielding (node, payload) pairs in breadth-first order.
-    @inlinable
-    public func breadth(
-        from roots: some Sequence<Graph.Node<Tag>>
-    ) -> Graph.Traversal.First.Breadth<Tag, Payload> {
-        Graph.Traversal.First.Breadth(storage: storage, roots: roots)
-    }
-
-    /// Returns a breadth-first traversal starting from a single root.
-    ///
-    /// - Parameter root: The node to start traversal from.
-    /// - Returns: A sequence yielding (node, payload) pairs in breadth-first order.
-    @inlinable
-    public func breadth(
-        from root: Graph.Node<Tag>
-    ) -> Graph.Traversal.First.Breadth<Tag, Payload> {
-        breadth(from: CollectionOfOne(root))
     }
 }
