@@ -23,6 +23,12 @@ let package = Package(
         .package(path: "../swift-stack-primitives"),
         .package(path: "../swift-set-primitives"),
         .package(path: "../swift-heap-primitives"),
+        .package(path: "../swift-index-primitives"),
+        .package(path: "../swift-input-primitives"),
+        .package(path: "../swift-array-primitives"),
+        .package(path: "../swift-collection-primitives"),
+        .package(path: "../swift-queue-primitives"),
+        .package(path: "../swift-dictionary-primitives"),
     ],
     targets: [
         .target(
@@ -33,6 +39,12 @@ let package = Package(
                 .product(name: "Stack Primitives", package: "swift-stack-primitives"),
                 .product(name: "Set Primitives", package: "swift-set-primitives"),
                 .product(name: "Heap Primitives", package: "swift-heap-primitives"),
+                .product(name: "Index Primitives", package: "swift-index-primitives"),
+                .product(name: "Input Primitives", package: "swift-input-primitives"),
+                .product(name: "Array Primitives", package: "swift-array-primitives"),
+                .product(name: "Collection Primitives", package: "swift-collection-primitives"),
+                .product(name: "Queue Primitives", package: "swift-queue-primitives"),
+                .product(name: "Dictionary Primitives", package: "swift-dictionary-primitives"),
             ],
             swiftSettings: [
                 .strictMemorySafety()
