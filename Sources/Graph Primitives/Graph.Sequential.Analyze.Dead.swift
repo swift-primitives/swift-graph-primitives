@@ -2,6 +2,7 @@ public import Identity_Primitives
 public import Stack_Primitives
 public import Bit_Primitives
 public import Set_Primitives
+public import Array_Primitives
 
 extension Graph.Sequential.Analyze {
     /// Nodes unreachable from roots.

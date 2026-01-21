@@ -1,6 +1,7 @@
 public import Identity_Primitives
 public import Stack_Primitives
 public import Bit_Primitives
+public import Array_Primitives
 
 extension Graph.Traversal.First {
     /// Depth-first traversal over a graph.

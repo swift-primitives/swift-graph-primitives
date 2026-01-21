@@ -1,5 +1,6 @@
 public import Identity_Primitives
 public import Bit_Primitives
+public import Array_Primitives
 
 extension Graph.Sequential.Path {
     /// Shortest path by hop count using BFS.

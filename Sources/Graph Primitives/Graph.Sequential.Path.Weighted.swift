@@ -1,6 +1,7 @@
 public import Identity_Primitives
 public import Bit_Primitives
 public import Heap_Primitives
+public import Array_Primitives
 
 extension Graph.Sequential.Path {
     /// Priority queue entry for Dijkstra's algorithm.

@@ -1,6 +1,7 @@
 public import Identity_Primitives
 public import Stack_Primitives
 public import Bit_Primitives
+public import Array_Primitives
 
 extension Graph.Sequential.Analyze {
     /// Returns the set of nodes reachable from the given roots.

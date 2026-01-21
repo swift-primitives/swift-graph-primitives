@@ -1,6 +1,7 @@
 public import Identity_Primitives
 public import Stack_Primitives
 public import Bit_Primitives
+public import Array_Primitives
 
 extension Graph.Sequential.Analyze {
     /// Returns the strongly connected components of the graph.
@@ -37,7 +38,7 @@ extension Graph.Sequential.Analyze {
 
             // Push root
             let rootPayload = graph.storage[rootIndex]
-            let rootAdjacents = Array(extract.adjacent(rootPayload))
+            let rootAdjacents = Swift.Array(extract.adjacent(rootPayload))
             callStack.append((root, rootAdjacents, 0, true))
 
             while !callStack.isEmpty {
@@ -69,7 +70,7 @@ extension Graph.Sequential.Analyze {
                     if nodeIndex[adjIdx] == -1 {
                         // Not yet visited: push and recurse
                         let adjPayload = graph.storage[adjIdx]
-                        let adjAdjacents = Array(extract.adjacent(adjPayload))
+                        let adjAdjacents = Swift.Array(extract.adjacent(adjPayload))
                         callStack.append((adjacent, adjAdjacents, 0, true))
                         pushedChild = true
                         break
