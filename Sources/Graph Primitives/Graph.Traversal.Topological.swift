@@ -47,9 +47,9 @@ extension Graph.Traversal {
             let count = storage.count
             guard count > 0 else { return [] }
 
-            // Bit-packed state: O(1) lookup by node.rawValue with 8x memory savings
-            var visited = try! Bit.Array(count: count)
-            var visiting = try! Bit.Array(count: count)
+            // Bit-packed state: O(1) lookup by node position with 8x memory savings
+            var visited = try! Array<Bit>.Packed(count: count)
+            var visiting = try! Array<Bit>.Packed(count: count)
             var result: [Element] = []
             result.reserveCapacity(count)
 
@@ -57,43 +57,44 @@ extension Graph.Traversal {
             var stack = Stack<(node: Graph.Node<Tag>, entering: Bool)>()
 
             for root in roots {
-                let rootIndex = root.rawValue
-                if visited[rootIndex] { continue }
+                let rootIdx = Bit.Index(root.position)
+                if visited[rootIdx] { continue }
 
                 stack.push((root, true))
 
                 while let (node, entering) = stack.pop() {
-                    let nodeIndex = node.rawValue
+                    let nodeIdx = Bit.Index(node.position)
+                    let nodeIntIdx = node.position.rawValue
 
                     if entering {
                         // Entering: check state and push adjacents
-                        if visited[nodeIndex] { continue }
-                        if visiting[nodeIndex] {
+                        if visited[nodeIdx] { continue }
+                        if visiting[nodeIdx] {
                             // Cycle detected: node is on current DFS path
                             return nil
                         }
 
-                        visiting[nodeIndex] = true
+                        visiting[nodeIdx] = true
 
                         // Push leave action first (will be processed after all adjacents)
                         stack.push((node, false))
 
                         // Push adjacents to visit
-                        let payload = storage[nodeIndex]
+                        let payload = storage[nodeIntIdx]
                         for adjacent in extract.adjacent(payload) {
-                            let adjIndex = adjacent.rawValue
-                            if !visited[adjIndex] && !visiting[adjIndex] {
+                            let adjIdx = Bit.Index(adjacent.position)
+                            if !visited[adjIdx] && !visiting[adjIdx] {
                                 stack.push((adjacent, true))
-                            } else if visiting[adjIndex] {
+                            } else if visiting[adjIdx] {
                                 // Cycle detected
                                 return nil
                             }
                         }
                     } else {
                         // Leaving: mark visited and record in result
-                        visiting[nodeIndex] = false
-                        visited[nodeIndex] = true
-                        result.append((node, storage[nodeIndex]))
+                        visiting[nodeIdx] = false
+                        visited[nodeIdx] = true
+                        result.append((node, storage[nodeIntIdx]))
                     }
                 }
             }

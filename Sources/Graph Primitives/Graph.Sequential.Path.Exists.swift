@@ -18,31 +18,32 @@ extension Graph.Sequential.Path {
         guard count > 0 else { return false }
 
         // Validate nodes
-        guard source.rawValue >= 0 && source.rawValue < count else { return false }
-        guard target.rawValue >= 0 && target.rawValue < count else { return false }
+        guard source.position.rawValue >= 0 && source.position.rawValue < count else { return false }
+        guard target.position.rawValue >= 0 && target.position.rawValue < count else { return false }
 
         // Same node is trivially reachable
         if source == target { return true }
 
         // BFS with bit-packed visited tracking
-        var visited = try! Bit.Array(count: count)
+        var visited = try! Array<Bit>.Packed(count: count)
         var queue = [Graph.Node<Tag>]()
         var queueIndex = 0
 
-        visited[source.rawValue] = true
+        visited[Bit.Index(source.position)] = true
         queue.append(source)
 
         while queueIndex < queue.count {
             let node = queue[queueIndex]
             queueIndex += 1
 
-            let payload = graph.storage[node.rawValue]
+            let payload = graph.storage[node.position.rawValue]
             for adjacent in extract.adjacent(payload) {
                 if adjacent == target {
                     return true
                 }
-                if !visited[adjacent.rawValue] {
-                    visited[adjacent.rawValue] = true
+                let adjIdx = Bit.Index(adjacent.position)
+                if !visited[adjIdx] {
+                    visited[adjIdx] = true
                     queue.append(adjacent)
                 }
             }

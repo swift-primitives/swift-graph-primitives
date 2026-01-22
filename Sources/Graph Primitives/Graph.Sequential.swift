@@ -42,13 +42,13 @@ extension Graph {
         /// - Precondition: The node must be valid for this graph.
         @inlinable
         public subscript(node: Node<Tag>) -> Payload {
-            storage[node.rawValue]
+            storage[node.position.rawValue]
         }
 
         /// All nodes in the graph, in allocation order.
         @inlinable
         public var nodes: some Sequence<Node<Tag>> {
-            storage.indices.lazy.map { Node<Tag>($0) }
+            storage.indices.lazy.map { Node<Tag>(__unchecked: (), position: $0) }
         }
     }
 }

@@ -41,7 +41,7 @@ extension Graph.Sequential {
         /// - Returns: The identity of the newly allocated node.
         @inlinable
         public mutating func allocate(_ payload: Payload) -> Graph.Node<Tag> {
-            let id = Graph.Node<Tag>(storage.count)
+            let id = Graph.Node<Tag>(__unchecked: (), position: storage.count)
             storage.append(payload)
             return id
         }
@@ -51,8 +51,8 @@ extension Graph.Sequential {
         /// - Precondition: The node must have been allocated by this builder.
         @inlinable
         public subscript(node: Graph.Node<Tag>) -> Payload {
-            get { storage[node.rawValue] }
-            set { storage[node.rawValue] = newValue }
+            get { storage[node.position.rawValue] }
+            set { storage[node.position.rawValue] = newValue }
         }
 
         /// Builds an immutable graph from the allocated nodes.
@@ -88,7 +88,7 @@ extension Graph.Sequential.Builder {
     ///   - payload: The payload to assign.
     @inlinable
     public mutating func fill(_ node: Graph.Node<Tag>, with payload: Payload) {
-        storage[node.rawValue] = payload
+        storage[node.position.rawValue] = payload
     }
 }
 

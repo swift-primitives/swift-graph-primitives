@@ -20,12 +20,12 @@ extension Graph.Sequential.Reverse {
 
         for sourceIndex in 0..<count {
             let payload = graph.storage[sourceIndex]
-            let source = Graph.Node<Tag>(rawValue: sourceIndex)
+            let source = Graph.Node<Tag>(__unchecked: (), position: sourceIndex)
 
             for target in extract.adjacent(payload) {
                 // Original edge: source → target
                 // Reversed edge: target → source
-                reversedAdjacent[target.rawValue].append(source)
+                reversedAdjacent[target.position.rawValue].append(source)
             }
         }
 

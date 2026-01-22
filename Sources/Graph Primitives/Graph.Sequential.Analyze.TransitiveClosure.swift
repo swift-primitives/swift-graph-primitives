@@ -22,7 +22,7 @@ extension Graph.Sequential.Analyze {
         var closureAdjacent = [[Graph.Node<Tag>]](repeating: [], count: count)
 
         for sourceIndex in 0..<count {
-            var visited = try! Bit.Array(count: count)
+            var visited = try! Array<Bit>.Packed(count: count)
             var stack = Stack<Graph.Node<Tag>>()
 
             // Start DFS from source's adjacent nodes (not source itself initially)
@@ -33,15 +33,17 @@ extension Graph.Sequential.Analyze {
 
             // DFS to find all reachable nodes
             while let node = stack.pop() {
-                guard !visited[node.rawValue] else { continue }
-                visited[node.rawValue] = true
+                let idx = Bit.Index(node.position)
+                guard !visited[idx] else { continue }
+                visited[idx] = true
 
                 // Add to closure (node is reachable from source)
                 closureAdjacent[sourceIndex].append(node)
 
-                let payload = graph.storage[node.rawValue]
+                let payload = graph.storage[node.position.rawValue]
                 for adjacent in extract.adjacent(payload) {
-                    if !visited[adjacent.rawValue] {
+                    let adjIdx = Bit.Index(adjacent.position)
+                    if !visited[adjIdx] {
                         stack.push(adjacent)
                     }
                 }

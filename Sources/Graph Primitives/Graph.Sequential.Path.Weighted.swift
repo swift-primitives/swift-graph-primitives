@@ -6,7 +6,7 @@ public import Array_Primitives
 extension Graph.Sequential.Path {
     /// Priority queue entry for Dijkstra's algorithm.
     @usableFromInline
-    struct Entry: __HeapOrdering, Sendable {
+    struct Entry: __HeapOrdering, Comparable, Sendable {
         @usableFromInline let node: Graph.Node<Tag>
         @usableFromInline let distance: Int
 
@@ -19,6 +19,16 @@ extension Graph.Sequential.Path {
         @usableFromInline
         static func isLessThan(_ lhs: borrowing Entry, _ rhs: borrowing Entry) -> Bool {
             lhs.distance < rhs.distance
+        }
+
+        @usableFromInline
+        static func < (lhs: Entry, rhs: Entry) -> Bool {
+            lhs.distance < rhs.distance
+        }
+
+        @usableFromInline
+        static func == (lhs: Entry, rhs: Entry) -> Bool {
+            lhs.distance == rhs.distance && lhs.node == rhs.node
         }
     }
 }
@@ -45,41 +55,44 @@ extension Graph.Sequential.Path {
         guard count > 0 else { return nil }
 
         // Validate nodes
-        guard source.rawValue >= 0 && source.rawValue < count else { return nil }
-        guard target.rawValue >= 0 && target.rawValue < count else { return nil }
+        guard source.position.rawValue >= 0 && source.position.rawValue < count else { return nil }
+        guard target.position.rawValue >= 0 && target.position.rawValue < count else { return nil }
 
         // Same node is trivially reachable with distance 0
         if source == target { return ([source], 0) }
 
         // Dijkstra's algorithm with heap-based priority queue
         var heap = Heap<Entry>()
-        var visited = try! Bit.Array(count: count)
+        var visited = try! Array<Bit>.Packed(count: count)
         var distances = [Int](repeating: Int.max, count: count)
         var predecessors = [Graph.Node<Tag>?](repeating: nil, count: count)
 
-        distances[source.rawValue] = 0
+        distances[source.position.rawValue] = 0
         heap.push(Entry(node: source, distance: 0))
 
         while let entry = heap.take.min {
             // Skip if already visited (we may have duplicate entries with worse distances)
-            guard !visited[entry.node.rawValue] else { continue }
-            visited[entry.node.rawValue] = true
+            let entryIdx = Bit.Index(entry.node.position)
+            guard !visited[entryIdx] else { continue }
+            visited[entryIdx] = true
 
             // Found target - reconstruct path
             if entry.node == target {
                 return (reconstructWeightedPath(to: target, predecessors: predecessors, source: source), entry.distance)
             }
 
-            let payload = graph.storage[entry.node.rawValue]
+            let payload = graph.storage[entry.node.position.rawValue]
             for adjacent in extract.adjacent(payload) {
-                guard !visited[adjacent.rawValue] else { continue }
+                let adjIdx = Bit.Index(adjacent.position)
+                guard !visited[adjIdx] else { continue }
 
                 let edgeWeight = weight(payload, adjacent)
                 let newDist = entry.distance + edgeWeight
 
-                if newDist < distances[adjacent.rawValue] {
-                    distances[adjacent.rawValue] = newDist
-                    predecessors[adjacent.rawValue] = entry.node
+                let adjIntIdx = adjacent.position.rawValue
+                if newDist < distances[adjIntIdx] {
+                    distances[adjIntIdx] = newDist
+                    predecessors[adjIntIdx] = entry.node
                     heap.push(Entry(node: adjacent, distance: newDist))
                 }
             }
@@ -101,7 +114,7 @@ extension Graph.Sequential.Path {
         while let node = current {
             path.append(node)
             if node == source { break }
-            current = predecessors[node.rawValue]
+            current = predecessors[node.position.rawValue]
         }
 
         path.reverse()

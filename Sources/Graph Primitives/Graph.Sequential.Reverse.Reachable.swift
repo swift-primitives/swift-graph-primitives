@@ -20,25 +20,27 @@ extension Graph.Sequential.Reverse {
         guard count > 0 else { return result }
 
         // Validate target
-        guard target.rawValue >= 0 && target.rawValue < count else { return result }
+        guard target.position.rawValue >= 0 && target.position.rawValue < count else { return result }
 
         // Build reversed graph and run forward reachability from target
         let reversedGraph = self.reversed()
 
         // DFS from target on reversed graph
-        var visited = try! Bit.Array(count: count)
+        var visited = try! Array<Bit>.Packed(count: count)
         var stack = Stack<Graph.Node<Tag>>()
 
         stack.push(target)
 
         while let node = stack.pop() {
-            guard !visited[node.rawValue] else { continue }
-            visited[node.rawValue] = true
+            let idx = Bit.Index(node.position)
+            guard !visited[idx] else { continue }
+            visited[idx] = true
             result.insert(node)
 
-            let payload = reversedGraph.storage[node.rawValue]
+            let payload = reversedGraph.storage[node.position.rawValue]
             for adjacent in payload.adjacent {
-                if !visited[adjacent.rawValue] {
+                let adjIdx = Bit.Index(adjacent.position)
+                if !visited[adjIdx] {
                     stack.push(adjacent)
                 }
             }

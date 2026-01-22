@@ -20,24 +20,27 @@ extension Graph.Sequential.Analyze {
         guard count > 0 else { return result }
 
         // Mark all reachable nodes using DFS
-        var visited = try! Bit.Array(count: count)
+        var visited = try! Array<Bit>.Packed(count: count)
         var stack = Stack<Graph.Node<Tag>>()
 
         // Add all valid roots to the stack
         for root in roots {
-            if root.rawValue >= 0 && root.rawValue < count && !visited[root.rawValue] {
+            let idx = Bit.Index(root.position)
+            if root.position.rawValue >= 0 && root.position.rawValue < count && !visited[idx] {
                 stack.push(root)
             }
         }
 
         // DFS to mark reachable nodes
         while let node = stack.pop() {
-            guard !visited[node.rawValue] else { continue }
-            visited[node.rawValue] = true
+            let idx = Bit.Index(node.position)
+            guard !visited[idx] else { continue }
+            visited[idx] = true
 
-            let payload = graph.storage[node.rawValue]
+            let payload = graph.storage[node.position.rawValue]
             for adjacent in extract.adjacent(payload) {
-                if !visited[adjacent.rawValue] {
+                let adjIdx = Bit.Index(adjacent.position)
+                if !visited[adjIdx] {
                     stack.push(adjacent)
                 }
             }
@@ -45,8 +48,9 @@ extension Graph.Sequential.Analyze {
 
         // Collect unvisited nodes as dead
         for i in 0..<count {
-            if !visited[i] {
-                result.insert(Graph.Node<Tag>(rawValue: i))
+            let idx = Bit.Index(__unchecked: (), position: i)
+            if !visited[idx] {
+                result.insert(Graph.Node<Tag>(__unchecked: (), position: i))
             }
         }
 

@@ -35,7 +35,7 @@ extension Graph.Traversal.First {
         var stack: Stack<Graph.Node<Tag>>
 
         @usableFromInline
-        var visited: Bit.Array
+        var visited: Array<Bit>.Packed
 
         @usableFromInline
         init(
@@ -46,19 +46,21 @@ extension Graph.Traversal.First {
             self.storage = storage
             self.extract = extract
             self.stack = Stack(roots)
-            self.visited = try! Bit.Array(count: storage.count)
+            self.visited = try! Array<Bit>.Packed(count: storage.count)
         }
 
         @inlinable
         public mutating func next() -> Element? {
             while let node = stack.pop() {
-                guard !visited[node.rawValue] else { continue }
-                visited[node.rawValue] = true
+                let idx = Bit.Index(node.position)
+                guard !visited[idx] else { continue }
+                visited[idx] = true
 
-                let payload = storage[node.rawValue]
+                let payload = storage[node.position.rawValue]
 
                 for adjacent in extract.adjacent(payload) {
-                    if !visited[adjacent.rawValue] {
+                    let adjIdx = Bit.Index(adjacent.position)
+                    if !visited[adjIdx] {
                         stack.push(adjacent)
                     }
                 }

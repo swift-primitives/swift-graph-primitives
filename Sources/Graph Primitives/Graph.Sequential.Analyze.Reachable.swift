@@ -16,12 +16,13 @@ extension Graph.Sequential.Analyze {
         let count = graph.storage.count
         guard count > 0 else { return [] }
 
-        var visited = try! Bit.Array(count: count)
+        var visited = try! Array<Bit>.Packed(count: count)
         var stack = Stack<Graph.Node<Tag>>()
 
         for root in roots {
-            let rootIndex = root.rawValue
-            if rootIndex >= 0 && rootIndex < count && !visited[rootIndex] {
+            let rootIndex = root.position.rawValue
+            let idx = Bit.Index(root.position)
+            if rootIndex >= 0 && rootIndex < count && !visited[idx] {
                 stack.push(root)
             }
         }
@@ -30,14 +31,15 @@ extension Graph.Sequential.Analyze {
         result.reserveCapacity(count)
 
         while let node = stack.pop() {
-            let nodeIndex = node.rawValue
-            guard !visited[nodeIndex] else { continue }
-            visited[nodeIndex] = true
+            let idx = Bit.Index(node.position)
+            guard !visited[idx] else { continue }
+            visited[idx] = true
             result.insert(node)
 
-            let payload = graph.storage[nodeIndex]
+            let payload = graph.storage[node.position.rawValue]
             for adjacent in extract.adjacent(payload) {
-                if !visited[adjacent.rawValue] {
+                let adjIdx = Bit.Index(adjacent.position)
+                if !visited[adjIdx] {
                     stack.push(adjacent)
                 }
             }

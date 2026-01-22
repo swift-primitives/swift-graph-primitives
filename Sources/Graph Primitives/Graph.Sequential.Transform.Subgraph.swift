@@ -1,4 +1,5 @@
 public import Identity_Primitives
+public import Set_Primitives
 
 extension Graph.Sequential.Transform {
     /// Extracts induced subgraph on specified nodes.
@@ -21,47 +22,48 @@ extension Graph.Sequential.Transform {
     /// - Complexity: O(n + m) where n is the number of nodes and m is the total edge count.
     @inlinable
     public func subgraph<Adjacent: Sequence<Graph.Node<Tag>>>(
-        inducedBy nodes: Set<Graph.Node<Tag>>,
+        inducedBy nodes: consuming Set_Primitives.Set<Graph.Node<Tag>>.Ordered,
         using remap: Graph.Remappable.Remap<Payload, Tag, Adjacent>
     ) -> Graph.Sequential<Tag, Payload>? {
-        // Validate all nodes are within bounds
-        for node in nodes {
-            guard node.rawValue >= 0 && node.rawValue < graph.storage.count else {
+        var counted = nodes.consumingCount()
+        let nodeCount = counted.count
+
+        // Collect nodes and validate bounds
+        var sortedNodes = [Graph.Node<Tag>]()
+        sortedNodes.reserveCapacity(nodeCount)
+
+        while let node = counted.iterator.next() {
+            guard node.position.rawValue >= 0 && node.position.rawValue < graph.storage.count else {
                 return nil
             }
+            sortedNodes.append(node)
         }
+
+        // Sort by position to ensure deterministic ordering
+        sortedNodes.sort { $0.position.rawValue < $1.position.rawValue }
 
         // Build old-to-new index mapping
         var oldToNew = [Int](repeating: -1, count: graph.storage.count)
-        var sortedNodes = [Graph.Node<Tag>]()
-        sortedNodes.reserveCapacity(nodes.count)
-
-        for node in nodes {
-            sortedNodes.append(node)
-        }
-        // Sort by raw value to ensure deterministic ordering
-        sortedNodes.sort { $0.rawValue < $1.rawValue }
-
         for (newIndex, node) in sortedNodes.enumerated() {
-            oldToNew[node.rawValue] = newIndex
+            oldToNew[node.position.rawValue] = newIndex
         }
 
         // Create new storage with remapped payloads
         var newStorage = [Payload]()
-        newStorage.reserveCapacity(nodes.count)
+        newStorage.reserveCapacity(nodeCount)
 
         for node in sortedNodes {
-            let oldPayload = graph.storage[node.rawValue]
+            let oldPayload = graph.storage[node.position.rawValue]
 
             // Remap node references, using -1 marker for nodes not in subgraph
             // The remap will transform the nodes, then we filter by checking if result is valid
             let remappedPayload = remap.mapNodes(oldPayload) { oldNode in
-                let newIdx = oldToNew[oldNode.rawValue]
+                let newIdx = oldToNew[oldNode.position.rawValue]
                 if newIdx >= 0 {
-                    return Graph.Node<Tag>(rawValue: newIdx)
+                    return Graph.Node<Tag>(__unchecked: (), position: newIdx)
                 } else {
                     // Mark with -1 to indicate this edge should be filtered
-                    return Graph.Node<Tag>(rawValue: -1)
+                    return Graph.Node<Tag>(__unchecked: (), position: -1)
                 }
             }
 
@@ -81,42 +83,45 @@ extension Graph.Sequential.Transform where Payload == Graph.Adjacency.List<Tag> 
     /// - Parameter nodes: Nodes to include in the subgraph.
     /// - Returns: New graph with remapped adjacency, or `nil` if any node is invalid.
     @inlinable
-    public func subgraph(inducedBy nodes: Set<Graph.Node<Tag>>) -> Graph.Sequential<Tag, Payload>? {
-        // Validate all nodes are within bounds
-        for node in nodes {
-            guard node.rawValue >= 0 && node.rawValue < graph.storage.count else {
+    public func subgraph(
+        inducedBy nodes: consuming Set_Primitives.Set<Graph.Node<Tag>>.Ordered
+    ) -> Graph.Sequential<Tag, Payload>? {
+        var counted = nodes.consumingCount()
+        let nodeCount = counted.count
+
+        // Collect nodes and validate bounds
+        var sortedNodes = [Graph.Node<Tag>]()
+        sortedNodes.reserveCapacity(nodeCount)
+
+        while let node = counted.iterator.next() {
+            guard node.position.rawValue >= 0 && node.position.rawValue < graph.storage.count else {
                 return nil
             }
+            sortedNodes.append(node)
         }
+
+        // Sort by position to ensure deterministic ordering
+        sortedNodes.sort { $0.position.rawValue < $1.position.rawValue }
 
         // Build old-to-new index mapping
         var oldToNew = [Int](repeating: -1, count: graph.storage.count)
-        var sortedNodes = [Graph.Node<Tag>]()
-        sortedNodes.reserveCapacity(nodes.count)
-
-        for node in nodes {
-            sortedNodes.append(node)
-        }
-        // Sort by raw value to ensure deterministic ordering
-        sortedNodes.sort { $0.rawValue < $1.rawValue }
-
         for (newIndex, node) in sortedNodes.enumerated() {
-            oldToNew[node.rawValue] = newIndex
+            oldToNew[node.position.rawValue] = newIndex
         }
 
         // Create new storage with filtered and remapped adjacency
         var newStorage = [Graph.Adjacency.List<Tag>]()
-        newStorage.reserveCapacity(nodes.count)
+        newStorage.reserveCapacity(nodeCount)
 
         for node in sortedNodes {
-            let oldPayload = graph.storage[node.rawValue]
+            let oldPayload = graph.storage[node.position.rawValue]
 
             // Filter to only include edges where target is in the subgraph, then remap
             var newAdjacent = [Graph.Node<Tag>]()
             for adjacent in oldPayload.adjacent {
-                let newIdx = oldToNew[adjacent.rawValue]
+                let newIdx = oldToNew[adjacent.position.rawValue]
                 if newIdx >= 0 {
-                    newAdjacent.append(Graph.Node<Tag>(rawValue: newIdx))
+                    newAdjacent.append(Graph.Node<Tag>(__unchecked: (), position: newIdx))
                 }
             }
 

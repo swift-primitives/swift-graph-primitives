@@ -31,7 +31,7 @@ extension Graph.Traversal.First {
         var queueIndex: Int
 
         @usableFromInline
-        var visited: Bit.Array
+        var visited: Array<Bit>.Packed
 
         @usableFromInline
         init(
@@ -43,11 +43,12 @@ extension Graph.Traversal.First {
             self.extract = extract
             self.queue = []
             self.queueIndex = 0
-            self.visited = try! Bit.Array(count: storage.count)
+            self.visited = try! Array<Bit>.Packed(count: storage.count)
 
             for root in roots {
-                if !visited[root.rawValue] {
-                    visited[root.rawValue] = true
+                let idx = Bit.Index(root.position)
+                if !visited[idx] {
+                    visited[idx] = true
                     queue.append(root)
                 }
             }
@@ -60,11 +61,12 @@ extension Graph.Traversal.First {
             let node = queue[queueIndex]
             queueIndex += 1
 
-            let payload = storage[node.rawValue]
+            let payload = storage[node.position.rawValue]
 
             for adjacent in extract.adjacent(payload) {
-                if !visited[adjacent.rawValue] {
-                    visited[adjacent.rawValue] = true
+                let idx = Bit.Index(adjacent.position)
+                if !visited[idx] {
+                    visited[idx] = true
                     queue.append(adjacent)
                 }
             }

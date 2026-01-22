@@ -18,30 +18,31 @@ extension Graph.Sequential.Path {
         guard count > 0 else { return nil }
 
         // Validate nodes
-        guard source.rawValue >= 0 && source.rawValue < count else { return nil }
-        guard target.rawValue >= 0 && target.rawValue < count else { return nil }
+        guard source.position.rawValue >= 0 && source.position.rawValue < count else { return nil }
+        guard target.position.rawValue >= 0 && target.position.rawValue < count else { return nil }
 
         // Same node is trivially reachable
         if source == target { return [source] }
 
         // BFS with bit-packed visited tracking and predecessor array
-        var visited = try! Bit.Array(count: count)
+        var visited = try! Array<Bit>.Packed(count: count)
         var predecessors = [Graph.Node<Tag>?](repeating: nil, count: count)
         var queue = [Graph.Node<Tag>]()
         var queueIndex = 0
 
-        visited[source.rawValue] = true
+        visited[Bit.Index(source.position)] = true
         queue.append(source)
 
         while queueIndex < queue.count {
             let node = queue[queueIndex]
             queueIndex += 1
 
-            let payload = graph.storage[node.rawValue]
+            let payload = graph.storage[node.position.rawValue]
             for adjacent in extract.adjacent(payload) {
-                if !visited[adjacent.rawValue] {
-                    visited[adjacent.rawValue] = true
-                    predecessors[adjacent.rawValue] = node
+                let adjIdx = Bit.Index(adjacent.position)
+                if !visited[adjIdx] {
+                    visited[adjIdx] = true
+                    predecessors[adjacent.position.rawValue] = node
                     queue.append(adjacent)
 
                     if adjacent == target {
@@ -68,7 +69,7 @@ extension Graph.Sequential.Path {
         while let node = current {
             path.append(node)
             if node == source { break }
-            current = predecessors[node.rawValue]
+            current = predecessors[node.position.rawValue]
         }
 
         path.reverse()

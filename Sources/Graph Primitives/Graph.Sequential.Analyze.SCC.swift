@@ -17,11 +17,11 @@ extension Graph.Sequential.Analyze {
         let count = graph.storage.count
         guard count > 0 else { return [] }
 
-        // Array-backed state: O(1) lookup by node.rawValue
+        // Array-backed state: O(1) lookup by node position
         // Use -1 as "not yet visited" sentinel for nodeIndex
         var nodeIndex = [Int](repeating: -1, count: count)
         var lowLink = [Int](repeating: 0, count: count)
-        var onStack = try! Bit.Array(count: count)
+        var onStack = try! Array<Bit>.Packed(count: count)
 
         var index = 0
         var sccStack = Stack<Graph.Node<Tag>>()
@@ -32,7 +32,7 @@ extension Graph.Sequential.Analyze {
         var callStack: [(node: Graph.Node<Tag>, adjacents: [Graph.Node<Tag>], adjIndex: Int, phase: Bool)] = []
 
         for root in roots {
-            let rootIndex = root.rawValue
+            let rootIndex = root.position.rawValue
             if rootIndex < 0 || rootIndex >= count { continue }
             if nodeIndex[rootIndex] != -1 { continue }
 
@@ -44,7 +44,7 @@ extension Graph.Sequential.Analyze {
             while !callStack.isEmpty {
                 let frameIndex = callStack.count - 1
                 var frame = callStack[frameIndex]
-                let nodeIdx = frame.node.rawValue
+                let nodeIdx = frame.node.position.rawValue
 
                 if frame.phase {
                     // Entering: initialize node
@@ -52,7 +52,7 @@ extension Graph.Sequential.Analyze {
                     lowLink[nodeIdx] = index
                     index += 1
                     sccStack.push(frame.node)
-                    onStack[nodeIdx] = true
+                    onStack[Bit.Index(frame.node.position)] = true
 
                     // Switch to processing phase
                     callStack[frameIndex].phase = false
@@ -66,7 +66,7 @@ extension Graph.Sequential.Analyze {
                     callStack[frameIndex].adjIndex += 1
                     frame.adjIndex += 1
 
-                    let adjIdx = adjacent.rawValue
+                    let adjIdx = adjacent.position.rawValue
                     if nodeIndex[adjIdx] == -1 {
                         // Not yet visited: push and recurse
                         let adjPayload = graph.storage[adjIdx]
@@ -74,7 +74,7 @@ extension Graph.Sequential.Analyze {
                         callStack.append((adjacent, adjAdjacents, 0, true))
                         pushedChild = true
                         break
-                    } else if onStack[adjIdx] {
+                    } else if onStack[Bit.Index(adjacent.position)] {
                         // On stack: update lowLink
                         lowLink[nodeIdx] = min(lowLink[nodeIdx], nodeIndex[adjIdx])
                     }
@@ -93,7 +93,7 @@ extension Graph.Sequential.Analyze {
                     var component = [Graph.Node<Tag>]()
                     repeat {
                         let w = sccStack.pop()!
-                        onStack[w.rawValue] = false
+                        onStack[Bit.Index(w.position)] = false
                         component.append(w)
                     } while component.last != frame.node
                     components.append(component)
@@ -101,7 +101,7 @@ extension Graph.Sequential.Analyze {
 
                 // Update parent's lowLink if there is a parent
                 if !callStack.isEmpty {
-                    let parentIdx = callStack[callStack.count - 1].node.rawValue
+                    let parentIdx = callStack[callStack.count - 1].node.position.rawValue
                     lowLink[parentIdx] = min(lowLink[parentIdx], lowLink[nodeIdx])
                 }
             }
