@@ -10,8 +10,8 @@ extension Graph.Sequential.Traverse {
     ///   - extract: The adjacency extract for the payload type.
     /// - Returns: A topological ordering, or an empty sequence if cycles exist.
     @inlinable
-    public func topological<Adjacent: Sequence<Graph.Node<Tag>>>(
-        from roots: some Sequence<Graph.Node<Tag>>,
+    public func topological<Adjacent: Swift.Sequence<Graph.Node<Tag>>>(
+        from roots: some Swift.Sequence<Graph.Node<Tag>>,
         using extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
     ) -> Graph.Traversal.Topological<Tag, Payload, Adjacent> {
         Graph.Traversal.Topological(storage: graph.storage, roots: roots, extract: extract)
@@ -24,11 +24,11 @@ extension Graph.Sequential.Traverse {
     ///   - extract: The adjacency extract for the payload type.
     /// - Returns: A topological ordering, or an empty sequence if cycles exist.
     @inlinable
-    public func topological<Adjacent: Sequence<Graph.Node<Tag>>>(
+    public func topological<Adjacent: Swift.Sequence<Graph.Node<Tag>>>(
         from root: Graph.Node<Tag>,
         using extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
     ) -> Graph.Traversal.Topological<Tag, Payload, Adjacent> {
-        topological(from: CollectionOfOne(root), using: extract)
+        topological(from: Swift.CollectionOfOne(root), using: extract)
     }
 
     /// Returns a topological ordering of all nodes in the graph.
@@ -36,7 +36,7 @@ extension Graph.Sequential.Traverse {
     /// - Parameter extract: The adjacency extract for the payload type.
     /// - Returns: A topological ordering, or an empty sequence if cycles exist.
     @inlinable
-    public func topological<Adjacent: Sequence<Graph.Node<Tag>>>(
+    public func topological<Adjacent: Swift.Sequence<Graph.Node<Tag>>>(
         using extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
     ) -> Graph.Traversal.Topological<Tag, Payload, Adjacent> {
         topological(from: graph.nodes, using: extract)
@@ -51,7 +51,7 @@ extension Graph.Sequential.Traverse where Payload == Graph.Adjacency.List<Tag> {
     /// - Returns: A topological ordering, or an empty sequence if cycles exist.
     @inlinable
     public func topological(
-        from roots: some Sequence<Graph.Node<Tag>>
+        from roots: some Swift.Sequence<Graph.Node<Tag>>
     ) -> Graph.Traversal.Topological<Tag, Payload, [Graph.Node<Tag>]> {
         topological(from: roots, using: .list)
     }
@@ -64,7 +64,7 @@ extension Graph.Sequential.Traverse where Payload == Graph.Adjacency.List<Tag> {
     public func topological(
         from root: Graph.Node<Tag>
     ) -> Graph.Traversal.Topological<Tag, Payload, [Graph.Node<Tag>]> {
-        topological(from: CollectionOfOne(root), using: .list)
+        topological(from: Swift.CollectionOfOne(root), using: .list)
     }
 
     /// Returns a topological ordering of all nodes in the graph.

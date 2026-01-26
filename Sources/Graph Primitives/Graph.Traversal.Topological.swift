@@ -23,7 +23,7 @@ extension Graph.Traversal {
     ///     }
     /// }
     /// ```
-    public struct Topological<Tag, Payload, Adjacent: Sequence<Graph.Node<Tag>>>: Sequence {
+    public struct Topological<Tag, Payload, Adjacent: Swift.Sequence<Graph.Node<Tag>>>: Swift.Sequence {
         public typealias Element = (node: Graph.Node<Tag>, payload: Payload)
 
         @usableFromInline
@@ -32,7 +32,7 @@ extension Graph.Traversal {
         @usableFromInline
         init(
             storage: [Payload],
-            roots: some Sequence<Graph.Node<Tag>>,
+            roots: some Swift.Sequence<Graph.Node<Tag>>,
             extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
         ) {
             self.elements = Self.computeOrder(storage: storage, roots: roots, extract: extract)
@@ -41,7 +41,7 @@ extension Graph.Traversal {
         @usableFromInline
         static func computeOrder(
             storage: [Payload],
-            roots: some Sequence<Graph.Node<Tag>>,
+            roots: some Swift.Sequence<Graph.Node<Tag>>,
             extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
         ) -> [Element]? {
             let count = storage.count

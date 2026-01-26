@@ -22,7 +22,7 @@ extension Graph.Traversal.First {
     ///     print(payload)
     /// }
     /// ```
-    public struct Depth<Tag, Payload, Adjacent: Sequence<Graph.Node<Tag>>>: Sequence, IteratorProtocol {
+    public struct Depth<Tag, Payload, Adjacent: Swift.Sequence<Graph.Node<Tag>>>: Swift.Sequence, IteratorProtocol {
         public typealias Element = (node: Graph.Node<Tag>, payload: Payload)
 
         @usableFromInline
@@ -40,7 +40,7 @@ extension Graph.Traversal.First {
         @usableFromInline
         init(
             storage: [Payload],
-            roots: some Sequence<Graph.Node<Tag>>,
+            roots: some Swift.Sequence<Graph.Node<Tag>>,
             extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
         ) {
             self.storage = storage

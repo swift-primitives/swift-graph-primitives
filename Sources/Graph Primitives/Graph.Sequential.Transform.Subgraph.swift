@@ -21,7 +21,7 @@ extension Graph.Sequential.Transform {
     ///   or `nil` if any node is not a valid member of this graph.
     /// - Complexity: O(n + m) where n is the number of nodes and m is the total edge count.
     @inlinable
-    public func subgraph<Adjacent: Sequence<Graph.Node<Tag>>>(
+    public func subgraph<Adjacent: Swift.Sequence<Graph.Node<Tag>>>(
         inducedBy nodes: consuming Set_Primitives.Set<Graph.Node<Tag>>.Ordered,
         using remap: Graph.Remappable.Remap<Payload, Tag, Adjacent>
     ) -> Graph.Sequential<Tag, Payload>? {

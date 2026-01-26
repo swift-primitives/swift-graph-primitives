@@ -3,14 +3,14 @@ public import Identity_Primitives
 extension Graph.Sequential.Traverse {
     /// Returns a first-visit accessor with the given adjacency extract.
     @inlinable
-    public func first<Adjacent: Sequence<Graph.Node<Tag>>>(
+    public func first<Adjacent: Swift.Sequence<Graph.Node<Tag>>>(
         using extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
     ) -> First<Adjacent> {
         First(graph: graph, extract: extract)
     }
 
     /// Accessor type providing first-visit traversal strategies.
-    public struct First<Adjacent: Sequence<Graph.Node<Tag>>> {
+    public struct First<Adjacent: Swift.Sequence<Graph.Node<Tag>>> {
         @usableFromInline
         let graph: Graph.Sequential<Tag, Payload>
 
@@ -29,7 +29,7 @@ extension Graph.Sequential.Traverse {
         /// - Returns: A sequence yielding (node, payload) pairs in depth-first order.
         @inlinable
         public func depth(
-            from roots: some Sequence<Graph.Node<Tag>>
+            from roots: some Swift.Sequence<Graph.Node<Tag>>
         ) -> Graph.Traversal.First.Depth<Tag, Payload, Adjacent> {
             Graph.Traversal.First.Depth(storage: graph.storage, roots: roots, extract: extract)
         }
@@ -42,7 +42,7 @@ extension Graph.Sequential.Traverse {
         public func depth(
             from root: Graph.Node<Tag>
         ) -> Graph.Traversal.First.Depth<Tag, Payload, Adjacent> {
-            depth(from: CollectionOfOne(root))
+            depth(from: Swift.CollectionOfOne(root))
         }
 
         /// Returns a breadth-first traversal starting from the given roots.
@@ -51,7 +51,7 @@ extension Graph.Sequential.Traverse {
         /// - Returns: A sequence yielding (node, payload) pairs in breadth-first order.
         @inlinable
         public func breadth(
-            from roots: some Sequence<Graph.Node<Tag>>
+            from roots: some Swift.Sequence<Graph.Node<Tag>>
         ) -> Graph.Traversal.First.Breadth<Tag, Payload, Adjacent> {
             Graph.Traversal.First.Breadth(storage: graph.storage, roots: roots, extract: extract)
         }
@@ -64,7 +64,7 @@ extension Graph.Sequential.Traverse {
         public func breadth(
             from root: Graph.Node<Tag>
         ) -> Graph.Traversal.First.Breadth<Tag, Payload, Adjacent> {
-            breadth(from: CollectionOfOne(root))
+            breadth(from: Swift.CollectionOfOne(root))
         }
     }
 }

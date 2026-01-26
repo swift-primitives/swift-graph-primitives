@@ -47,7 +47,7 @@ extension Graph {
 
         /// All nodes in the graph, in allocation order.
         @inlinable
-        public var nodes: some Sequence<Node<Tag>> {
+        public var nodes: some Swift.Sequence<Node<Tag>> {
             storage.indices.lazy.map { Node<Tag>(__unchecked: (), position: $0) }
         }
     }

@@ -13,7 +13,7 @@ extension Graph.Sequential.Analyze {
     /// - Returns: An array of SCCs, each being an array of nodes.
     /// - Complexity: O(V + E)
     @inlinable
-    public func scc(from roots: some Sequence<Graph.Node<Tag>>) -> [[Graph.Node<Tag>]] {
+    public func scc(from roots: some Swift.Sequence<Graph.Node<Tag>>) -> [[Graph.Node<Tag>]] {
         let count = graph.storage.count
         guard count > 0 else { return [] }
 
@@ -117,7 +117,7 @@ extension Graph.Sequential.Analyze {
     /// - Complexity: O(V + E)
     @inlinable
     public func scc(from root: Graph.Node<Tag>) -> [[Graph.Node<Tag>]] {
-        scc(from: CollectionOfOne(root))
+        scc(from: Swift.CollectionOfOne(root))
     }
 
     /// Returns all strongly connected components in the graph.

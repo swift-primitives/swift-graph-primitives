@@ -13,7 +13,7 @@ extension Graph.Sequential.Analyze {
     /// - Returns: Ordered set of nodes not reachable from any root.
     /// - Complexity: O(V + E)
     @inlinable
-    public func dead(from roots: some Sequence<Graph.Node<Tag>>) -> Set_Primitives.Set<Graph.Node<Tag>>.Ordered {
+    public func dead(from roots: some Swift.Sequence<Graph.Node<Tag>>) -> Set_Primitives.Set<Graph.Node<Tag>>.Ordered {
         let count = graph.storage.count
         var result = Set_Primitives.Set<Graph.Node<Tag>>.Ordered()
 

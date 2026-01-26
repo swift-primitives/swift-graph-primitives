@@ -3,14 +3,14 @@ public import Identity_Primitives
 extension Graph.Sequential {
     /// Returns a reverse accessor with the given adjacency extract.
     @inlinable
-    public func reverse<Adjacent: Sequence<Graph.Node<Tag>>>(
+    public func reverse<Adjacent: Swift.Sequence<Graph.Node<Tag>>>(
         using extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
     ) -> Reverse<Adjacent> {
         Reverse(graph: self, extract: extract)
     }
 
     /// Accessor for reverse graph operations.
-    public struct Reverse<Adjacent: Sequence<Graph.Node<Tag>>> {
+    public struct Reverse<Adjacent: Swift.Sequence<Graph.Node<Tag>>> {
         @usableFromInline
         let graph: Graph.Sequential<Tag, Payload>
 

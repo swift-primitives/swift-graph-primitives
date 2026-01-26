@@ -12,7 +12,7 @@ extension Graph.Sequential.Analyze {
     /// - Returns: All nodes reachable from any root (includes roots themselves).
     /// - Complexity: O(V + E)
     @inlinable
-    public func reachable(from roots: some Sequence<Graph.Node<Tag>>) -> Swift.Set<Graph.Node<Tag>> {
+    public func reachable(from roots: some Swift.Sequence<Graph.Node<Tag>>) -> Swift.Set<Graph.Node<Tag>> {
         let count = graph.storage.count
         guard count > 0 else { return [] }
 
@@ -57,6 +57,6 @@ extension Graph.Sequential.Analyze {
     /// - Complexity: O(V + E)
     @inlinable
     public func reachable(from root: Graph.Node<Tag>) -> Swift.Set<Graph.Node<Tag>> {
-        reachable(from: CollectionOfOne(root))
+        reachable(from: Swift.CollectionOfOne(root))
     }
 }

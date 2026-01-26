@@ -7,7 +7,7 @@ extension Graph.Sequential.Analyze {
     /// - Returns: `true` if a cycle is detected, `false` otherwise.
     /// - Complexity: O(V + E)
     @inlinable
-    public func hasCycles(from roots: some Sequence<Graph.Node<Tag>>) -> Bool {
+    public func hasCycles(from roots: some Swift.Sequence<Graph.Node<Tag>>) -> Bool {
         graph.traverse.topological(from: roots, using: extract).hasCycles
     }
 
@@ -18,7 +18,7 @@ extension Graph.Sequential.Analyze {
     /// - Complexity: O(V + E)
     @inlinable
     public func hasCycles(from root: Graph.Node<Tag>) -> Bool {
-        hasCycles(from: CollectionOfOne(root))
+        hasCycles(from: Swift.CollectionOfOne(root))
     }
 
     /// Whether the graph contains any cycles.

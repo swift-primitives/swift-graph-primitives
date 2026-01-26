@@ -103,7 +103,7 @@ extension Graph {
         var adjacent: Adjacent { get }
 
         /// Associated type for the adjacency view.
-        associatedtype Adjacent: Sequence<Node<Tag>>
+        associatedtype Adjacent: Swift.Sequence<Node<Tag>>
     }
 }
 ```
@@ -121,7 +121,7 @@ struct UnaryPayload: Graph.Adjacency {
     typealias Tag = MyTag
     let child: Graph.Node<Tag>
 
-    var adjacent: CollectionOfOne<Graph.Node<Tag>> {
+    var adjacent: Swift.CollectionOfOne<Graph.Node<Tag>> {
         CollectionOfOne(child)
     }
 }
@@ -132,7 +132,7 @@ struct BinaryPayload: Graph.Adjacency {
     let left: Graph.Node<Tag>
     let right: Graph.Node<Tag>
 
-    var adjacent: some Sequence<Graph.Node<Tag>> {
+    var adjacent: some Swift.Sequence<Graph.Node<Tag>> {
         [left, right]  // Stack-allocated array literal
     }
 }
@@ -219,7 +219,7 @@ extension Graph.Sequential {
 
     /// All node identities in allocation order.
     @inlinable
-    public var nodes: some Sequence<Graph.Node<Tag>> {
+    public var nodes: some Swift.Sequence<Graph.Node<Tag>> {
         storage.indices.lazy.map { Graph.Node<Tag>($0) }
     }
 }
@@ -237,7 +237,7 @@ Traversal belongs in Graph.Primitives because it defines the meaningful utility 
 ```swift
 extension Graph {
     /// Depth-first traversal from given roots.
-    public struct DepthFirst<Tag, Payload: Adjacency>: Sequence
+    public struct DepthFirst<Tag, Payload: Adjacency>: Swift.Sequence
         where Payload.Tag == Tag
     {
         public let graph: Sequential<Tag, Payload>
@@ -266,7 +266,7 @@ extension Graph.Sequential where Payload: Graph.Adjacency, Payload.Tag == Tag {
 ```swift
 extension Graph {
     /// Breadth-first traversal from given roots.
-    public struct BreadthFirst<Tag, Payload: Adjacency>: Sequence
+    public struct BreadthFirst<Tag, Payload: Adjacency>: Swift.Sequence
         where Payload.Tag == Tag
     {
         public let graph: Sequential<Tag, Payload>
@@ -283,7 +283,7 @@ extension Graph {
 extension Graph {
     /// Topological ordering (for DAGs only).
     /// Returns nil if the graph contains cycles.
-    public struct Topological<Tag, Payload: Adjacency>: Sequence
+    public struct Topological<Tag, Payload: Adjacency>: Swift.Sequence
         where Payload.Tag == Tag
     {
         // ...
@@ -506,7 +506,7 @@ extension Machine {
 extension Machine.Instruction: Graph.Adjacency {
     public typealias Tag = Machine.Tag
 
-    public var adjacent: some Sequence<Graph.Node<Machine.Tag>> {
+    public var adjacent: some Swift.Sequence<Graph.Node<Machine.Tag>> {
         switch self {
         case .leaf, .pure, .hole:
             return EmptyCollection()

@@ -3,14 +3,14 @@ public import Identity_Primitives
 extension Graph.Sequential {
     /// Returns an analyze accessor with the given adjacency extract.
     @inlinable
-    public func analyze<Adjacent: Sequence<Graph.Node<Tag>>>(
+    public func analyze<Adjacent: Swift.Sequence<Graph.Node<Tag>>>(
         using extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
     ) -> Analyze<Adjacent> {
         Analyze(graph: self, extract: extract)
     }
 
     /// Accessor for graph analysis operations.
-    public struct Analyze<Adjacent: Sequence<Graph.Node<Tag>>> {
+    public struct Analyze<Adjacent: Swift.Sequence<Graph.Node<Tag>>> {
         @usableFromInline
         let graph: Graph.Sequential<Tag, Payload>
 

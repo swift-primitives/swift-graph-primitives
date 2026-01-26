@@ -61,7 +61,7 @@ public struct Graph<Tag, Payload> {
     }
 
     @inlinable
-    public var nodeIDs: some Sequence<Node<Tag>> {
+    public var nodeIDs: some Swift.Sequence<Node<Tag>> {
         nodes.indices.lazy.map { Node(rawValue: $0) }
     }
 }
@@ -125,7 +125,7 @@ public protocol GraphPayload {
 
 ```swift
 /// Depth-first traversal order.
-public struct DepthFirst<Tag, Payload: GraphPayload>: Sequence
+public struct DepthFirst<Tag, Payload: GraphPayload>: Swift.Sequence
     where Payload.Tag == Tag
 {
     public let graph: Graph<Tag, Payload>
@@ -135,14 +135,14 @@ public struct DepthFirst<Tag, Payload: GraphPayload>: Sequence
 }
 
 /// Breadth-first traversal order.
-public struct BreadthFirst<Tag, Payload: GraphPayload>: Sequence
+public struct BreadthFirst<Tag, Payload: GraphPayload>: Swift.Sequence
     where Payload.Tag == Tag
 {
     // ...
 }
 
 /// Topological sort (for DAGs).
-public struct TopologicalOrder<Tag, Payload: GraphPayload>: Sequence
+public struct TopologicalOrder<Tag, Payload: GraphPayload>: Swift.Sequence
     where Payload.Tag == Tag
 {
     // ...
