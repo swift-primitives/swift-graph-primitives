@@ -56,7 +56,7 @@ extension Graph.Traversal.First {
                 guard !visited[idx] else { continue }
                 visited[idx] = true
 
-                let payload = storage[node.position.rawValue]
+                let payload = storage[node.position]
 
                 for adjacent in extract.adjacent(payload) {
                     let adjIdx = Bit.Index(adjacent.position)

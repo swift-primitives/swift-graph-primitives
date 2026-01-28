@@ -26,7 +26,7 @@ extension Graph.Sequential.Analyze {
         // Add all valid roots to the stack
         for root in roots {
             let idx = Bit.Index(root.position)
-            if root.position.rawValue >= 0 && root.position.rawValue < count && !visited[idx] {
+            if root.position >= 0 && root.position < count && !visited[idx] {
                 stack.push(root)
             }
         }
@@ -37,7 +37,7 @@ extension Graph.Sequential.Analyze {
             guard !visited[idx] else { continue }
             visited[idx] = true
 
-            let payload = graph.storage[node.position.rawValue]
+            let payload = graph.storage[node.position]
             for adjacent in extract.adjacent(payload) {
                 let adjIdx = Bit.Index(adjacent.position)
                 if !visited[adjIdx] {

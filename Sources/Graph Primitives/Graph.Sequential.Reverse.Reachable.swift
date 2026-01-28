@@ -20,7 +20,7 @@ extension Graph.Sequential.Reverse {
         guard count > 0 else { return result }
 
         // Validate target
-        guard target.position.rawValue >= 0 && target.position.rawValue < count else { return result }
+        guard target.position >= 0 && target.position < count else { return result }
 
         // Build reversed graph and run forward reachability from target
         let reversedGraph = self.reversed()
@@ -37,7 +37,7 @@ extension Graph.Sequential.Reverse {
             visited[idx] = true
             result.insert(node)
 
-            let payload = reversedGraph.storage[node.position.rawValue]
+            let payload = reversedGraph.storage[node.position]
             for adjacent in payload.adjacent {
                 let adjIdx = Bit.Index(adjacent.position)
                 if !visited[adjIdx] {

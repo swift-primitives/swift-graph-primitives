@@ -42,7 +42,7 @@ extension Graph {
         /// - Precondition: The node must be valid for this graph.
         @inlinable
         public subscript(node: Node<Tag>) -> Payload {
-            storage[node.position.rawValue]
+            storage[node.position]
         }
 
         /// All nodes in the graph, in allocation order.

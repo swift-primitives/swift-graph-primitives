@@ -33,19 +33,19 @@ extension Graph.Sequential.Transform {
         sortedNodes.reserveCapacity(nodeCount)
 
         while let node = counted.iterator.next() {
-            guard node.position.rawValue >= 0 && node.position.rawValue < graph.storage.count else {
+            guard node.position >= 0 && node.position < graph.storage.count else {
                 return nil
             }
             sortedNodes.append(node)
         }
 
         // Sort by position to ensure deterministic ordering
-        sortedNodes.sort { $0.position.rawValue < $1.position.rawValue }
+        sortedNodes.sort { $0.position < $1.position }
 
         // Build old-to-new index mapping
         var oldToNew = [Int](repeating: -1, count: graph.storage.count)
         for (newIndex, node) in sortedNodes.enumerated() {
-            oldToNew[node.position.rawValue] = newIndex
+            oldToNew[node.position] = newIndex
         }
 
         // Create new storage with remapped payloads
@@ -53,12 +53,12 @@ extension Graph.Sequential.Transform {
         newStorage.reserveCapacity(nodeCount)
 
         for node in sortedNodes {
-            let oldPayload = graph.storage[node.position.rawValue]
+            let oldPayload = graph.storage[node.position]
 
             // Remap node references, using -1 marker for nodes not in subgraph
             // The remap will transform the nodes, then we filter by checking if result is valid
             let remappedPayload = remap.mapNodes(oldPayload) { oldNode in
-                let newIdx = oldToNew[oldNode.position.rawValue]
+                let newIdx = oldToNew[oldNode.position]
                 if newIdx >= 0 {
                     return Graph.Node<Tag>(__unchecked: (), position: newIdx)
                 } else {
@@ -94,19 +94,19 @@ extension Graph.Sequential.Transform where Payload == Graph.Adjacency.List<Tag> 
         sortedNodes.reserveCapacity(nodeCount)
 
         while let node = counted.iterator.next() {
-            guard node.position.rawValue >= 0 && node.position.rawValue < graph.storage.count else {
+            guard node.position >= 0 && node.position < graph.storage.count else {
                 return nil
             }
             sortedNodes.append(node)
         }
 
         // Sort by position to ensure deterministic ordering
-        sortedNodes.sort { $0.position.rawValue < $1.position.rawValue }
+        sortedNodes.sort { $0.position < $1.position }
 
         // Build old-to-new index mapping
         var oldToNew = [Int](repeating: -1, count: graph.storage.count)
         for (newIndex, node) in sortedNodes.enumerated() {
-            oldToNew[node.position.rawValue] = newIndex
+            oldToNew[node.position] = newIndex
         }
 
         // Create new storage with filtered and remapped adjacency
@@ -114,12 +114,12 @@ extension Graph.Sequential.Transform where Payload == Graph.Adjacency.List<Tag> 
         newStorage.reserveCapacity(nodeCount)
 
         for node in sortedNodes {
-            let oldPayload = graph.storage[node.position.rawValue]
+            let oldPayload = graph.storage[node.position]
 
             // Filter to only include edges where target is in the subgraph, then remap
             var newAdjacent = [Graph.Node<Tag>]()
             for adjacent in oldPayload.adjacent {
-                let newIdx = oldToNew[adjacent.position.rawValue]
+                let newIdx = oldToNew[adjacent.position]
                 if newIdx >= 0 {
                     newAdjacent.append(Graph.Node<Tag>(__unchecked: (), position: newIdx))
                 }

@@ -18,8 +18,8 @@ extension Graph.Sequential.Path {
         guard count > 0 else { return false }
 
         // Validate nodes
-        guard source.position.rawValue >= 0 && source.position.rawValue < count else { return false }
-        guard target.position.rawValue >= 0 && target.position.rawValue < count else { return false }
+        guard source.position >= 0 && source.position < count else { return false }
+        guard target.position >= 0 && target.position < count else { return false }
 
         // Same node is trivially reachable
         if source == target { return true }
@@ -36,7 +36,7 @@ extension Graph.Sequential.Path {
             let node = queue[queueIndex]
             queueIndex += 1
 
-            let payload = graph.storage[node.position.rawValue]
+            let payload = graph.storage[node.position]
             for adjacent in extract.adjacent(payload) {
                 if adjacent == target {
                     return true

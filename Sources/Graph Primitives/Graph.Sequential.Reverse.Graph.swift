@@ -25,7 +25,7 @@ extension Graph.Sequential.Reverse {
             for target in extract.adjacent(payload) {
                 // Original edge: source → target
                 // Reversed edge: target → source
-                reversedAdjacent[target.position.rawValue].append(source)
+                reversedAdjacent[target.position].append(source)
             }
         }
 

@@ -64,7 +64,7 @@ extension Graph.Traversal {
 
                 while let (node, entering) = stack.pop() {
                     let nodeIdx = Bit.Index(node.position)
-                    let nodeIntIdx = node.position.rawValue
+                    let nodeIntIdx = node.position
 
                     if entering {
                         // Entering: check state and push adjacents

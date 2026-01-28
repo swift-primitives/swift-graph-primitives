@@ -55,8 +55,8 @@ extension Graph.Sequential.Path {
         guard count > 0 else { return nil }
 
         // Validate nodes
-        guard source.position.rawValue >= 0 && source.position.rawValue < count else { return nil }
-        guard target.position.rawValue >= 0 && target.position.rawValue < count else { return nil }
+        guard source.position >= 0 && source.position < count else { return nil }
+        guard target.position >= 0 && target.position < count else { return nil }
 
         // Same node is trivially reachable with distance 0
         if source == target { return ([source], 0) }
@@ -67,7 +67,7 @@ extension Graph.Sequential.Path {
         var distances = [Int](repeating: Int.max, count: count)
         var predecessors = [Graph.Node<Tag>?](repeating: nil, count: count)
 
-        distances[source.position.rawValue] = 0
+        distances[source.position] = 0
         heap.push(Entry(node: source, distance: 0))
 
         while let entry = heap.take.min {
@@ -81,7 +81,7 @@ extension Graph.Sequential.Path {
                 return (reconstructWeightedPath(to: target, predecessors: predecessors, source: source), entry.distance)
             }
 
-            let payload = graph.storage[entry.node.position.rawValue]
+            let payload = graph.storage[entry.node.position]
             for adjacent in extract.adjacent(payload) {
                 let adjIdx = Bit.Index(adjacent.position)
                 guard !visited[adjIdx] else { continue }
@@ -89,7 +89,7 @@ extension Graph.Sequential.Path {
                 let edgeWeight = weight(payload, adjacent)
                 let newDist = entry.distance + edgeWeight
 
-                let adjIntIdx = adjacent.position.rawValue
+                let adjIntIdx = adjacent.position
                 if newDist < distances[adjIntIdx] {
                     distances[adjIntIdx] = newDist
                     predecessors[adjIntIdx] = entry.node
@@ -114,7 +114,7 @@ extension Graph.Sequential.Path {
         while let node = current {
             path.append(node)
             if node == source { break }
-            current = predecessors[node.position.rawValue]
+            current = predecessors[node.position]
         }
 
         path.reverse()

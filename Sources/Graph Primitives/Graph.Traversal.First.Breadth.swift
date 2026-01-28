@@ -61,7 +61,7 @@ extension Graph.Traversal.First {
             let node = queue[queueIndex]
             queueIndex += 1
 
-            let payload = storage[node.position.rawValue]
+            let payload = storage[node.position]
 
             for adjacent in extract.adjacent(payload) {
                 let idx = Bit.Index(adjacent.position)

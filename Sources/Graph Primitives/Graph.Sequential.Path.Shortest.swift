@@ -18,8 +18,8 @@ extension Graph.Sequential.Path {
         guard count > 0 else { return nil }
 
         // Validate nodes
-        guard source.position.rawValue >= 0 && source.position.rawValue < count else { return nil }
-        guard target.position.rawValue >= 0 && target.position.rawValue < count else { return nil }
+        guard source.position >= 0 && source.position < count else { return nil }
+        guard target.position >= 0 && target.position < count else { return nil }
 
         // Same node is trivially reachable
         if source == target { return [source] }
@@ -37,12 +37,12 @@ extension Graph.Sequential.Path {
             let node = queue[queueIndex]
             queueIndex += 1
 
-            let payload = graph.storage[node.position.rawValue]
+            let payload = graph.storage[node.position]
             for adjacent in extract.adjacent(payload) {
                 let adjIdx = Bit.Index(adjacent.position)
                 if !visited[adjIdx] {
                     visited[adjIdx] = true
-                    predecessors[adjacent.position.rawValue] = node
+                    predecessors[adjacent.position] = node
                     queue.append(adjacent)
 
                     if adjacent == target {
@@ -69,7 +69,7 @@ extension Graph.Sequential.Path {
         while let node = current {
             path.append(node)
             if node == source { break }
-            current = predecessors[node.position.rawValue]
+            current = predecessors[node.position]
         }
 
         path.reverse()

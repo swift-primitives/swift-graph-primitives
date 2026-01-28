@@ -32,7 +32,7 @@ extension Graph.Sequential.Analyze {
         var callStack: [(node: Graph.Node<Tag>, adjacents: [Graph.Node<Tag>], adjIndex: Int, phase: Bool)] = []
 
         for root in roots {
-            let rootIndex = root.position.rawValue
+            let rootIndex = root.position
             if rootIndex < 0 || rootIndex >= count { continue }
             if nodeIndex[rootIndex] != -1 { continue }
 
@@ -44,7 +44,7 @@ extension Graph.Sequential.Analyze {
             while !callStack.isEmpty {
                 let frameIndex = callStack.count - 1
                 var frame = callStack[frameIndex]
-                let nodeIdx = frame.node.position.rawValue
+                let nodeIdx = frame.node.position
 
                 if frame.phase {
                     // Entering: initialize node
@@ -66,7 +66,7 @@ extension Graph.Sequential.Analyze {
                     callStack[frameIndex].adjIndex += 1
                     frame.adjIndex += 1
 
-                    let adjIdx = adjacent.position.rawValue
+                    let adjIdx = adjacent.position
                     if nodeIndex[adjIdx] == -1 {
                         // Not yet visited: push and recurse
                         let adjPayload = graph.storage[adjIdx]
@@ -101,7 +101,7 @@ extension Graph.Sequential.Analyze {
 
                 // Update parent's lowLink if there is a parent
                 if !callStack.isEmpty {
-                    let parentIdx = callStack[callStack.count - 1].node.position.rawValue
+                    let parentIdx = callStack[callStack.count - 1].node.position
                     lowLink[parentIdx] = min(lowLink[parentIdx], lowLink[nodeIdx])
                 }
             }

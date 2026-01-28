@@ -40,7 +40,7 @@ extension Graph.Sequential.Analyze {
                 // Add to closure (node is reachable from source)
                 closureAdjacent[sourceIndex].append(node)
 
-                let payload = graph.storage[node.position.rawValue]
+                let payload = graph.storage[node.position]
                 for adjacent in extract.adjacent(payload) {
                     let adjIdx = Bit.Index(adjacent.position)
                     if !visited[adjIdx] {
