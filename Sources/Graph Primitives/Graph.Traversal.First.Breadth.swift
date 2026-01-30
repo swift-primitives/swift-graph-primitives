@@ -1,6 +1,7 @@
 public import Identity_Primitives
 public import Bit_Primitives
 public import Array_Primitives
+public import Queue_Primitives
 
 extension Graph.Traversal.First {
     /// Breadth-first traversal over a graph.
@@ -25,10 +26,7 @@ extension Graph.Traversal.First {
         let extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
 
         @usableFromInline
-        var queue: [Graph.Node<Tag>]
-
-        @usableFromInline
-        var queueIndex: Int
+        var queue: Queue<Graph.Node<Tag>>
 
         @usableFromInline
         var visited: Array<Bit>.Packed
@@ -41,25 +39,21 @@ extension Graph.Traversal.First {
         ) {
             self.storage = storage
             self.extract = extract
-            self.queue = []
-            self.queueIndex = 0
+            self.queue = Queue()
             self.visited = try! Array<Bit>.Packed(count: storage.count)
 
             for root in roots {
                 let idx = Bit.Index(root.position)
                 if !visited[idx] {
                     visited[idx] = true
-                    queue.append(root)
+                    queue.enqueue(root)
                 }
             }
         }
 
         @inlinable
         public mutating func next() -> Element? {
-            guard queueIndex < queue.count else { return nil }
-
-            let node = queue[queueIndex]
-            queueIndex += 1
+            guard let node = queue.dequeue() else { return nil }
 
             let payload = storage[node.position]
 
@@ -67,7 +61,7 @@ extension Graph.Traversal.First {
                 let idx = Bit.Index(adjacent.position)
                 if !visited[idx] {
                     visited[idx] = true
-                    queue.append(adjacent)
+                    queue.enqueue(adjacent)
                 }
             }
 
