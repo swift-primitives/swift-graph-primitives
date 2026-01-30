@@ -26,7 +26,7 @@ extension Graph.Traversal.First {
         public typealias Element = (node: Graph.Node<Tag>, payload: Payload)
 
         @usableFromInline
-        let storage: [Payload]
+        let storage: Array<Payload>.Indexed<Tag>
 
         @usableFromInline
         let extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
@@ -35,31 +35,31 @@ extension Graph.Traversal.First {
         var stack: Stack<Graph.Node<Tag>>
 
         @usableFromInline
-        var visited: Array<Bit>.Packed
+        var visited: Array<Bit>.Vector
 
         @usableFromInline
         init(
-            storage: [Payload],
+            storage: Array<Payload>.Indexed<Tag>,
             roots: some Swift.Sequence<Graph.Node<Tag>>,
             extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
         ) {
             self.storage = storage
             self.extract = extract
             self.stack = Stack(roots)
-            self.visited = try! Array<Bit>.Packed(count: storage.count)
+            self.visited = Array<Bit>.Vector(count: storage.count.retag(Bit.self))
         }
 
         @inlinable
         public mutating func next() -> Element? {
             while let node = stack.pop() {
-                let idx = Bit.Index(node.position)
+                let idx = node.retag(Bit.self)
                 guard !visited[idx] else { continue }
                 visited[idx] = true
 
-                let payload = storage[node.position]
+                let payload = storage[node]
 
                 for adjacent in extract.adjacent(payload) {
-                    let adjIdx = Bit.Index(adjacent.position)
+                    let adjIdx = adjacent.retag(Bit.self)
                     if !visited[adjIdx] {
                         stack.push(adjacent)
                     }

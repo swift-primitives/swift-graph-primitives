@@ -1,4 +1,6 @@
 public import Identity_Primitives
+public import Index_Primitives
+public import Array_Primitives
 
 extension Graph {
     /// An immutable graph with sequentially-allocated nodes.
@@ -22,16 +24,18 @@ extension Graph {
     /// ```
     public struct Sequential<Tag, Payload>: Sendable where Payload: Sendable {
         @usableFromInline
-        let storage: [Payload]
+        let storage: Array<Payload>.Indexed<Tag>
 
         @usableFromInline
-        init(storage: [Payload]) {
+        init(storage: Array<Payload>.Indexed<Tag>) {
             self.storage = storage
         }
 
         /// The number of nodes in the graph.
         @inlinable
-        public var count: Int { storage.count }
+        public var count: Node<Tag>.Count {
+            storage.count
+        }
 
         /// Whether the graph contains no nodes.
         @inlinable
@@ -42,13 +46,13 @@ extension Graph {
         /// - Precondition: The node must be valid for this graph.
         @inlinable
         public subscript(node: Node<Tag>) -> Payload {
-            storage[node.position]
+            storage[node]
         }
 
         /// All nodes in the graph, in allocation order.
         @inlinable
         public var nodes: some Swift.Sequence<Node<Tag>> {
-            storage.indices.lazy.map { Node<Tag>(__unchecked: (), position: $0) }
+            (0..<storage._storage.count).lazy.map { Node<Tag>(__unchecked: (), position: $0) }
         }
     }
 }

@@ -31,7 +31,7 @@ extension Graph.Traversal {
 
         @usableFromInline
         init(
-            storage: [Payload],
+            storage: Array<Payload>.Indexed<Tag>,
             roots: some Swift.Sequence<Graph.Node<Tag>>,
             extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
         ) {
@@ -40,31 +40,30 @@ extension Graph.Traversal {
 
         @usableFromInline
         static func computeOrder(
-            storage: [Payload],
+            storage: Array<Payload>.Indexed<Tag>,
             roots: some Swift.Sequence<Graph.Node<Tag>>,
             extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
         ) -> [Element]? {
             let count = storage.count
-            guard count > 0 else { return [] }
+            guard count > .zero else { return [] }
 
             // Bit-packed state: O(1) lookup by node position with 8x memory savings
-            var visited = try! Array<Bit>.Packed(count: count)
-            var visiting = try! Array<Bit>.Packed(count: count)
+            var visited = Array<Bit>.Vector(count: count.retag(Bit.self))
+            var visiting = Array<Bit>.Vector(count: count.retag(Bit.self))
             var result: [Element] = []
-            result.reserveCapacity(count)
+            result.reserveCapacity(Int(bitPattern: count))
 
             // Stack uses two phases: true = entering, false = leaving
             var stack = Stack<(node: Graph.Node<Tag>, entering: Bool)>()
 
             for root in roots {
-                let rootIdx = Bit.Index(root.position)
+                let rootIdx = root.retag(Bit.self)
                 if visited[rootIdx] { continue }
 
                 stack.push((root, true))
 
                 while let (node, entering) = stack.pop() {
-                    let nodeIdx = Bit.Index(node.position)
-                    let nodeIntIdx = node.position
+                    let nodeIdx = node.retag(Bit.self)
 
                     if entering {
                         // Entering: check state and push adjacents
@@ -80,9 +79,9 @@ extension Graph.Traversal {
                         stack.push((node, false))
 
                         // Push adjacents to visit
-                        let payload = storage[nodeIntIdx]
+                        let payload = storage[node]
                         for adjacent in extract.adjacent(payload) {
-                            let adjIdx = Bit.Index(adjacent.position)
+                            let adjIdx = adjacent.retag(Bit.self)
                             if !visited[adjIdx] && !visiting[adjIdx] {
                                 stack.push((adjacent, true))
                             } else if visiting[adjIdx] {
@@ -94,7 +93,7 @@ extension Graph.Traversal {
                         // Leaving: mark visited and record in result
                         visiting[nodeIdx] = false
                         visited[nodeIdx] = true
-                        result.append((node, storage[nodeIntIdx]))
+                        result.append((node, storage[node]))
                     }
                 }
             }

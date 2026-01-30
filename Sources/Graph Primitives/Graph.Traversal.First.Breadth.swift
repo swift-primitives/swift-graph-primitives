@@ -20,7 +20,7 @@ extension Graph.Traversal.First {
         public typealias Element = (node: Graph.Node<Tag>, payload: Payload)
 
         @usableFromInline
-        let storage: [Payload]
+        let storage: Array<Payload>.Indexed<Tag>
 
         @usableFromInline
         let extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
@@ -29,21 +29,21 @@ extension Graph.Traversal.First {
         var queue: Queue<Graph.Node<Tag>>
 
         @usableFromInline
-        var visited: Array<Bit>.Packed
+        var visited: Array<Bit>.Vector
 
         @usableFromInline
         init(
-            storage: [Payload],
+            storage: Array<Payload>.Indexed<Tag>,
             roots: some Swift.Sequence<Graph.Node<Tag>>,
             extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
         ) {
             self.storage = storage
             self.extract = extract
             self.queue = Queue()
-            self.visited = try! Array<Bit>.Packed(count: storage.count)
+            self.visited = Array<Bit>.Vector(count: storage.count.retag(Bit.self))
 
             for root in roots {
-                let idx = Bit.Index(root.position)
+                let idx = root.retag(Bit.self)
                 if !visited[idx] {
                     visited[idx] = true
                     queue.enqueue(root)
@@ -55,10 +55,10 @@ extension Graph.Traversal.First {
         public mutating func next() -> Element? {
             guard let node = queue.dequeue() else { return nil }
 
-            let payload = storage[node.position]
+            let payload = storage[node]
 
             for adjacent in extract.adjacent(payload) {
-                let idx = Bit.Index(adjacent.position)
+                let idx = adjacent.retag(Bit.self)
                 if !visited[idx] {
                     visited[idx] = true
                     queue.enqueue(adjacent)

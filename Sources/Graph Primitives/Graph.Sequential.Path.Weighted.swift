@@ -51,28 +51,28 @@ extension Graph.Sequential.Path {
         to target: Graph.Node<Tag>,
         weight: (Payload, Graph.Node<Tag>) -> Int
     ) -> (path: [Graph.Node<Tag>], distance: Int)? {
-        let count = graph.storage.count
-        guard count > 0 else { return nil }
+        let count = graph.count
+        guard count > .zero else { return nil }
 
         // Validate nodes
-        guard source.position >= 0 && source.position < count else { return nil }
-        guard target.position >= 0 && target.position < count else { return nil }
+        guard source < count else { return nil }
+        guard target < count else { return nil }
 
         // Same node is trivially reachable with distance 0
         if source == target { return ([source], 0) }
 
         // Dijkstra's algorithm with heap-based priority queue
         var heap = Heap<Entry>()
-        var visited = try! Array<Bit>.Packed(count: count)
-        var distances = [Int](repeating: Int.max, count: count)
-        var predecessors = [Graph.Node<Tag>?](repeating: nil, count: count)
+        var visited = Array<Bit>.Vector(count: count.retag(Bit.self))
+        var distances = [Int](repeating: Int.max, count: Int(bitPattern: count))
+        var predecessors = [Graph.Node<Tag>?](repeating: nil, count: Int(bitPattern: count))
 
         distances[source.position] = 0
         heap.push(Entry(node: source, distance: 0))
 
         while let entry = heap.take.min {
             // Skip if already visited (we may have duplicate entries with worse distances)
-            let entryIdx = Bit.Index(entry.node.position)
+            let entryIdx = entry.node.retag(Bit.self)
             guard !visited[entryIdx] else { continue }
             visited[entryIdx] = true
 
@@ -81,9 +81,9 @@ extension Graph.Sequential.Path {
                 return (reconstructWeightedPath(to: target, predecessors: predecessors, source: source), entry.distance)
             }
 
-            let payload = graph.storage[entry.node.position]
+            let payload = graph.storage[entry.node]
             for adjacent in extract.adjacent(payload) {
-                let adjIdx = Bit.Index(adjacent.position)
+                let adjIdx = adjacent.retag(Bit.self)
                 guard !visited[adjIdx] else { continue }
 
                 let edgeWeight = weight(payload, adjacent)

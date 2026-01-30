@@ -1,4 +1,5 @@
 public import Identity_Primitives
+public import Array_Primitives
 
 extension Graph.Sequential.Reverse {
     /// Creates a graph with all edges reversed.
@@ -9,30 +10,31 @@ extension Graph.Sequential.Reverse {
     /// - Complexity: O(V + E)
     @inlinable
     public func reversed() -> Graph.Sequential<Tag, Graph.Adjacency.List<Tag>> {
-        let count = graph.storage.count
-        guard count > 0 else {
+        let count = graph.count
+        guard count > .zero else {
             var builder = Graph.Sequential<Tag, Graph.Adjacency.List<Tag>>.Builder()
             return builder.build()
         }
 
-        // Build reversed adjacency lists
-        var reversedAdjacent = [[Graph.Node<Tag>]](repeating: [], count: count)
+        // Build reversed adjacency lists using typed indexed array
+        var reversedAdjacent = Array<[Graph.Node<Tag>]>.Indexed<Tag>(
+            [[Graph.Node<Tag>]](repeating: [], count: Int(bitPattern: count))
+        )
 
-        for sourceIndex in 0..<count {
-            let payload = graph.storage[sourceIndex]
-            let source = Graph.Node<Tag>(__unchecked: (), position: sourceIndex)
+        for source in graph.nodes {
+            let payload = graph.storage[source]
 
             for target in extract.adjacent(payload) {
                 // Original edge: source → target
                 // Reversed edge: target → source
-                reversedAdjacent[target.position].append(source)
+                reversedAdjacent[target].append(source)
             }
         }
 
         // Build the reversed graph
         var builder = Graph.Sequential<Tag, Graph.Adjacency.List<Tag>>.Builder(capacity: count)
-        for adjacent in reversedAdjacent {
-            _ = builder.allocate(Graph.Adjacency.List(adjacent: adjacent))
+        for source in graph.nodes {
+            _ = builder.allocate(Graph.Adjacency.List(adjacent: reversedAdjacent[source]))
         }
 
         return builder.build()

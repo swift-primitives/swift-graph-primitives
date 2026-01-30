@@ -14,32 +14,32 @@ extension Graph.Sequential.Reverse {
     /// - Complexity: O(V + E)
     @inlinable
     public func reachable(to target: Graph.Node<Tag>) -> Set_Primitives.Set<Graph.Node<Tag>>.Ordered {
-        let count = graph.storage.count
+        let count = graph.count
         var result = Set_Primitives.Set<Graph.Node<Tag>>.Ordered()
 
-        guard count > 0 else { return result }
+        guard count > .zero else { return result }
 
         // Validate target
-        guard target.position >= 0 && target.position < count else { return result }
+        guard target < count else { return result }
 
         // Build reversed graph and run forward reachability from target
         let reversedGraph = self.reversed()
 
         // DFS from target on reversed graph
-        var visited = try! Array<Bit>.Packed(count: count)
+        var visited = Array<Bit>.Vector(count: count.retag(Bit.self))
         var stack = Stack<Graph.Node<Tag>>()
 
         stack.push(target)
 
         while let node = stack.pop() {
-            let idx = Bit.Index(node.position)
+            let idx = node.retag(Bit.self)
             guard !visited[idx] else { continue }
             visited[idx] = true
             result.insert(node)
 
-            let payload = reversedGraph.storage[node.position]
+            let payload = reversedGraph.storage[node]
             for adjacent in payload.adjacent {
-                let adjIdx = Bit.Index(adjacent.position)
+                let adjIdx = adjacent.retag(Bit.self)
                 if !visited[adjIdx] {
                     stack.push(adjacent)
                 }

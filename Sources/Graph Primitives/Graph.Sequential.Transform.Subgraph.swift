@@ -1,5 +1,6 @@
 public import Identity_Primitives
 public import Set_Primitives
+public import Array_Primitives
 
 extension Graph.Sequential.Transform {
     /// Extracts induced subgraph on specified nodes.
@@ -25,6 +26,7 @@ extension Graph.Sequential.Transform {
         inducedBy nodes: consuming Set_Primitives.Set<Graph.Node<Tag>>.Ordered,
         using remap: Graph.Remappable.Remap<Payload, Tag, Adjacent>
     ) -> Graph.Sequential<Tag, Payload>? {
+        let count = graph.count
         var counted = nodes.consumingCount()
         let nodeCount = counted.count
 
@@ -33,7 +35,7 @@ extension Graph.Sequential.Transform {
         sortedNodes.reserveCapacity(nodeCount)
 
         while let node = counted.iterator.next() {
-            guard node.position >= 0 && node.position < graph.storage.count else {
+            guard node < count else {
                 return nil
             }
             sortedNodes.append(node)
@@ -43,7 +45,7 @@ extension Graph.Sequential.Transform {
         sortedNodes.sort { $0.position < $1.position }
 
         // Build old-to-new index mapping
-        var oldToNew = [Int](repeating: -1, count: graph.storage.count)
+        var oldToNew = [Int](repeating: -1, count: Int(bitPattern: count))
         for (newIndex, node) in sortedNodes.enumerated() {
             oldToNew[node.position] = newIndex
         }
@@ -53,7 +55,7 @@ extension Graph.Sequential.Transform {
         newStorage.reserveCapacity(nodeCount)
 
         for node in sortedNodes {
-            let oldPayload = graph.storage[node.position]
+            let oldPayload = graph.storage[node]
 
             // Remap node references, using -1 marker for nodes not in subgraph
             // The remap will transform the nodes, then we filter by checking if result is valid
@@ -70,7 +72,7 @@ extension Graph.Sequential.Transform {
             newStorage.append(remappedPayload)
         }
 
-        return Graph.Sequential<Tag, Payload>(storage: newStorage)
+        return Graph.Sequential<Tag, Payload>(storage: Array<Payload>.Indexed<Tag>(newStorage))
     }
 }
 
@@ -86,6 +88,7 @@ extension Graph.Sequential.Transform where Payload == Graph.Adjacency.List<Tag> 
     public func subgraph(
         inducedBy nodes: consuming Set_Primitives.Set<Graph.Node<Tag>>.Ordered
     ) -> Graph.Sequential<Tag, Payload>? {
+        let count = graph.count
         var counted = nodes.consumingCount()
         let nodeCount = counted.count
 
@@ -94,7 +97,7 @@ extension Graph.Sequential.Transform where Payload == Graph.Adjacency.List<Tag> 
         sortedNodes.reserveCapacity(nodeCount)
 
         while let node = counted.iterator.next() {
-            guard node.position >= 0 && node.position < graph.storage.count else {
+            guard node < count else {
                 return nil
             }
             sortedNodes.append(node)
@@ -104,7 +107,7 @@ extension Graph.Sequential.Transform where Payload == Graph.Adjacency.List<Tag> 
         sortedNodes.sort { $0.position < $1.position }
 
         // Build old-to-new index mapping
-        var oldToNew = [Int](repeating: -1, count: graph.storage.count)
+        var oldToNew = [Int](repeating: -1, count: Int(bitPattern: count))
         for (newIndex, node) in sortedNodes.enumerated() {
             oldToNew[node.position] = newIndex
         }
@@ -114,7 +117,7 @@ extension Graph.Sequential.Transform where Payload == Graph.Adjacency.List<Tag> 
         newStorage.reserveCapacity(nodeCount)
 
         for node in sortedNodes {
-            let oldPayload = graph.storage[node.position]
+            let oldPayload = graph.storage[node]
 
             // Filter to only include edges where target is in the subgraph, then remap
             var newAdjacent = [Graph.Node<Tag>]()
@@ -128,6 +131,6 @@ extension Graph.Sequential.Transform where Payload == Graph.Adjacency.List<Tag> 
             newStorage.append(Graph.Adjacency.List(adjacent: newAdjacent))
         }
 
-        return Graph.Sequential<Tag, Payload>(storage: newStorage)
+        return Graph.Sequential<Tag, Payload>(storage: Array<Payload>.Indexed<Tag>(newStorage))
     }
 }

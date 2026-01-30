@@ -1,4 +1,6 @@
 public import Identity_Primitives
+public import Index_Primitives
+public import Array_Primitives
 
 extension Graph.Sequential {
     /// Mutable builder for constructing graphs.
@@ -27,14 +29,16 @@ extension Graph.Sequential {
 
         /// Creates a builder with reserved capacity.
         @inlinable
-        public init(capacity: Int) {
+        public init(capacity: Graph.Node<Tag>.Count) {
             self.storage = []
-            self.storage.reserveCapacity(capacity)
+            self.storage.reserveCapacity(Int(bitPattern: capacity))
         }
 
         /// The number of nodes allocated so far.
         @inlinable
-        public var count: Int { storage.count }
+        public var count: Graph.Node<Tag>.Count {
+            Graph.Node<Tag>.Count(UInt(storage.count))
+        }
 
         /// Allocates a new node with the given payload.
         ///
@@ -60,7 +64,7 @@ extension Graph.Sequential {
         /// This consumes the builder.
         @inlinable
         public consuming func build() -> Graph.Sequential<Tag, Payload> {
-            Graph.Sequential(storage: storage)
+            Graph.Sequential(storage: Array<Payload>.Indexed<Tag>(storage))
         }
     }
 }

@@ -12,37 +12,40 @@ extension Graph.Sequential.Analyze {
     /// - Complexity: O(V * (V + E))
     @inlinable
     public func transitiveClosure() -> Graph.Sequential<Tag, Graph.Adjacency.List<Tag>> {
-        let count = graph.storage.count
-        guard count > 0 else {
+        let count = graph.count
+        guard count > .zero else {
             var builder = Graph.Sequential<Tag, Graph.Adjacency.List<Tag>>.Builder()
             return builder.build()
         }
 
         // For each node, compute all reachable nodes
-        var closureAdjacent = [[Graph.Node<Tag>]](repeating: [], count: count)
+        // Use Array.Indexed for typed subscript access
+        var closureAdjacent = Array<[Graph.Node<Tag>]>.Indexed<Tag>(
+            [[Graph.Node<Tag>]](repeating: [], count: Int(bitPattern: count))
+        )
 
-        for sourceIndex in 0..<count {
-            var visited = try! Array<Bit>.Packed(count: count)
+        for source in graph.nodes {
+            var visited = Array<Bit>.Vector(count: count.retag(Bit.self))
             var stack = Stack<Graph.Node<Tag>>()
 
             // Start DFS from source's adjacent nodes (not source itself initially)
-            let sourcePayload = graph.storage[sourceIndex]
+            let sourcePayload = graph.storage[source]
             for adjacent in extract.adjacent(sourcePayload) {
                 stack.push(adjacent)
             }
 
             // DFS to find all reachable nodes
             while let node = stack.pop() {
-                let idx = Bit.Index(node.position)
+                let idx = node.retag(Bit.self)
                 guard !visited[idx] else { continue }
                 visited[idx] = true
 
                 // Add to closure (node is reachable from source)
-                closureAdjacent[sourceIndex].append(node)
+                closureAdjacent[source].append(node)
 
-                let payload = graph.storage[node.position]
+                let payload = graph.storage[node]
                 for adjacent in extract.adjacent(payload) {
-                    let adjIdx = Bit.Index(adjacent.position)
+                    let adjIdx = adjacent.retag(Bit.self)
                     if !visited[adjIdx] {
                         stack.push(adjacent)
                     }
@@ -52,8 +55,8 @@ extension Graph.Sequential.Analyze {
 
         // Build the closure graph
         var builder = Graph.Sequential<Tag, Graph.Adjacency.List<Tag>>.Builder(capacity: count)
-        for adjacent in closureAdjacent {
-            _ = builder.allocate(Graph.Adjacency.List(adjacent: adjacent))
+        for source in graph.nodes {
+            _ = builder.allocate(Graph.Adjacency.List(adjacent: closureAdjacent[source]))
         }
 
         return builder.build()

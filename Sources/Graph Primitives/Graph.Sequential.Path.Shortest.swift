@@ -6,7 +6,7 @@ public import Queue_Primitives
 extension Graph.Sequential.Path {
     /// Shortest path by hop count using BFS.
     ///
-    /// Uses `Queue` for BFS traversal and `Array<Bit>.Packed` for visited tracking.
+    /// Uses `Queue` for BFS traversal and `Array<Bit>.Vector` for visited tracking.
     ///
     /// - Parameters:
     ///   - source: Starting node.
@@ -15,28 +15,28 @@ extension Graph.Sequential.Path {
     /// - Complexity: O(V + E)
     @inlinable
     public func shortest(from source: Graph.Node<Tag>, to target: Graph.Node<Tag>) -> [Graph.Node<Tag>]? {
-        let count = graph.storage.count
-        guard count > 0 else { return nil }
+        let count = graph.count
+        guard count > .zero else { return nil }
 
         // Validate nodes
-        guard source.position >= 0 && source.position < count else { return nil }
-        guard target.position >= 0 && target.position < count else { return nil }
+        guard source < count else { return nil }
+        guard target < count else { return nil }
 
         // Same node is trivially reachable
         if source == target { return [source] }
 
         // BFS with bit-packed visited tracking and predecessor array
-        var visited = try! Array<Bit>.Packed(count: count)
-        var predecessors = [Graph.Node<Tag>?](repeating: nil, count: count)
+        var visited = Array<Bit>.Vector(count: count.retag(Bit.self))
+        var predecessors = [Graph.Node<Tag>?](repeating: nil, count: Int(bitPattern: count))
         var queue = Queue<Graph.Node<Tag>>()
 
-        visited[Bit.Index(source.position)] = true
+        visited[source.retag(Bit.self)] = true
         queue.enqueue(source)
 
         while let node = queue.dequeue() {
-            let payload = graph.storage[node.position]
+            let payload = graph.storage[node]
             for adjacent in extract.adjacent(payload) {
-                let adjIdx = Bit.Index(adjacent.position)
+                let adjIdx = adjacent.retag(Bit.self)
                 if !visited[adjIdx] {
                     visited[adjIdx] = true
                     predecessors[adjacent.position] = node
