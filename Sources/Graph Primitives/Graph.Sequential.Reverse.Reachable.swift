@@ -1,6 +1,6 @@
 public import Identity_Primitives
 public import Stack_Primitives
-public import Bit_Primitives
+public import Bit_Vector_Primitives
 public import Set_Primitives
 public import Array_Primitives
 
@@ -26,7 +26,7 @@ extension Graph.Sequential.Reverse {
         let reversedGraph = self.reversed()
 
         // DFS from target on reversed graph
-        var visited = Array<Bit>.Vector(count: count.retag(Bit.self))
+        var visited = Bit.Vector(capacity: count.retag(Bit.self))
         var stack = Stack<Graph.Node<Tag>>()
 
         stack.push(target)

@@ -1,12 +1,12 @@
 public import Identity_Primitives
-public import Bit_Primitives
+public import Bit_Vector_Primitives
 public import Array_Primitives
 public import Queue_Primitives
 
 extension Graph.Sequential.Path {
     /// Shortest path by hop count using BFS.
     ///
-    /// Uses `Queue` for BFS traversal and `Array<Bit>.Vector` for visited tracking.
+    /// Uses `Queue` for BFS traversal and `Bit.Vector` for visited tracking.
     ///
     /// - Parameters:
     ///   - source: Starting node.
@@ -26,8 +26,8 @@ extension Graph.Sequential.Path {
         if source == target { return [source] }
 
         // BFS with bit-packed visited tracking and predecessor array
-        var visited = Array<Bit>.Vector(count: count.retag(Bit.self))
-        var predecessors = [Graph.Node<Tag>?](repeating: nil, count: Int(bitPattern: count))
+        var visited = Bit.Vector(capacity: count.retag(Bit.self))
+        var predecessors = Array<Graph.Node<Tag>?>.Fixed.Indexed<Tag>(repeating: nil, count: count)
         var queue = Queue<Graph.Node<Tag>>()
 
         visited[source.retag(Bit.self)] = true
@@ -39,7 +39,7 @@ extension Graph.Sequential.Path {
                 let adjIdx = adjacent.retag(Bit.self)
                 if !visited[adjIdx] {
                     visited[adjIdx] = true
-                    predecessors[adjacent.position] = node
+                    predecessors[adjacent] = node
                     queue.enqueue(adjacent)
 
                     if adjacent == target {
@@ -57,7 +57,7 @@ extension Graph.Sequential.Path {
     @usableFromInline
     func reconstructPath(
         to target: Graph.Node<Tag>,
-        predecessors: [Graph.Node<Tag>?],
+        predecessors: borrowing Array<Graph.Node<Tag>?>.Fixed.Indexed<Tag>,
         source: Graph.Node<Tag>
     ) -> [Graph.Node<Tag>] {
         var path = [Graph.Node<Tag>]()
@@ -66,7 +66,7 @@ extension Graph.Sequential.Path {
         while let node = current {
             path.append(node)
             if node == source { break }
-            current = predecessors[node.position]
+            current = predecessors[node]
         }
 
         path.reverse()

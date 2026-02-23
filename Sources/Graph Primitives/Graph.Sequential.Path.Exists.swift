@@ -1,12 +1,12 @@
 public import Identity_Primitives
-public import Bit_Primitives
+public import Bit_Vector_Primitives
 public import Array_Primitives
 public import Queue_Primitives
 
 extension Graph.Sequential.Path {
     /// Whether a path exists from source to target.
     ///
-    /// Uses BFS for traversal and `Array<Bit>.Vector` for visited tracking.
+    /// Uses BFS for traversal and `Bit.Vector` for visited tracking.
     ///
     /// - Parameters:
     ///   - source: Starting node.
@@ -26,7 +26,7 @@ extension Graph.Sequential.Path {
         if source == target { return true }
 
         // BFS with bit-packed visited tracking
-        var visited = Array<Bit>.Vector(count: count.retag(Bit.self))
+        var visited = Bit.Vector(capacity: count.retag(Bit.self))
         var queue = Queue<Graph.Node<Tag>>()
 
         visited[source.retag(Bit.self)] = true

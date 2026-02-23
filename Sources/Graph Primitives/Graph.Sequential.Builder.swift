@@ -19,25 +19,24 @@ extension Graph.Sequential {
     /// ```
     public struct Builder: ~Copyable {
         @usableFromInline
-        var storage: [Payload]
+        var storage: Array<Payload>
 
         /// Creates an empty builder.
         @inlinable
         public init() {
-            self.storage = []
+            self.storage = Array<Payload>()
         }
 
         /// Creates a builder with reserved capacity.
         @inlinable
         public init(capacity: Graph.Node<Tag>.Count) {
-            self.storage = []
-            self.storage.reserveCapacity(Int(bitPattern: capacity))
+            self.storage = Array<Payload>(initialCapacity: capacity.retag(Payload.self))
         }
 
         /// The number of nodes allocated so far.
         @inlinable
         public var count: Graph.Node<Tag>.Count {
-            Graph.Node<Tag>.Count(UInt(storage.count))
+            storage.count.retag(Tag.self)
         }
 
         /// Allocates a new node with the given payload.
@@ -45,7 +44,7 @@ extension Graph.Sequential {
         /// - Returns: The identity of the newly allocated node.
         @inlinable
         public mutating func allocate(_ payload: Payload) -> Graph.Node<Tag> {
-            let id = Graph.Node<Tag>(__unchecked: (), position: storage.count)
+            let id = count.map(Ordinal.init)
             storage.append(payload)
             return id
         }
@@ -55,8 +54,8 @@ extension Graph.Sequential {
         /// - Precondition: The node must have been allocated by this builder.
         @inlinable
         public subscript(node: Graph.Node<Tag>) -> Payload {
-            get { storage[node.position] }
-            set { storage[node.position] = newValue }
+            get { storage[node.retag(Payload.self)] }
+            set { storage[node.retag(Payload.self)] = newValue }
         }
 
         /// Builds an immutable graph from the allocated nodes.
@@ -92,7 +91,7 @@ extension Graph.Sequential.Builder {
     ///   - payload: The payload to assign.
     @inlinable
     public mutating func fill(_ node: Graph.Node<Tag>, with payload: Payload) {
-        storage[node.position] = payload
+        storage[node.retag(Payload.self)] = payload
     }
 }
 

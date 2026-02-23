@@ -1,13 +1,13 @@
 public import Identity_Primitives
 public import Stack_Primitives
-public import Bit_Primitives
+public import Bit_Vector_Primitives
 public import Array_Primitives
 public import Set_Primitives
 
 extension Graph.Sequential.Analyze {
     /// Returns the set of nodes reachable from the given roots.
     ///
-    /// Uses `Stack` for DFS and `Array<Bit>.Vector` for visited tracking.
+    /// Uses `Stack` for DFS and `Bit.Vector` for visited tracking.
     ///
     /// - Parameter roots: The nodes to start reachability analysis from.
     /// - Returns: Ordered set of all nodes reachable from any root (includes roots themselves).
@@ -18,7 +18,7 @@ extension Graph.Sequential.Analyze {
         var result = Set_Primitives.Set<Graph.Node<Tag>>.Ordered()
         guard count > .zero else { return result }
 
-        var visited = Array<Bit>.Vector(count: count.retag(Bit.self))
+        var visited = Bit.Vector(capacity: count.retag(Bit.self))
         var stack = Stack<Graph.Node<Tag>>()
 
         for root in roots {
@@ -28,7 +28,7 @@ extension Graph.Sequential.Analyze {
             }
         }
 
-        result.reserveCapacity(Int(bitPattern: count))
+        result.reserve(count.retag(Graph.Node<Tag>.self))
 
         while let node = stack.pop() {
             let idx = node.retag(Bit.self)
@@ -50,7 +50,7 @@ extension Graph.Sequential.Analyze {
 
     /// Returns the set of nodes reachable from a single root.
     ///
-    /// Uses `Stack` for DFS and `Array<Bit>.Vector` for visited tracking.
+    /// Uses `Stack` for DFS and `Bit.Vector` for visited tracking.
     ///
     /// - Parameter root: The node to start reachability analysis from.
     /// - Returns: Ordered set of all nodes reachable from the root.

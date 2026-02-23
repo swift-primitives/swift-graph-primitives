@@ -1,6 +1,6 @@
 public import Identity_Primitives
 public import Stack_Primitives
-public import Bit_Primitives
+public import Bit_Vector_Primitives
 public import Array_Primitives
 
 extension Graph.Sequential.Analyze {
@@ -20,12 +20,10 @@ extension Graph.Sequential.Analyze {
 
         // For each node, compute all reachable nodes
         // Use Array.Indexed for typed subscript access
-        var closureAdjacent = Array<[Graph.Node<Tag>]>.Indexed<Tag>(
-            [[Graph.Node<Tag>]](repeating: [], count: Int(bitPattern: count))
-        )
+        var closureAdjacent = Array<[Graph.Node<Tag>]>.Fixed.Indexed<Tag>(repeating: [], count: count)
 
         for source in graph.nodes {
-            var visited = Array<Bit>.Vector(count: count.retag(Bit.self))
+            var visited = Bit.Vector(capacity: count.retag(Bit.self))
             var stack = Stack<Graph.Node<Tag>>()
 
             // Start DFS from source's adjacent nodes (not source itself initially)

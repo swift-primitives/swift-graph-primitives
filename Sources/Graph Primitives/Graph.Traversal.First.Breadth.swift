@@ -1,22 +1,15 @@
 public import Identity_Primitives
-public import Bit_Primitives
+public import Bit_Vector_Primitives
 public import Array_Primitives
 public import Queue_Primitives
+public import Sequence_Primitives
 
 extension Graph.Traversal.First {
     /// Breadth-first traversal over a graph.
     ///
     /// Visits nodes in breadth-first order starting from the specified roots.
     /// Each node is visited at most once, even if reachable from multiple paths.
-    ///
-    /// ## Example
-    ///
-    /// ```swift
-    /// for (node, payload) in graph.traverse.first.breadth(from: root) {
-    ///     print(payload)
-    /// }
-    /// ```
-    public struct Breadth<Tag, Payload, Adjacent: Swift.Sequence<Graph.Node<Tag>>>: Swift.Sequence, IteratorProtocol {
+    public struct Breadth<Tag, Payload, Adjacent: Swift.Sequence<Graph.Node<Tag>>>: ~Copyable, Sequence.Iterator.`Protocol` {
         public typealias Element = (node: Graph.Node<Tag>, payload: Payload)
 
         @usableFromInline
@@ -29,7 +22,7 @@ extension Graph.Traversal.First {
         var queue: Queue<Graph.Node<Tag>>
 
         @usableFromInline
-        var visited: Array<Bit>.Vector
+        var visited: Bit.Vector
 
         @usableFromInline
         init(
@@ -40,7 +33,7 @@ extension Graph.Traversal.First {
             self.storage = storage
             self.extract = extract
             self.queue = Queue()
-            self.visited = Array<Bit>.Vector(count: storage.count.retag(Bit.self))
+            self.visited = Bit.Vector(capacity: storage.count.retag(Bit.self))
 
             for root in roots {
                 let idx = root.retag(Bit.self)

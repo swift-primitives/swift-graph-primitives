@@ -29,6 +29,8 @@ let package = Package(
         .package(path: "../swift-collection-primitives"),
         .package(path: "../swift-queue-primitives"),
         .package(path: "../swift-dictionary-primitives"),
+        .package(path: "../swift-bit-vector-primitives"),
+        .package(path: "../swift-sequence-primitives"),
     ],
     targets: [
         .target(
@@ -45,6 +47,8 @@ let package = Package(
                 .product(name: "Collection Primitives", package: "swift-collection-primitives"),
                 .product(name: "Queue Primitives", package: "swift-queue-primitives"),
                 .product(name: "Dictionary Primitives", package: "swift-dictionary-primitives"),
+                .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
+                .product(name: "Sequence Primitives", package: "swift-sequence-primitives"),
             ],
             swiftSettings: [
                 .strictMemorySafety()

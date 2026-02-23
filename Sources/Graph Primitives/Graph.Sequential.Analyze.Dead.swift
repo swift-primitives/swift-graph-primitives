@@ -1,6 +1,6 @@
 public import Identity_Primitives
 public import Stack_Primitives
-public import Bit_Primitives
+public import Bit_Vector_Primitives
 public import Set_Primitives
 public import Array_Primitives
 
@@ -20,7 +20,7 @@ extension Graph.Sequential.Analyze {
         guard count > .zero else { return result }
 
         // Mark all reachable nodes using DFS
-        var visited = Array<Bit>.Vector(count: count.retag(Bit.self))
+        var visited = Bit.Vector(capacity: count.retag(Bit.self))
         var stack = Stack<Graph.Node<Tag>>()
 
         // Add all valid roots to the stack

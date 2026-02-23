@@ -27,52 +27,48 @@ extension Graph.Sequential.Transform {
         using remap: Graph.Remappable.Remap<Payload, Tag, Adjacent>
     ) -> Graph.Sequential<Tag, Payload>? {
         let count = graph.count
-        var counted = nodes.consumingCount()
-        let nodeCount = counted.count
 
-        // Collect nodes and validate bounds
+        // Collect nodes from set
         var sortedNodes = [Graph.Node<Tag>]()
-        sortedNodes.reserveCapacity(nodeCount)
-
-        while let node = counted.iterator.next() {
-            guard node < count else {
-                return nil
-            }
+        nodes.forEach { node in
             sortedNodes.append(node)
         }
 
-        // Sort by position to ensure deterministic ordering
-        sortedNodes.sort { $0.position < $1.position }
+        // Sort to ensure deterministic ordering
+        sortedNodes.sort(by: <)
+
+        // Validate bounds
+        for node in sortedNodes {
+            guard node < count else { return nil }
+        }
 
         // Build old-to-new index mapping
-        var oldToNew = [Int](repeating: -1, count: Int(bitPattern: count))
+        var oldToNew = Array<Int>.Fixed.Indexed<Tag>(repeating: -1, count: count)
         for (newIndex, node) in sortedNodes.enumerated() {
-            oldToNew[node.position] = newIndex
+            oldToNew[node] = newIndex
         }
 
         // Create new storage with remapped payloads
-        var newStorage = [Payload]()
-        newStorage.reserveCapacity(nodeCount)
+        var builder = Graph.Sequential<Tag, Payload>.Builder(capacity: count)
 
         for node in sortedNodes {
             let oldPayload = graph.storage[node]
 
             // Remap node references, using -1 marker for nodes not in subgraph
-            // The remap will transform the nodes, then we filter by checking if result is valid
             let remappedPayload = remap.mapNodes(oldPayload) { oldNode in
-                let newIdx = oldToNew[oldNode.position]
+                let newIdx = oldToNew[oldNode]
                 if newIdx >= 0 {
-                    return Graph.Node<Tag>(__unchecked: (), position: newIdx)
+                    return Graph.Node<Tag>(__unchecked: (), Ordinal(UInt(newIdx)))
                 } else {
-                    // Mark with -1 to indicate this edge should be filtered
-                    return Graph.Node<Tag>(__unchecked: (), position: -1)
+                    // Mark with sentinel to indicate this edge should be filtered
+                    return Graph.Node<Tag>(__unchecked: (), Ordinal(UInt(bitPattern: -1)))
                 }
             }
 
-            newStorage.append(remappedPayload)
+            _ = builder.allocate(remappedPayload)
         }
 
-        return Graph.Sequential<Tag, Payload>(storage: Array<Payload>.Indexed<Tag>(newStorage))
+        return builder.build()
     }
 }
 
@@ -89,32 +85,29 @@ extension Graph.Sequential.Transform where Payload == Graph.Adjacency.List<Tag> 
         inducedBy nodes: consuming Set_Primitives.Set<Graph.Node<Tag>>.Ordered
     ) -> Graph.Sequential<Tag, Payload>? {
         let count = graph.count
-        var counted = nodes.consumingCount()
-        let nodeCount = counted.count
 
-        // Collect nodes and validate bounds
+        // Collect nodes from set
         var sortedNodes = [Graph.Node<Tag>]()
-        sortedNodes.reserveCapacity(nodeCount)
-
-        while let node = counted.iterator.next() {
-            guard node < count else {
-                return nil
-            }
+        nodes.forEach { node in
             sortedNodes.append(node)
         }
 
-        // Sort by position to ensure deterministic ordering
-        sortedNodes.sort { $0.position < $1.position }
+        // Sort to ensure deterministic ordering
+        sortedNodes.sort(by: <)
+
+        // Validate bounds
+        for node in sortedNodes {
+            guard node < count else { return nil }
+        }
 
         // Build old-to-new index mapping
-        var oldToNew = [Int](repeating: -1, count: Int(bitPattern: count))
+        var oldToNew = Array<Int>.Fixed.Indexed<Tag>(repeating: -1, count: count)
         for (newIndex, node) in sortedNodes.enumerated() {
-            oldToNew[node.position] = newIndex
+            oldToNew[node] = newIndex
         }
 
         // Create new storage with filtered and remapped adjacency
-        var newStorage = [Graph.Adjacency.List<Tag>]()
-        newStorage.reserveCapacity(nodeCount)
+        var builder = Graph.Sequential<Tag, Graph.Adjacency.List<Tag>>.Builder(capacity: count)
 
         for node in sortedNodes {
             let oldPayload = graph.storage[node]
@@ -122,15 +115,15 @@ extension Graph.Sequential.Transform where Payload == Graph.Adjacency.List<Tag> 
             // Filter to only include edges where target is in the subgraph, then remap
             var newAdjacent = [Graph.Node<Tag>]()
             for adjacent in oldPayload.adjacent {
-                let newIdx = oldToNew[adjacent.position]
+                let newIdx = oldToNew[adjacent]
                 if newIdx >= 0 {
-                    newAdjacent.append(Graph.Node<Tag>(__unchecked: (), position: newIdx))
+                    newAdjacent.append(Graph.Node<Tag>(__unchecked: (), Ordinal(UInt(newIdx))))
                 }
             }
 
-            newStorage.append(Graph.Adjacency.List(adjacent: newAdjacent))
+            _ = builder.allocate(Graph.Adjacency.List(adjacent: newAdjacent))
         }
 
-        return Graph.Sequential<Tag, Payload>(storage: Array<Payload>.Indexed<Tag>(newStorage))
+        return builder.build()
     }
 }

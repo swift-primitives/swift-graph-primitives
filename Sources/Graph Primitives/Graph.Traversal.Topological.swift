@@ -1,6 +1,6 @@
 public import Identity_Primitives
 public import Stack_Primitives
-public import Bit_Primitives
+public import Bit_Vector_Primitives
 public import Array_Primitives
 
 extension Graph.Traversal {
@@ -48,10 +48,10 @@ extension Graph.Traversal {
             guard count > .zero else { return [] }
 
             // Bit-packed state: O(1) lookup by node position with 8x memory savings
-            var visited = Array<Bit>.Vector(count: count.retag(Bit.self))
-            var visiting = Array<Bit>.Vector(count: count.retag(Bit.self))
+            var visited = Bit.Vector(capacity: count.retag(Bit.self))
+            var visiting = Bit.Vector(capacity: count.retag(Bit.self))
             var result: [Element] = []
-            result.reserveCapacity(Int(bitPattern: count))
+            result.reserveCapacity(Int(bitPattern: count.rawValue))
 
             // Stack uses two phases: true = entering, false = leaving
             var stack = Stack<(node: Graph.Node<Tag>, entering: Bool)>()

@@ -17,9 +17,7 @@ extension Graph.Sequential.Reverse {
         }
 
         // Build reversed adjacency lists using typed indexed array
-        var reversedAdjacent = Array<[Graph.Node<Tag>]>.Indexed<Tag>(
-            [[Graph.Node<Tag>]](repeating: [], count: Int(bitPattern: count))
-        )
+        var reversedAdjacent = Array<[Graph.Node<Tag>]>.Fixed.Indexed<Tag>(repeating: [], count: count)
 
         for source in graph.nodes {
             let payload = graph.storage[source]

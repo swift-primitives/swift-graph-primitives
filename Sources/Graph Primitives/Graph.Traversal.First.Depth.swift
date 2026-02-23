@@ -1,7 +1,8 @@
 public import Identity_Primitives
 public import Stack_Primitives
-public import Bit_Primitives
+public import Bit_Vector_Primitives
 public import Array_Primitives
+public import Sequence_Primitives
 
 extension Graph.Traversal.First {
     /// Depth-first traversal over a graph.
@@ -14,15 +15,7 @@ extension Graph.Traversal.First {
     /// requiring `BidirectionalCollection` conformance from the adjacency sequence.
     /// If left-to-right visitation is important, ensure your payload's adjacency
     /// is ordered accordingly.
-    ///
-    /// ## Example
-    ///
-    /// ```swift
-    /// for (node, payload) in graph.traverse.first.depth(from: root) {
-    ///     print(payload)
-    /// }
-    /// ```
-    public struct Depth<Tag, Payload, Adjacent: Swift.Sequence<Graph.Node<Tag>>>: Swift.Sequence, IteratorProtocol {
+    public struct Depth<Tag, Payload, Adjacent: Swift.Sequence<Graph.Node<Tag>>>: ~Copyable, Sequence.Iterator.`Protocol` {
         public typealias Element = (node: Graph.Node<Tag>, payload: Payload)
 
         @usableFromInline
@@ -35,7 +28,7 @@ extension Graph.Traversal.First {
         var stack: Stack<Graph.Node<Tag>>
 
         @usableFromInline
-        var visited: Array<Bit>.Vector
+        var visited: Bit.Vector
 
         @usableFromInline
         init(
@@ -45,8 +38,12 @@ extension Graph.Traversal.First {
         ) {
             self.storage = storage
             self.extract = extract
-            self.stack = Stack(roots)
-            self.visited = Array<Bit>.Vector(count: storage.count.retag(Bit.self))
+            self.stack = Stack()
+            self.visited = Bit.Vector(capacity: storage.count.retag(Bit.self))
+
+            for root in roots {
+                stack.push(root)
+            }
         }
 
         @inlinable

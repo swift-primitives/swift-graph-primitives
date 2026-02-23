@@ -1,12 +1,12 @@
 public import Identity_Primitives
 public import Stack_Primitives
-public import Bit_Primitives
+public import Bit_Vector_Primitives
 public import Array_Primitives
 
 extension Graph.Sequential.Analyze {
     /// Returns the strongly connected components of the graph.
     ///
-    /// Uses Tarjan's algorithm (iterative) with `Stack` and `Bit.Array`.
+    /// Uses Tarjan's algorithm (iterative) with `Stack` and `Bit.Vector`.
     /// Components are returned in reverse topological order (sinks first).
     ///
     /// - Parameter roots: The nodes to start SCC analysis from.
@@ -17,11 +17,11 @@ extension Graph.Sequential.Analyze {
         let count = graph.count
         guard count > .zero else { return [] }
 
-        // Array-backed state: O(1) lookup by node position
+        // Array-backed state: O(1) lookup by node
         // Use -1 as "not yet visited" sentinel for nodeIndex
-        var nodeIndex = [Int](repeating: -1, count: Int(bitPattern: count))
-        var lowLink = [Int](repeating: 0, count: Int(bitPattern: count))
-        var onStack = Array<Bit>.Vector(count: count.retag(Bit.self))
+        var nodeIndex = Array<Int>.Fixed.Indexed<Tag>(repeating: -1, count: count)
+        var lowLink = Array<Int>.Fixed.Indexed<Tag>(repeating: 0, count: count)
+        var onStack = Bit.Vector(capacity: count.retag(Bit.self))
 
         var index = 0
         var sccStack = Stack<Graph.Node<Tag>>()
@@ -33,7 +33,7 @@ extension Graph.Sequential.Analyze {
 
         for root in roots {
             guard root < count else { continue }
-            if nodeIndex[root.position] != -1 { continue }
+            if nodeIndex[root] != -1 { continue }
 
             // Push root
             let rootPayload = graph.storage[root]
@@ -43,12 +43,12 @@ extension Graph.Sequential.Analyze {
             while !callStack.isEmpty {
                 let frameIndex = callStack.count - 1
                 var frame = callStack[frameIndex]
-                let nodeIdx = frame.node.position
+                let node = frame.node
 
                 if frame.phase {
                     // Entering: initialize node
-                    nodeIndex[nodeIdx] = index
-                    lowLink[nodeIdx] = index
+                    nodeIndex[node] = index
+                    lowLink[node] = index
                     index += 1
                     sccStack.push(frame.node)
                     onStack[frame.node.retag(Bit.self)] = true
@@ -65,7 +65,7 @@ extension Graph.Sequential.Analyze {
                     callStack[frameIndex].adjIndex += 1
                     frame.adjIndex += 1
 
-                    if nodeIndex[adjacent.position] == -1 {
+                    if nodeIndex[adjacent] == -1 {
                         // Not yet visited: push and recurse
                         let adjPayload = graph.storage[adjacent]
                         let adjAdjacents = Swift.Array(extract.adjacent(adjPayload))
@@ -74,7 +74,7 @@ extension Graph.Sequential.Analyze {
                         break
                     } else if onStack[adjacent.retag(Bit.self)] {
                         // On stack: update lowLink
-                        lowLink[nodeIdx] = min(lowLink[nodeIdx], nodeIndex[adjacent.position])
+                        lowLink[node] = min(lowLink[node], nodeIndex[adjacent])
                     }
                     // else: already processed and not on stack, ignore
                 }
@@ -86,7 +86,7 @@ extension Graph.Sequential.Analyze {
                 // All adjacents processed: check for SCC root and pop
                 callStack.removeLast()
 
-                if lowLink[nodeIdx] == nodeIndex[nodeIdx] {
+                if lowLink[node] == nodeIndex[node] {
                     // Node is SCC root: pop component
                     var component = [Graph.Node<Tag>]()
                     repeat {
@@ -99,8 +99,8 @@ extension Graph.Sequential.Analyze {
 
                 // Update parent's lowLink if there is a parent
                 if !callStack.isEmpty {
-                    let parentIdx = callStack[callStack.count - 1].node.position
-                    lowLink[parentIdx] = min(lowLink[parentIdx], lowLink[nodeIdx])
+                    let parent = callStack[callStack.count - 1].node
+                    lowLink[parent] = min(lowLink[parent], lowLink[node])
                 }
             }
         }
