@@ -12,7 +12,7 @@ extension Graph.Sequential.Reverse {
     public func reversed() -> Graph.Sequential<Tag, Graph.Adjacency.List<Tag>> {
         let count = graph.count
         guard count > .zero else {
-            var builder = Graph.Sequential<Tag, Graph.Adjacency.List<Tag>>.Builder()
+            let builder = Graph.Sequential<Tag, Graph.Adjacency.List<Tag>>.Builder()
             return builder.build()
         }
 

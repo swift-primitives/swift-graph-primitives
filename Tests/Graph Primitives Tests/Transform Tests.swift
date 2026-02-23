@@ -1,8 +1,15 @@
 import Testing
-import Identity_Primitives
-@testable import Graph_Primitives
+import Graph_Primitives_Test_Support
 
 private enum TestTag {}
+
+private func orderedSet(_ nodes: Graph.Node<TestTag>...) -> Set_Primitives.Set<Graph.Node<TestTag>>.Ordered {
+    var set = Set_Primitives.Set<Graph.Node<TestTag>>.Ordered()
+    for node in nodes {
+        _ = set.insert(node)
+    }
+    return set
+}
 
 // MARK: - Payload Mapping Tests
 
@@ -75,7 +82,7 @@ struct SubgraphTests {
         let graph = builder.build()
 
         // Subgraph with only A, B - should drop edges to C and D
-        let subgraph = graph.transform.subgraph(inducedBy: [a, b])
+        let subgraph = graph.transform.subgraph(inducedBy: orderedSet(a, b))
 
         #expect(subgraph != nil)
         #expect(subgraph!.count == 2)
@@ -84,8 +91,7 @@ struct SubgraphTests {
         for node in subgraph!.nodes {
             let payload = subgraph![node]
             for adjacent in payload.adjacent {
-                #expect(adjacent.rawValue >= 0)
-                #expect(adjacent.rawValue < subgraph!.count)
+                #expect(adjacent < subgraph!.count)
             }
         }
     }
@@ -102,7 +108,7 @@ struct SubgraphTests {
         let graph = builder.build()
 
         // Subgraph with B, C, D (excluding A)
-        let subgraph = graph.transform.subgraph(inducedBy: [b, c, d])
+        let subgraph = graph.transform.subgraph(inducedBy: orderedSet(b, c, d))
 
         #expect(subgraph != nil)
         #expect(subgraph!.count == 3)
@@ -111,8 +117,7 @@ struct SubgraphTests {
         for node in subgraph!.nodes {
             let payload = subgraph![node]
             for adjacent in payload.adjacent {
-                #expect(adjacent.rawValue >= 0)
-                #expect(adjacent.rawValue < 3)
+                #expect(adjacent < 3)
             }
         }
     }
@@ -127,10 +132,10 @@ struct SubgraphTests {
         let graph = builder.build()
 
         // Create an invalid node
-        let invalidNode = Graph.Node<TestTag>(rawValue: 999)
+        let invalidNode = Graph.Node<TestTag>(__unchecked: (), Ordinal(999))
 
         // Subgraph with invalid node should return nil
-        let subgraph = graph.transform.subgraph(inducedBy: [a, invalidNode])
+        let subgraph = graph.transform.subgraph(inducedBy: orderedSet(a, invalidNode))
 
         #expect(subgraph == nil)
     }
@@ -145,7 +150,7 @@ struct SubgraphTests {
         let graph = builder.build()
 
         // Subgraph with all nodes
-        let subgraph = graph.transform.subgraph(inducedBy: [a, b])
+        let subgraph = graph.transform.subgraph(inducedBy: orderedSet(a, b))
 
         #expect(subgraph != nil)
         #expect(subgraph!.count == graph.count)
@@ -172,7 +177,7 @@ struct SubgraphTests {
 
         let graph = builder.build()
 
-        let subgraph = graph.transform.subgraph(inducedBy: [])
+        let subgraph = graph.transform.subgraph(inducedBy: orderedSet())
 
         #expect(subgraph != nil)
         #expect(subgraph!.count == 0)
@@ -191,7 +196,7 @@ struct SubgraphTests {
         let graph = builder.build()
 
         // Subgraph with A and B only
-        let subgraph = graph.transform.subgraph(inducedBy: [a, b])
+        let subgraph = graph.transform.subgraph(inducedBy: orderedSet(a, b))
 
         #expect(subgraph != nil)
         #expect(subgraph!.count == 2)

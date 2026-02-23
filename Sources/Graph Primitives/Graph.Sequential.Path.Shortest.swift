@@ -26,7 +26,7 @@ extension Graph.Sequential.Path {
         if source == target { return [source] }
 
         // BFS with bit-packed visited tracking and predecessor array
-        var visited = Bit.Vector(capacity: count.retag(Bit.self))
+        let visited = Bit.Vector(capacity: count.retag(Bit.self))
         var predecessors = Array<Graph.Node<Tag>?>.Fixed.Indexed<Tag>(repeating: nil, count: count)
         var queue = Queue<Graph.Node<Tag>>()
 

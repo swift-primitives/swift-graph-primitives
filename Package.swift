@@ -16,6 +16,10 @@ let package = Package(
             name: "Graph Primitives",
             targets: ["Graph Primitives"]
         ),
+        .library(
+            name: "Graph Primitives Test Support",
+            targets: ["Graph Primitives Test Support"]
+        ),
     ],
     dependencies: [
         .package(path: "../swift-identity-primitives"),
@@ -49,14 +53,24 @@ let package = Package(
                 .product(name: "Dictionary Primitives", package: "swift-dictionary-primitives"),
                 .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
                 .product(name: "Sequence Primitives", package: "swift-sequence-primitives"),
-            ],
-            swiftSettings: [
-                .strictMemorySafety()
             ]
+        ),
+        .target(
+            name: "Graph Primitives Test Support",
+            dependencies: [
+                "Graph Primitives",
+                .product(name: "Set Primitives Test Support", package: "swift-set-primitives"),
+                .product(name: "Array Primitives Test Support", package: "swift-array-primitives"),
+                .product(name: "Bit Vector Primitives Test Support", package: "swift-bit-vector-primitives"),
+            ],
+            path: "Tests/Support"
         ),
         .testTarget(
             name: "Graph Primitives Tests",
-            dependencies: ["Graph Primitives"]
+            dependencies: [
+                "Graph Primitives",
+                "Graph Primitives Test Support",
+            ]
         ),
     ],
     swiftLanguageModes: [.v6]

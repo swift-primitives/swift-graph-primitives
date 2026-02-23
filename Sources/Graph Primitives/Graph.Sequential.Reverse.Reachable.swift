@@ -26,7 +26,7 @@ extension Graph.Sequential.Reverse {
         let reversedGraph = self.reversed()
 
         // DFS from target on reversed graph
-        var visited = Bit.Vector(capacity: count.retag(Bit.self))
+        let visited = Bit.Vector(capacity: count.retag(Bit.self))
         var stack = Stack<Graph.Node<Tag>>()
 
         stack.push(target)

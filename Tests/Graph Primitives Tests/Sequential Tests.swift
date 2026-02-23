@@ -1,5 +1,5 @@
 import Testing
-@testable import Graph_Primitives
+import Graph_Primitives_Test_Support
 
 // MARK: - Test Types
 

@@ -1,6 +1,5 @@
 import Testing
-import Identity_Primitives
-@testable import Graph_Primitives
+import Graph_Primitives_Test_Support
 
 private enum TestTag {}
 
@@ -22,8 +21,8 @@ struct ReversedGraphTests {
 
         // Count edges in original
         var originalEdgeCount = 0
-        for i in 0..<graph.storage.count {
-            originalEdgeCount += graph.storage[i].adjacent.count
+        for node in graph.nodes {
+            originalEdgeCount += graph[node].adjacent.count
         }
 
         // Get reversed graph
@@ -31,8 +30,8 @@ struct ReversedGraphTests {
 
         // Count edges in reversed
         var reversedEdgeCount = 0
-        for i in 0..<reversed.storage.count {
-            reversedEdgeCount += reversed.storage[i].adjacent.count
+        for node in reversed.nodes {
+            reversedEdgeCount += reversed[node].adjacent.count
         }
 
         #expect(originalEdgeCount == 4)
@@ -58,9 +57,9 @@ struct ReversedGraphTests {
         // - A has no outgoing edges
         // - B has edge to A
         // - C has edge to B
-        #expect(reversed.storage[a.rawValue].adjacent.isEmpty)
-        #expect(reversed.storage[b.rawValue].adjacent == [a])
-        #expect(reversed.storage[c.rawValue].adjacent == [b])
+        #expect(reversed[a].adjacent.isEmpty)
+        #expect(reversed[b].adjacent == [a])
+        #expect(reversed[c].adjacent == [b])
     }
 
     @Test("Reversed graph preserves node count")
@@ -74,7 +73,7 @@ struct ReversedGraphTests {
         let graph = builder.build()
         let reversed = graph.reverse.reversed()
 
-        #expect(graph.storage.count == reversed.storage.count)
+        #expect(graph.count == reversed.count)
     }
 
     @Test("Empty graph reverses to empty graph")
@@ -82,7 +81,7 @@ struct ReversedGraphTests {
         let graph = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder().build()
         let reversed = graph.reverse.reversed()
 
-        #expect(reversed.storage.isEmpty)
+        #expect(reversed.isEmpty)
     }
 
     @Test("Single node graph reverses correctly")
@@ -93,8 +92,9 @@ struct ReversedGraphTests {
         let graph = builder.build()
         let reversed = graph.reverse.reversed()
 
-        #expect(reversed.storage.count == 1)
-        #expect(reversed.storage[0].adjacent.isEmpty)
+        let node0: Graph.Node<TestTag> = 0
+        #expect(reversed.count == 1)
+        #expect(reversed[node0].adjacent.isEmpty)
     }
 
     @Test("Self-loop reverses to self-loop")
@@ -106,7 +106,7 @@ struct ReversedGraphTests {
         let graph = builder.build()
         let reversed = graph.reverse.reversed()
 
-        #expect(reversed.storage[a.rawValue].adjacent == [a])
+        #expect(reversed[a].adjacent == [a])
     }
 }
 
@@ -171,7 +171,7 @@ struct BackwardReachabilityTests {
     @Test("Backward reachable on empty graph returns empty")
     func backwardReachableEmptyGraph() {
         let graph = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder().build()
-        let invalid = Graph.Node<TestTag>(rawValue: 0)
+        let invalid: Graph.Node<TestTag> = 0
 
         let backwardReachable = graph.reverse.reachable(to: invalid)
 
@@ -184,7 +184,7 @@ struct BackwardReachabilityTests {
         _ = builder.allocate(Graph.Adjacency.List(adjacent: []))
 
         let graph = builder.build()
-        let invalid = Graph.Node<TestTag>(rawValue: 999)
+        let invalid = Graph.Node<TestTag>(__unchecked: (), Ordinal(999))
 
         let backwardReachable = graph.reverse.reachable(to: invalid)
 

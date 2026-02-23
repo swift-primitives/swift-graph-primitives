@@ -21,7 +21,7 @@ extension Graph.Sequential.Analyze {
         // Use -1 as "not yet visited" sentinel for nodeIndex
         var nodeIndex = Array<Int>.Fixed.Indexed<Tag>(repeating: -1, count: count)
         var lowLink = Array<Int>.Fixed.Indexed<Tag>(repeating: 0, count: count)
-        var onStack = Bit.Vector(capacity: count.retag(Bit.self))
+        let onStack = Bit.Vector(capacity: count.retag(Bit.self))
 
         var index = 0
         var sccStack = Stack<Graph.Node<Tag>>()

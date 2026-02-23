@@ -1,6 +1,5 @@
 import Testing
-import Identity_Primitives
-@testable import Graph_Primitives
+import Graph_Primitives_Test_Support
 
 private enum TestTag {}
 
@@ -121,23 +120,23 @@ struct TransitiveClosureTests {
         // Total: 5 edges
 
         var totalEdges = 0
-        for i in 0..<closure.storage.count {
-            totalEdges += closure.storage[i].adjacent.count
+        for node in closure.nodes {
+            totalEdges += closure[node].adjacent.count
         }
 
         #expect(totalEdges == 5)
 
         // Verify A can reach all other nodes
-        #expect(closure.storage[a.rawValue].adjacent.contains(b))
-        #expect(closure.storage[a.rawValue].adjacent.contains(c))
-        #expect(closure.storage[a.rawValue].adjacent.contains(d))
+        #expect(closure[a].adjacent.contains(b))
+        #expect(closure[a].adjacent.contains(c))
+        #expect(closure[a].adjacent.contains(d))
 
         // Verify B and C can reach D
-        #expect(closure.storage[b.rawValue].adjacent.contains(d))
-        #expect(closure.storage[c.rawValue].adjacent.contains(d))
+        #expect(closure[b].adjacent.contains(d))
+        #expect(closure[c].adjacent.contains(d))
 
         // Verify D has no outgoing edges
-        #expect(closure.storage[d.rawValue].adjacent.isEmpty)
+        #expect(closure[d].adjacent.isEmpty)
     }
 
     @Test("Transitive closure on linear graph")
@@ -160,20 +159,20 @@ struct TransitiveClosureTests {
         // Total: 6 edges
 
         var totalEdges = 0
-        for i in 0..<closure.storage.count {
-            totalEdges += closure.storage[i].adjacent.count
+        for node in closure.nodes {
+            totalEdges += closure[node].adjacent.count
         }
 
         #expect(totalEdges == 6)
 
         // Verify A can reach all nodes
-        #expect(closure.storage[a.rawValue].adjacent.count == 3)
+        #expect(closure[a].adjacent.count == 3)
 
         // Verify B can reach C and D
-        #expect(closure.storage[b.rawValue].adjacent.count == 2)
+        #expect(closure[b].adjacent.count == 2)
 
         // Verify C can reach D
-        #expect(closure.storage[c.rawValue].adjacent.count == 1)
+        #expect(closure[c].adjacent.count == 1)
     }
 
     @Test("Transitive closure on cycle includes self-loops")
@@ -196,16 +195,16 @@ struct TransitiveClosureTests {
         // Total: 9 edges
 
         var totalEdges = 0
-        for i in 0..<closure.storage.count {
-            totalEdges += closure.storage[i].adjacent.count
+        for node in closure.nodes {
+            totalEdges += closure[node].adjacent.count
         }
 
         #expect(totalEdges == 9)
 
         // Each node should be able to reach all nodes (including itself)
-        #expect(closure.storage[a.rawValue].adjacent.count == 3)
-        #expect(closure.storage[b.rawValue].adjacent.count == 3)
-        #expect(closure.storage[c.rawValue].adjacent.count == 3)
+        #expect(closure[a].adjacent.count == 3)
+        #expect(closure[b].adjacent.count == 3)
+        #expect(closure[c].adjacent.count == 3)
     }
 
     @Test("Transitive closure on empty graph")
@@ -213,7 +212,7 @@ struct TransitiveClosureTests {
         let graph = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder().build()
         let closure = graph.analyze.transitiveClosure()
 
-        #expect(closure.storage.isEmpty)
+        #expect(closure.isEmpty)
     }
 
     @Test("Transitive closure preserves node count")
@@ -227,7 +226,7 @@ struct TransitiveClosureTests {
         let graph = builder.build()
         let closure = graph.analyze.transitiveClosure()
 
-        #expect(closure.storage.count == graph.storage.count)
+        #expect(closure.count == graph.count)
     }
 
     @Test("Transitive closure on disconnected graph")
@@ -246,9 +245,9 @@ struct TransitiveClosureTests {
         // B -> (0 edges)
         // C -> (0 edges)
 
-        #expect(closure.storage[a.rawValue].adjacent.count == 1)
-        #expect(closure.storage[a.rawValue].adjacent.contains(b))
-        #expect(closure.storage[b.rawValue].adjacent.isEmpty)
-        #expect(closure.storage[c.rawValue].adjacent.isEmpty)
+        #expect(closure[a].adjacent.count == 1)
+        #expect(closure[a].adjacent.contains(b))
+        #expect(closure[b].adjacent.isEmpty)
+        #expect(closure[c].adjacent.isEmpty)
     }
 }

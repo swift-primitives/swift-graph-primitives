@@ -18,7 +18,7 @@ extension Graph.Sequential.Analyze {
         var result = Set_Primitives.Set<Graph.Node<Tag>>.Ordered()
         guard count > .zero else { return result }
 
-        var visited = Bit.Vector(capacity: count.retag(Bit.self))
+        let visited = Bit.Vector(capacity: count.retag(Bit.self))
         var stack = Stack<Graph.Node<Tag>>()
 
         for root in roots {

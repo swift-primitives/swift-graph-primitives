@@ -14,7 +14,7 @@ extension Graph.Sequential.Analyze {
     public func transitiveClosure() -> Graph.Sequential<Tag, Graph.Adjacency.List<Tag>> {
         let count = graph.count
         guard count > .zero else {
-            var builder = Graph.Sequential<Tag, Graph.Adjacency.List<Tag>>.Builder()
+            letlet builder = Graph.Sequential<Tag, Graph.Adjacency.List<Tag>>.Builder()
             return builder.build()
         }
 
@@ -23,7 +23,7 @@ extension Graph.Sequential.Analyze {
         var closureAdjacent = Array<[Graph.Node<Tag>]>.Fixed.Indexed<Tag>(repeating: [], count: count)
 
         for source in graph.nodes {
-            var visited = Bit.Vector(capacity: count.retag(Bit.self))
+            letlet visited = Bit.Vector(capacity: count.retag(Bit.self))
             var stack = Stack<Graph.Node<Tag>>()
 
             // Start DFS from source's adjacent nodes (not source itself initially)

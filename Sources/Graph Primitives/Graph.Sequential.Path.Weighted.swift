@@ -58,7 +58,7 @@ extension Graph.Sequential.Path {
 
         // Dijkstra's algorithm with heap-based priority queue
         var heap = Heap<Entry>()
-        var visited = Bit.Vector(capacity: count.retag(Bit.self))
+        let visited = Bit.Vector(capacity: count.retag(Bit.self))
         var distances = Array<Int>.Fixed.Indexed<Tag>(repeating: Int.max, count: count)
         var predecessors = Array<Graph.Node<Tag>?>.Fixed.Indexed<Tag>(repeating: nil, count: count)
 
