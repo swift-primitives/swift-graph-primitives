@@ -5,21 +5,24 @@ public import Array_Primitives
 extension Graph.Sequential.Transform {
     /// Extracts induced subgraph on specified nodes.
     ///
-    /// An induced subgraph keeps only the specified nodes and edges where both endpoints
-    /// are in the set. Node references in the result are remapped to new sequential IDs
-    /// (0..<result.count).
+    /// All edges in each included node's payload must point to other included nodes.
+    /// Node references in the result are remapped to new sequential IDs (0..<result.count).
     ///
     /// ## Invariants
     ///
-    /// - **Induced subgraph**: Keeps edges where both endpoints are in `nodes`.
-    /// - **Totality**: Returns `nil` if any node in `nodes` is not a valid member of this graph.
+    /// - **Closed subgraph**: All adjacency references in included payloads must target included nodes.
+    /// - **Totality**: Returns `nil` if any node in `nodes` is out of bounds, or if any edge
+    ///   targets a node outside `nodes`.
     /// - **Remapping**: On success, all adjacency references in returned payload are within `0..<newNodeCount`.
+    ///
+    /// For payloads where edge filtering is needed (dropping edges to excluded nodes),
+    /// use the `Adjacency.List` convenience overload or implement filtering in a custom `Remap`.
     ///
     /// - Parameters:
     ///   - nodes: Nodes to include in the subgraph.
     ///   - remap: Remap for the payload type.
     /// - Returns: New graph where all adjacency references are within `0..<result.count`,
-    ///   or `nil` if any node is not a valid member of this graph.
+    ///   or `nil` if any node is out of bounds or any edge targets a node outside `nodes`.
     /// - Complexity: O(n + m) where n is the number of nodes and m is the total edge count.
     @inlinable
     public func subgraph<Adjacent: Swift.Sequence<Graph.Node<Tag>>>(
@@ -48,21 +51,22 @@ extension Graph.Sequential.Transform {
             oldToNew[node] = newIndex
         }
 
+        // Validate that all edges target included nodes
+        for node in sortedNodes {
+            let payload = graph.storage[node]
+            for adjacent in remap.adjacent(payload) {
+                guard oldToNew[adjacent] >= 0 else { return nil }
+            }
+        }
+
         // Create new storage with remapped payloads
         var builder = Graph.Sequential<Tag, Payload>.Builder(capacity: count)
 
         for node in sortedNodes {
             let oldPayload = graph.storage[node]
 
-            // Remap node references, using -1 marker for nodes not in subgraph
             let remappedPayload = remap.mapNodes(oldPayload) { oldNode in
-                let newIdx = oldToNew[oldNode]
-                if newIdx >= 0 {
-                    return Graph.Node<Tag>(__unchecked: (), Ordinal(UInt(newIdx)))
-                } else {
-                    // Mark with sentinel to indicate this edge should be filtered
-                    return Graph.Node<Tag>(__unchecked: (), Ordinal(UInt(bitPattern: -1)))
-                }
+                Graph.Node<Tag>(__unchecked: (), Ordinal(UInt(oldToNew[oldNode])))
             }
 
             _ = builder.allocate(remappedPayload)
