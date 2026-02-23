@@ -23,8 +23,7 @@ extension Graph {
     /// print(graph[a])  // "A"
     /// ```
     public struct Sequential<Tag, Payload>: Sendable where Payload: Sendable {
-        @usableFromInline
-        let storage: Array<Payload>.Indexed<Tag>
+        public let storage: Array<Payload>.Indexed<Tag>
 
         @usableFromInline
         init(storage: Array<Payload>.Indexed<Tag>) {

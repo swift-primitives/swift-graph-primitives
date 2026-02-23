@@ -1,10 +1,16 @@
-// exports.swift
-// Re-export dependencies for consumers.
-
-@_exported import Identity_Primitives
-@_exported import Set_Primitives
-@_exported import Index_Primitives
-@_exported import Input_Primitives
-@_exported import Array_Primitives
-@_exported import Collection_Primitives
-@_exported import Dictionary_Primitives
+@_exported public import Graph_Primitives_Core
+@_exported public import Graph_DFS_Primitives
+@_exported public import Graph_BFS_Primitives
+@_exported public import Graph_Topological_Primitives
+@_exported public import Graph_Reachable_Primitives
+@_exported public import Graph_Dead_Primitives
+@_exported public import Graph_SCC_Primitives
+@_exported public import Graph_Cycles_Primitives
+@_exported public import Graph_Transitive_Closure_Primitives
+@_exported public import Graph_Path_Exists_Primitives
+@_exported public import Graph_Shortest_Path_Primitives
+@_exported public import Graph_Weighted_Path_Primitives
+@_exported public import Graph_Payload_Map_Primitives
+@_exported public import Graph_Subgraph_Primitives
+@_exported public import Graph_Reverse_Primitives
+@_exported public import Graph_Backward_Reachable_Primitives

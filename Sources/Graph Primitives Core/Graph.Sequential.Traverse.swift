@@ -5,8 +5,7 @@ extension Graph.Sequential {
 
     /// Accessor type providing traversal operations.
     public struct Traverse: Sendable where Payload: Sendable {
-        @usableFromInline
-        let graph: Graph.Sequential<Tag, Payload>
+        public let graph: Graph.Sequential<Tag, Payload>
 
         @usableFromInline
         init(graph: Graph.Sequential<Tag, Payload>) {

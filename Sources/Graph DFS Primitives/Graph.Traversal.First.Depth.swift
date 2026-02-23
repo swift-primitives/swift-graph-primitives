@@ -2,7 +2,7 @@ public import Identity_Primitives
 public import Stack_Primitives
 public import Bit_Vector_Primitives
 public import Array_Primitives
-public import Sequence_Primitives
+internal import Sequence_Primitives
 
 extension Graph.Traversal.First {
     /// Depth-first traversal over a graph.

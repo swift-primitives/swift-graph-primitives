@@ -5,8 +5,7 @@ extension Graph.Sequential {
 
     /// Accessor for graph transformation operations.
     public struct Transform {
-        @usableFromInline
-        let graph: Graph.Sequential<Tag, Payload>
+        public let graph: Graph.Sequential<Tag, Payload>
 
         @usableFromInline
         init(graph: Graph.Sequential<Tag, Payload>) {

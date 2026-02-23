@@ -17,6 +17,70 @@ let package = Package(
             targets: ["Graph Primitives"]
         ),
         .library(
+            name: "Graph Primitives Core",
+            targets: ["Graph Primitives Core"]
+        ),
+        .library(
+            name: "Graph DFS Primitives",
+            targets: ["Graph DFS Primitives"]
+        ),
+        .library(
+            name: "Graph BFS Primitives",
+            targets: ["Graph BFS Primitives"]
+        ),
+        .library(
+            name: "Graph Topological Primitives",
+            targets: ["Graph Topological Primitives"]
+        ),
+        .library(
+            name: "Graph Reachable Primitives",
+            targets: ["Graph Reachable Primitives"]
+        ),
+        .library(
+            name: "Graph Dead Primitives",
+            targets: ["Graph Dead Primitives"]
+        ),
+        .library(
+            name: "Graph SCC Primitives",
+            targets: ["Graph SCC Primitives"]
+        ),
+        .library(
+            name: "Graph Cycles Primitives",
+            targets: ["Graph Cycles Primitives"]
+        ),
+        .library(
+            name: "Graph Transitive Closure Primitives",
+            targets: ["Graph Transitive Closure Primitives"]
+        ),
+        .library(
+            name: "Graph Path Exists Primitives",
+            targets: ["Graph Path Exists Primitives"]
+        ),
+        .library(
+            name: "Graph Shortest Path Primitives",
+            targets: ["Graph Shortest Path Primitives"]
+        ),
+        .library(
+            name: "Graph Weighted Path Primitives",
+            targets: ["Graph Weighted Path Primitives"]
+        ),
+        .library(
+            name: "Graph Payload Map Primitives",
+            targets: ["Graph Payload Map Primitives"]
+        ),
+        .library(
+            name: "Graph Subgraph Primitives",
+            targets: ["Graph Subgraph Primitives"]
+        ),
+        .library(
+            name: "Graph Reverse Primitives",
+            targets: ["Graph Reverse Primitives"]
+        ),
+        .library(
+            name: "Graph Backward Reachable Primitives",
+            targets: ["Graph Backward Reachable Primitives"]
+        ),
+        .library(
             name: "Graph Primitives Test Support",
             targets: ["Graph Primitives Test Support"]
         ),
@@ -28,33 +92,185 @@ let package = Package(
         .package(path: "../swift-set-primitives"),
         .package(path: "../swift-heap-primitives"),
         .package(path: "../swift-index-primitives"),
-        .package(path: "../swift-input-primitives"),
         .package(path: "../swift-array-primitives"),
-        .package(path: "../swift-collection-primitives"),
         .package(path: "../swift-queue-primitives"),
-        .package(path: "../swift-dictionary-primitives"),
         .package(path: "../swift-bit-vector-primitives"),
         .package(path: "../swift-sequence-primitives"),
     ],
     targets: [
+        // MARK: - Core
+
         .target(
-            name: "Graph Primitives",
+            name: "Graph Primitives Core",
             dependencies: [
                 .product(name: "Identity Primitives", package: "swift-identity-primitives"),
-                .product(name: "Bit Primitives", package: "swift-bit-primitives"),
-                .product(name: "Stack Primitives", package: "swift-stack-primitives"),
-                .product(name: "Set Primitives", package: "swift-set-primitives"),
-                .product(name: "Heap Primitives", package: "swift-heap-primitives"),
                 .product(name: "Index Primitives", package: "swift-index-primitives"),
-                .product(name: "Input Primitives", package: "swift-input-primitives"),
                 .product(name: "Array Primitives", package: "swift-array-primitives"),
-                .product(name: "Collection Primitives", package: "swift-collection-primitives"),
-                .product(name: "Queue Primitives", package: "swift-queue-primitives"),
-                .product(name: "Dictionary Primitives", package: "swift-dictionary-primitives"),
+            ]
+        ),
+
+        // MARK: - Traversal
+
+        .target(
+            name: "Graph DFS Primitives",
+            dependencies: [
+                "Graph Primitives Core",
+                .product(name: "Stack Primitives", package: "swift-stack-primitives"),
                 .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
                 .product(name: "Sequence Primitives", package: "swift-sequence-primitives"),
             ]
         ),
+        .target(
+            name: "Graph BFS Primitives",
+            dependencies: [
+                "Graph Primitives Core",
+                .product(name: "Queue Primitives", package: "swift-queue-primitives"),
+                .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
+                .product(name: "Sequence Primitives", package: "swift-sequence-primitives"),
+            ]
+        ),
+        .target(
+            name: "Graph Topological Primitives",
+            dependencies: [
+                "Graph Primitives Core",
+                .product(name: "Stack Primitives", package: "swift-stack-primitives"),
+                .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
+            ]
+        ),
+
+        // MARK: - Analysis
+
+        .target(
+            name: "Graph Reachable Primitives",
+            dependencies: [
+                "Graph Primitives Core",
+                .product(name: "Stack Primitives", package: "swift-stack-primitives"),
+                .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
+                .product(name: "Set Primitives", package: "swift-set-primitives"),
+            ]
+        ),
+        .target(
+            name: "Graph Dead Primitives",
+            dependencies: [
+                "Graph Primitives Core",
+                "Graph Reachable Primitives",
+                .product(name: "Stack Primitives", package: "swift-stack-primitives"),
+                .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
+                .product(name: "Set Primitives", package: "swift-set-primitives"),
+            ]
+        ),
+        .target(
+            name: "Graph SCC Primitives",
+            dependencies: [
+                "Graph Primitives Core",
+                .product(name: "Stack Primitives", package: "swift-stack-primitives"),
+                .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
+            ]
+        ),
+        .target(
+            name: "Graph Cycles Primitives",
+            dependencies: [
+                "Graph Primitives Core",
+                "Graph Topological Primitives",
+            ]
+        ),
+        .target(
+            name: "Graph Transitive Closure Primitives",
+            dependencies: [
+                "Graph Primitives Core",
+                .product(name: "Stack Primitives", package: "swift-stack-primitives"),
+                .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
+            ]
+        ),
+
+        // MARK: - Path
+
+        .target(
+            name: "Graph Path Exists Primitives",
+            dependencies: [
+                "Graph Primitives Core",
+                .product(name: "Queue Primitives", package: "swift-queue-primitives"),
+                .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
+            ]
+        ),
+        .target(
+            name: "Graph Shortest Path Primitives",
+            dependencies: [
+                "Graph Primitives Core",
+                .product(name: "Queue Primitives", package: "swift-queue-primitives"),
+                .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
+            ]
+        ),
+        .target(
+            name: "Graph Weighted Path Primitives",
+            dependencies: [
+                "Graph Primitives Core",
+                .product(name: "Heap Primitives", package: "swift-heap-primitives"),
+                .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
+            ]
+        ),
+
+        // MARK: - Transform
+
+        .target(
+            name: "Graph Payload Map Primitives",
+            dependencies: [
+                "Graph Primitives Core",
+            ]
+        ),
+        .target(
+            name: "Graph Subgraph Primitives",
+            dependencies: [
+                "Graph Primitives Core",
+                .product(name: "Set Primitives", package: "swift-set-primitives"),
+            ]
+        ),
+
+        // MARK: - Reverse
+
+        .target(
+            name: "Graph Reverse Primitives",
+            dependencies: [
+                "Graph Primitives Core",
+            ]
+        ),
+        .target(
+            name: "Graph Backward Reachable Primitives",
+            dependencies: [
+                "Graph Primitives Core",
+                "Graph Reverse Primitives",
+                .product(name: "Stack Primitives", package: "swift-stack-primitives"),
+                .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
+                .product(name: "Set Primitives", package: "swift-set-primitives"),
+            ]
+        ),
+
+        // MARK: - Umbrella
+
+        .target(
+            name: "Graph Primitives",
+            dependencies: [
+                "Graph Primitives Core",
+                "Graph DFS Primitives",
+                "Graph BFS Primitives",
+                "Graph Topological Primitives",
+                "Graph Reachable Primitives",
+                "Graph Dead Primitives",
+                "Graph SCC Primitives",
+                "Graph Cycles Primitives",
+                "Graph Transitive Closure Primitives",
+                "Graph Path Exists Primitives",
+                "Graph Shortest Path Primitives",
+                "Graph Weighted Path Primitives",
+                "Graph Payload Map Primitives",
+                "Graph Subgraph Primitives",
+                "Graph Reverse Primitives",
+                "Graph Backward Reachable Primitives",
+            ]
+        ),
+
+        // MARK: - Test Support
+
         .target(
             name: "Graph Primitives Test Support",
             dependencies: [
