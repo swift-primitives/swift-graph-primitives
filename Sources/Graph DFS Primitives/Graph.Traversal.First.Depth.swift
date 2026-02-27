@@ -31,6 +31,9 @@ extension Graph.Traversal.First {
         var visited: Bit.Vector
 
         @usableFromInline
+        var _spanBuffer: [Element] = []
+
+        @usableFromInline
         init(
             storage: Array<Payload>.Indexed<Tag>,
             roots: some Swift.Sequence<Graph.Node<Tag>>,
@@ -44,6 +47,32 @@ extension Graph.Traversal.First {
             for root in roots {
                 stack.push(root)
             }
+        }
+
+        @_lifetime(&self)
+        @inlinable
+        public mutating func nextSpan(maximumCount: Cardinal) -> Span<Element> {
+            _spanBuffer.removeAll(keepingCapacity: true)
+            var remaining = Int(maximumCount.rawValue)
+            while remaining > 0 {
+                guard let node = stack.pop() else { break }
+                let idx = node.retag(Bit.self)
+                guard !visited[idx] else { continue }
+                visited[idx] = true
+
+                let payload = storage[node]
+
+                for adjacent in extract.adjacent(payload) {
+                    let adjIdx = adjacent.retag(Bit.self)
+                    if !visited[adjIdx] {
+                        stack.push(adjacent)
+                    }
+                }
+
+                _spanBuffer.append((node, payload))
+                remaining -= 1
+            }
+            return _spanBuffer.span
         }
 
         @inlinable
