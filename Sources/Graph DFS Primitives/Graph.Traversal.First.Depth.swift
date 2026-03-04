@@ -31,7 +31,7 @@ extension Graph.Traversal.First {
         var visited: Bit.Vector
 
         @usableFromInline
-        var _spanBuffer: [Element] = []
+        var _element: Element? = nil
 
         @usableFromInline
         init(
@@ -52,27 +52,22 @@ extension Graph.Traversal.First {
         @_lifetime(&self)
         @inlinable
         public mutating func nextSpan(maximumCount: Cardinal) -> Span<Element> {
-            _spanBuffer.removeAll(keepingCapacity: true)
-            var remaining = Int(maximumCount.rawValue)
-            while remaining > 0 {
-                guard let node = stack.pop() else { break }
-                let idx = node.retag(Bit.self)
-                guard !visited[idx] else { continue }
-                visited[idx] = true
-
-                let payload = storage[node]
-
-                for adjacent in extract.adjacent(payload) {
-                    let adjIdx = adjacent.retag(Bit.self)
-                    if !visited[adjIdx] {
-                        stack.push(adjacent)
-                    }
-                }
-
-                _spanBuffer.append((node, payload))
-                remaining -= 1
+            let ptr = unsafe withUnsafeMutablePointer(to: &_element) { p in
+                unsafe UnsafePointer<Element>(
+                    unsafe UnsafeRawPointer(p).assumingMemoryBound(to: Element.self)
+                )
             }
-            return _spanBuffer.span
+            guard maximumCount > .zero else {
+                let span = unsafe Span(_unsafeStart: ptr, count: 0)
+                return unsafe _overrideLifetime(span, mutating: &self)
+            }
+            guard let value = next() else {
+                let span = unsafe Span(_unsafeStart: ptr, count: 0)
+                return unsafe _overrideLifetime(span, mutating: &self)
+            }
+            _element = value
+            let span = unsafe Span(_unsafeStart: ptr, count: 1)
+            return unsafe _overrideLifetime(span, mutating: &self)
         }
 
         @inlinable
