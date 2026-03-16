@@ -6,7 +6,7 @@ document_type: architectural_specification
 version: 1.0.0
 date: 2026-01-19
 author: Swift Institute
-status: proposal
+status: RECOMMENDATION
 design_principle: |
   1. Implement each primitives package in isolation (total, coherent, consumer-agnostic)
   2. Only afterwards, maximize reuse by refactoring consumers to depend on primitives

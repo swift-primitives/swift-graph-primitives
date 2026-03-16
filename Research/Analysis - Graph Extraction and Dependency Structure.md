@@ -6,7 +6,7 @@ document_type: architectural_analysis
 version: 1.0.0
 date: 2026-01-19
 author: Swift Institute
-status: proposal
+status: RECOMMENDATION
 related_packages:
   - swift-machine-primitives
   - swift-graph-primitives
