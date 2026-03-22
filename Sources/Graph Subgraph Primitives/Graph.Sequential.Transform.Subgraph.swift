@@ -24,6 +24,9 @@ extension Graph.Sequential.Transform {
     /// - Returns: New graph where all adjacency references are within `0..<result.count`,
     ///   or `nil` if any node is out of bounds or any edge targets a node outside `nodes`.
     /// - Complexity: O(n + m) where n is the number of nodes and m is the total edge count.
+    // WORKAROUND: @_optimize(none) suppresses CopyPropagation false positive.
+    // TRACKING: swift-buffer-primitives/Research/rawlayout-release-crash-investigation.md (Bug 2)
+    @_optimize(none)
     @inlinable
     public func subgraph<Adjacent: Swift.Sequence<Graph.Node<Tag>>>(
         inducedBy nodes: consuming Set_Primitives.Set<Graph.Node<Tag>>.Ordered,
@@ -84,6 +87,9 @@ extension Graph.Sequential.Transform where Payload == Graph.Adjacency.List<Tag> 
     ///
     /// - Parameter nodes: Nodes to include in the subgraph.
     /// - Returns: New graph with remapped adjacency, or `nil` if any node is invalid.
+    // WORKAROUND: @_optimize(none) suppresses CopyPropagation false positive.
+    // TRACKING: swift-buffer-primitives/Research/rawlayout-release-crash-investigation.md (Bug 2)
+    @_optimize(none)
     @inlinable
     public func subgraph(
         inducedBy nodes: consuming Set_Primitives.Set<Graph.Node<Tag>>.Ordered
