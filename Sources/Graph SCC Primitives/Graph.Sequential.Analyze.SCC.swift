@@ -1,6 +1,6 @@
 public import Identity_Primitives
 public import Stack_Primitives
-public import Bit_Vector_Primitives
+internal import Bit_Vector_Primitives
 public import Array_Primitives
 
 extension Graph.Sequential.Analyze {
