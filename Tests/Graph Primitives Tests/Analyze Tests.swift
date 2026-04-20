@@ -7,8 +7,8 @@ private enum TestTag {}
 
 @Suite("Graph.Sequential.Analyze.Dead")
 struct DeadNodesTests {
-    @Test("Dead nodes in disconnected graph")
-    func deadNodesInDisconnectedGraph() {
+    @Test
+    func `Dead nodes in disconnected graph`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         // A -> B,  C, D (C and D disconnected)
@@ -28,8 +28,8 @@ struct DeadNodesTests {
         #expect(dead.count == 2)
     }
 
-    @Test("Dead nodes from all roots is empty")
-    func deadNodesFromAllRootsIsEmpty() {
+    @Test
+    func `Dead nodes from all roots is empty`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         // A -> B -> C
@@ -44,8 +44,8 @@ struct DeadNodesTests {
         #expect(dead.isEmpty)
     }
 
-    @Test("Dead nodes from empty roots")
-    func deadNodesFromEmptyRoots() {
+    @Test
+    func `Dead nodes from empty roots`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         let c = builder.allocate(Graph.Adjacency.List(adjacent: []))
@@ -62,8 +62,8 @@ struct DeadNodesTests {
         #expect(dead.contains(c))
     }
 
-    @Test("Dead nodes in empty graph")
-    func deadNodesInEmptyGraph() {
+    @Test
+    func `Dead nodes in empty graph`() {
         let graph = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder().build()
 
         let dead = graph.analyze.dead(from: [] as [Graph.Node<TestTag>])
@@ -71,8 +71,8 @@ struct DeadNodesTests {
         #expect(dead.isEmpty)
     }
 
-    @Test("Dead nodes from multiple roots")
-    func deadNodesFromMultipleRoots() {
+    @Test
+    func `Dead nodes from multiple roots`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         // A -> B,  C -> D,  E (disconnected)
@@ -99,8 +99,8 @@ struct DeadNodesTests {
 
 @Suite("Graph.Sequential.Analyze.TransitiveClosure")
 struct TransitiveClosureTests {
-    @Test("Transitive closure on diamond DAG has correct edge count")
-    func transitiveClosureDiamondDAG() {
+    @Test
+    func `Transitive closure on diamond DAG has correct edge count`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         // Diamond: A -> B, A -> C, B -> D, C -> D
@@ -139,8 +139,8 @@ struct TransitiveClosureTests {
         #expect(closure[d].adjacent.isEmpty)
     }
 
-    @Test("Transitive closure on linear graph")
-    func transitiveClosureLinearGraph() {
+    @Test
+    func `Transitive closure on linear graph`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         // A -> B -> C -> D
@@ -175,8 +175,8 @@ struct TransitiveClosureTests {
         #expect(closure[c].adjacent.count == 1)
     }
 
-    @Test("Transitive closure on cycle includes self-loops")
-    func transitiveClosureOnCycle() {
+    @Test
+    func `Transitive closure on cycle includes self-loops`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         // A -> B -> C -> A (cycle)
@@ -207,16 +207,16 @@ struct TransitiveClosureTests {
         #expect(closure[c].adjacent.count == 3)
     }
 
-    @Test("Transitive closure on empty graph")
-    func transitiveClosureEmptyGraph() {
+    @Test
+    func `Transitive closure on empty graph`() {
         let graph = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder().build()
         let closure = graph.analyze.transitiveClosure()
 
         #expect(closure.isEmpty)
     }
 
-    @Test("Transitive closure preserves node count")
-    func transitiveClosurePreservesNodeCount() {
+    @Test
+    func `Transitive closure preserves node count`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         let c = builder.allocate(Graph.Adjacency.List(adjacent: []))
@@ -229,8 +229,8 @@ struct TransitiveClosureTests {
         #expect(closure.count == graph.count)
     }
 
-    @Test("Transitive closure on disconnected graph")
-    func transitiveClosureDisconnectedGraph() {
+    @Test
+    func `Transitive closure on disconnected graph`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         // A -> B,  C (disconnected)

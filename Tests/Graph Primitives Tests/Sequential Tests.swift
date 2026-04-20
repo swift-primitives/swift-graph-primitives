@@ -26,8 +26,8 @@ extension TestPayload {
 
 @Suite("Graph.Sequential")
 struct SequentialTests {
-    @Test("Empty graph has zero count")
-    func emptyGraph() {
+    @Test
+    func `Empty graph has zero count`() {
         let builder = Graph.Sequential<TestTag, TestPayload>.Builder()
         let graph = builder.build()
 
@@ -35,8 +35,8 @@ struct SequentialTests {
         #expect(graph.isEmpty)
     }
 
-    @Test("Single node graph")
-    func singleNode() {
+    @Test
+    func `Single node graph`() {
         var builder = Graph.Sequential<TestTag, TestPayload>.Builder()
         let node = builder.allocate(TestPayload(name: "A", successors: []))
         let graph = builder.build()
@@ -46,8 +46,8 @@ struct SequentialTests {
         #expect(graph[node].name == "A")
     }
 
-    @Test("Multiple nodes preserve order")
-    func multipleNodes() {
+    @Test
+    func `Multiple nodes preserve order`() {
         var builder = Graph.Sequential<TestTag, TestPayload>.Builder()
         let a = builder.allocate(TestPayload(name: "A", successors: []))
         let b = builder.allocate(TestPayload(name: "B", successors: []))
@@ -60,8 +60,8 @@ struct SequentialTests {
         #expect(graph[c].name == "C")
     }
 
-    @Test("Nodes iteration")
-    func nodesIteration() {
+    @Test
+    func `Nodes iteration`() {
         var builder = Graph.Sequential<TestTag, TestPayload>.Builder()
         _ = builder.allocate(TestPayload(name: "A", successors: []))
         _ = builder.allocate(TestPayload(name: "B", successors: []))
@@ -77,15 +77,15 @@ struct SequentialTests {
 
 @Suite("Graph.Sequential.Builder")
 struct BuilderTests {
-    @Test("Builder with capacity")
-    func builderWithCapacity() {
+    @Test
+    func `Builder with capacity`() {
         var builder = Graph.Sequential<TestTag, TestPayload>.Builder(capacity: 10)
         _ = builder.allocate(TestPayload(name: "A", successors: []))
         #expect(builder.count == 1)
     }
 
-    @Test("Builder subscript access")
-    func builderSubscript() {
+    @Test
+    func `Builder subscript access`() {
         var builder = Graph.Sequential<TestTag, TestPayload>.Builder()
         let node = builder.allocate(TestPayload(name: "A", successors: []))
         #expect(builder[node].name == "A")
@@ -94,8 +94,8 @@ struct BuilderTests {
         #expect(builder[node].name == "Updated")
     }
 
-    @Test("Hole allocation and fill")
-    func holeAllocationAndFill() {
+    @Test
+    func `Hole allocation and fill`() {
         var builder = Graph.Sequential<TestTag, TestPayload>.Builder()
         let hole = builder.allocateHole(using: TestPayload.defaultValue)
         #expect(builder[hole].name == "hole")
@@ -104,8 +104,8 @@ struct BuilderTests {
         #expect(builder[hole].name == "Filled")
     }
 
-    @Test("Forward reference via holes")
-    func forwardReference() {
+    @Test
+    func `Forward reference via holes`() {
         var builder = Graph.Sequential<TestTag, TestPayload>.Builder()
 
         // Allocate hole for forward reference

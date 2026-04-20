@@ -15,8 +15,8 @@ private func orderedSet(_ nodes: Graph.Node<TestTag>...) -> Set_Primitives.Set<G
 
 @Suite("Graph.Sequential.Transform.Payloads")
 struct PayloadMappingTests {
-    @Test("Payload mapping preserves node count")
-    func payloadMappingPreservesCount() {
+    @Test
+    func `Payload mapping preserves node count`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         let c = builder.allocate(Graph.Adjacency.List(adjacent: []))
@@ -35,8 +35,8 @@ struct PayloadMappingTests {
         #expect(mapped[c] == 0) // C has 0 edges
     }
 
-    @Test("Payload mapping on empty graph")
-    func payloadMappingEmptyGraph() {
+    @Test
+    func `Payload mapping on empty graph`() {
         let builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
         let graph = builder.build()
 
@@ -46,8 +46,8 @@ struct PayloadMappingTests {
         #expect(mapped.isEmpty)
     }
 
-    @Test("Payload mapping changes payload type")
-    func payloadMappingChangesType() {
+    @Test
+    func `Payload mapping changes payload type`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         let a = builder.allocate(Graph.Adjacency.List(adjacent: []))
@@ -69,8 +69,8 @@ struct PayloadMappingTests {
 
 @Suite("Graph.Sequential.Transform.Subgraph")
 struct SubgraphTests {
-    @Test("Induced subgraph drops edges to excluded nodes")
-    func subgraphDropsEdgesToExcluded() {
+    @Test
+    func `Induced subgraph drops edges to excluded nodes`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         // Diamond: A -> B, A -> C, B -> D, C -> D
@@ -96,8 +96,8 @@ struct SubgraphTests {
         }
     }
 
-    @Test("Induced subgraph remaps to sequential IDs")
-    func subgraphRemapsToSequentialIDs() {
+    @Test
+    func `Induced subgraph remaps to sequential IDs`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         let d = builder.allocate(Graph.Adjacency.List(adjacent: []))
@@ -122,8 +122,8 @@ struct SubgraphTests {
         }
     }
 
-    @Test("Induced subgraph returns nil for invalid nodes")
-    func subgraphReturnsNilForInvalidNodes() {
+    @Test
+    func `Induced subgraph returns nil for invalid nodes`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         let a = builder.allocate(Graph.Adjacency.List(adjacent: []))
@@ -140,8 +140,8 @@ struct SubgraphTests {
         #expect(subgraph == nil)
     }
 
-    @Test("Induced subgraph on all nodes returns equivalent graph")
-    func subgraphOnAllNodesReturnsEquivalent() {
+    @Test
+    func `Induced subgraph on all nodes returns equivalent graph`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         let b = builder.allocate(Graph.Adjacency.List(adjacent: []))
@@ -169,8 +169,8 @@ struct SubgraphTests {
         #expect(subgraphEdges == originalEdges)
     }
 
-    @Test("Induced subgraph on empty set returns empty graph")
-    func subgraphOnEmptySetReturnsEmpty() {
+    @Test
+    func `Induced subgraph on empty set returns empty graph`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         _ = builder.allocate(Graph.Adjacency.List(adjacent: []))
@@ -184,8 +184,8 @@ struct SubgraphTests {
         #expect(subgraph!.isEmpty)
     }
 
-    @Test("Induced subgraph preserves edges within subgraph")
-    func subgraphPreservesEdgesWithin() {
+    @Test
+    func `Induced subgraph preserves edges within subgraph`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         // A -> B -> C (linear chain)

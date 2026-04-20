@@ -7,8 +7,8 @@ private enum TestTag {}
 
 @Suite("Graph.Sequential.Reverse.Graph")
 struct ReversedGraphTests {
-    @Test("Reversed graph has same edge count")
-    func reversedGraphSameEdgeCount() {
+    @Test
+    func `Reversed graph has same edge count`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         // Diamond: A -> B, A -> C, B -> D, C -> D (4 edges)
@@ -38,8 +38,8 @@ struct ReversedGraphTests {
         #expect(reversedEdgeCount == 4)
     }
 
-    @Test("Reversed graph reverses edges correctly")
-    func reversedGraphReversesEdges() {
+    @Test
+    func `Reversed graph reverses edges correctly`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         // A -> B -> C
@@ -62,8 +62,8 @@ struct ReversedGraphTests {
         #expect(reversed[c].adjacent == [b])
     }
 
-    @Test("Reversed graph preserves node count")
-    func reversedGraphPreservesNodeCount() {
+    @Test
+    func `Reversed graph preserves node count`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         let c = builder.allocate(Graph.Adjacency.List(adjacent: []))
@@ -76,16 +76,16 @@ struct ReversedGraphTests {
         #expect(graph.count == reversed.count)
     }
 
-    @Test("Empty graph reverses to empty graph")
-    func emptyGraphReversesToEmpty() {
+    @Test
+    func `Empty graph reverses to empty graph`() {
         let graph = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder().build()
         let reversed = graph.reverse.reversed()
 
         #expect(reversed.isEmpty)
     }
 
-    @Test("Single node graph reverses correctly")
-    func singleNodeReversesCorrectly() {
+    @Test
+    func `Single node graph reverses correctly`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
         _ = builder.allocate(Graph.Adjacency.List(adjacent: []))
 
@@ -97,8 +97,8 @@ struct ReversedGraphTests {
         #expect(reversed[node0].adjacent.isEmpty)
     }
 
-    @Test("Self-loop reverses to self-loop")
-    func selfLoopReversesToSelfLoop() {
+    @Test
+    func `Self-loop reverses to self-loop`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
         let a = builder.allocateHole()
         builder[a] = Graph.Adjacency.List(adjacent: [a])
@@ -114,8 +114,8 @@ struct ReversedGraphTests {
 
 @Suite("Graph.Sequential.Reverse.Reachable")
 struct BackwardReachabilityTests {
-    @Test("Backward reachable equals forward reachable on reversed graph")
-    func backwardReachableEqualsForwardOnReversed() {
+    @Test
+    func `Backward reachable equals forward reachable on reversed graph`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         // A -> B -> C
@@ -134,8 +134,8 @@ struct BackwardReachabilityTests {
         #expect(backwardReachable.count == 3)
     }
 
-    @Test("Backward reachable from disconnected node")
-    func backwardReachableDisconnected() {
+    @Test
+    func `Backward reachable from disconnected node`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         // A -> B,  C (disconnected)
@@ -154,8 +154,8 @@ struct BackwardReachabilityTests {
         #expect(backwardReachable.count == 1)
     }
 
-    @Test("Backward reachable includes target")
-    func backwardReachableIncludesTarget() {
+    @Test
+    func `Backward reachable includes target`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         let a = builder.allocate(Graph.Adjacency.List(adjacent: []))
@@ -168,8 +168,8 @@ struct BackwardReachabilityTests {
         #expect(backwardReachable.count == 1)
     }
 
-    @Test("Backward reachable on empty graph returns empty")
-    func backwardReachableEmptyGraph() {
+    @Test
+    func `Backward reachable on empty graph returns empty`() {
         let graph = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder().build()
         let invalid: Graph.Node<TestTag> = 0
 
@@ -178,8 +178,8 @@ struct BackwardReachabilityTests {
         #expect(backwardReachable.isEmpty)
     }
 
-    @Test("Backward reachable with invalid node returns empty")
-    func backwardReachableInvalidNode() {
+    @Test
+    func `Backward reachable with invalid node returns empty`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
         _ = builder.allocate(Graph.Adjacency.List(adjacent: []))
 
@@ -191,8 +191,8 @@ struct BackwardReachabilityTests {
         #expect(backwardReachable.isEmpty)
     }
 
-    @Test("Backward reachable in diamond graph")
-    func backwardReachableDiamond() {
+    @Test
+    func `Backward reachable in diamond graph`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         // Diamond: A -> B, A -> C, B -> D, C -> D
@@ -213,8 +213,8 @@ struct BackwardReachabilityTests {
         #expect(backwardReachable.count == 4)
     }
 
-    @Test("Backward reachable with cycle")
-    func backwardReachableWithCycle() {
+    @Test
+    func `Backward reachable with cycle`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         // A -> B -> C -> A (cycle)

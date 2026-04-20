@@ -7,8 +7,8 @@ private enum TestTag {}
 
 @Suite("Graph.Sequential.Path.Exists")
 struct PathExistsTests {
-    @Test("Path exists in connected graph")
-    func pathExistsConnected() {
+    @Test
+    func `Path exists in connected graph`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         // A -> B -> C
@@ -23,8 +23,8 @@ struct PathExistsTests {
         #expect(graph.path.exists(from: b, to: c))
     }
 
-    @Test("Path does not exist in disconnected graph")
-    func pathDoesNotExistDisconnected() {
+    @Test
+    func `Path does not exist in disconnected graph`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         // A -> B,  C (disconnected)
@@ -38,8 +38,8 @@ struct PathExistsTests {
         #expect(!graph.path.exists(from: b, to: c))
     }
 
-    @Test("Path to self exists")
-    func pathToSelfExists() {
+    @Test
+    func `Path to self exists`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         let a = builder.allocate(Graph.Adjacency.List(adjacent: []))
@@ -49,8 +49,8 @@ struct PathExistsTests {
         #expect(graph.path.exists(from: a, to: a))
     }
 
-    @Test("Path with invalid nodes returns false")
-    func pathWithInvalidNodes() {
+    @Test
+    func `Path with invalid nodes returns false`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         let a = builder.allocate(Graph.Adjacency.List(adjacent: []))
@@ -67,8 +67,8 @@ struct PathExistsTests {
 
 @Suite("Graph.Sequential.Path.Shortest")
 struct ShortestPathTests {
-    @Test("Shortest path in linear graph")
-    func shortestPathLinear() {
+    @Test
+    func `Shortest path in linear graph`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         // A -> B -> C
@@ -85,8 +85,8 @@ struct ShortestPathTests {
         #expect(path!.last == c)
     }
 
-    @Test("Shortest path in diamond graph")
-    func shortestPathDiamond() {
+    @Test
+    func `Shortest path in diamond graph`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         // Diamond: A -> B -> D, A -> C -> D
@@ -104,8 +104,8 @@ struct ShortestPathTests {
         #expect(path!.last == d)
     }
 
-    @Test("Shortest path to self")
-    func shortestPathToSelf() {
+    @Test
+    func `Shortest path to self`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         let a = builder.allocate(Graph.Adjacency.List(adjacent: []))
@@ -118,8 +118,8 @@ struct ShortestPathTests {
         #expect(path! == [a])
     }
 
-    @Test("Shortest path unreachable returns nil")
-    func shortestPathUnreachable() {
+    @Test
+    func `Shortest path unreachable returns nil`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         let b = builder.allocate(Graph.Adjacency.List(adjacent: []))
@@ -131,8 +131,8 @@ struct ShortestPathTests {
         #expect(path == nil)
     }
 
-    @Test("Shortest path on cycle terminates")
-    func shortestPathOnCycle() {
+    @Test
+    func `Shortest path on cycle terminates`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         // A -> B -> C -> A (cycle), A -> D
@@ -154,8 +154,8 @@ struct ShortestPathTests {
 
 @Suite("Graph.Sequential.Path.Weighted")
 struct WeightedPathTests {
-    @Test("Weighted path finds minimum weight")
-    func weightedPathMinimumWeight() {
+    @Test
+    func `Weighted path finds minimum weight`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         // A -> B (weight 1) -> D (weight 1) = total 2
@@ -182,8 +182,8 @@ struct WeightedPathTests {
         #expect(result!.distance == 2) // A -> B -> D or A -> C -> D
     }
 
-    @Test("Weighted path with uniform weights equals shortest path")
-    func weightedPathUniformWeights() {
+    @Test
+    func `Weighted path with uniform weights equals shortest path`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         // A -> B -> C
@@ -202,8 +202,8 @@ struct WeightedPathTests {
         #expect(weightedResult!.distance == shortestPath!.count - 1)
     }
 
-    @Test("Weighted path to self has zero distance")
-    func weightedPathToSelf() {
+    @Test
+    func `Weighted path to self has zero distance`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         let a = builder.allocate(Graph.Adjacency.List(adjacent: []))
@@ -216,8 +216,8 @@ struct WeightedPathTests {
         #expect(result!.distance == 0)
     }
 
-    @Test("Weighted path unreachable returns nil")
-    func weightedPathUnreachable() {
+    @Test
+    func `Weighted path unreachable returns nil`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         let b = builder.allocate(Graph.Adjacency.List(adjacent: []))
@@ -229,8 +229,8 @@ struct WeightedPathTests {
         #expect(result == nil)
     }
 
-    @Test("Weighted path prefers lower total weight")
-    func weightedPathPrefersLowerWeight() {
+    @Test
+    func `Weighted path prefers lower total weight`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         // Graph:

@@ -55,8 +55,8 @@ private func buildLinearGraph() -> (
 
 @Suite("Graph.Traversal.First.Depth")
 struct DepthFirstTests {
-    @Test("DFS on linear graph")
-    func linearGraph() {
+    @Test
+    func `DFS on linear graph`() {
         let (graph, a, _, _) = buildLinearGraph()
 
         var iter = graph.traverse.first(using: TestPayload.extract).depth(from: a)
@@ -67,8 +67,8 @@ struct DepthFirstTests {
         #expect(visited == ["A", "B", "C"])
     }
 
-    @Test("DFS on diamond graph visits each node once")
-    func diamondGraph() {
+    @Test
+    func `DFS on diamond graph visits each node once`() {
         let (graph, a, _, _, _) = buildDiamondGraph()
 
         var iter = graph.traverse.first(using: TestPayload.extract).depth(from: a)
@@ -85,8 +85,8 @@ struct DepthFirstTests {
         #expect(visited.contains("D"))
     }
 
-    @Test("DFS from multiple roots")
-    func multipleRoots() {
+    @Test
+    func `DFS from multiple roots`() {
         let (graph, _, b, c, _) = buildDiamondGraph()
 
         var iter = graph.traverse.first(using: TestPayload.extract).depth(from: [b, c])
@@ -102,8 +102,8 @@ struct DepthFirstTests {
         #expect(visited.contains("D"))
     }
 
-    @Test("DFS on empty roots")
-    func emptyRoots() {
+    @Test
+    func `DFS on empty roots`() {
         let (graph, _, _, _) = buildLinearGraph()
 
         var iter = graph.traverse.first(using: TestPayload.extract).depth(from: [] as [Graph.Node<TestTag>])
@@ -117,8 +117,8 @@ struct DepthFirstTests {
 
 @Suite("Graph.Traversal.First.Breadth")
 struct BreadthFirstTests {
-    @Test("BFS on linear graph")
-    func linearGraph() {
+    @Test
+    func `BFS on linear graph`() {
         let (graph, a, _, _) = buildLinearGraph()
 
         var iter = graph.traverse.first(using: TestPayload.extract).breadth(from: a)
@@ -129,8 +129,8 @@ struct BreadthFirstTests {
         #expect(visited == ["A", "B", "C"])
     }
 
-    @Test("BFS on diamond graph visits each node once")
-    func diamondGraph() {
+    @Test
+    func `BFS on diamond graph visits each node once`() {
         let (graph, a, _, _, _) = buildDiamondGraph()
 
         var iter = graph.traverse.first(using: TestPayload.extract).breadth(from: a)
@@ -145,8 +145,8 @@ struct BreadthFirstTests {
         #expect(visited.last == "D")
     }
 
-    @Test("BFS visits in level order")
-    func levelOrder() {
+    @Test
+    func `BFS visits in level order`() {
         let (graph, a, _, _, _) = buildDiamondGraph()
 
         var iter = graph.traverse.first(using: TestPayload.extract).breadth(from: a)
@@ -172,8 +172,8 @@ struct BreadthFirstTests {
 
 @Suite("Graph.Traversal.Topological")
 struct TopologicalTests {
-    @Test("Topological order on DAG")
-    func dagTopologicalOrder() {
+    @Test
+    func `Topological order on DAG`() {
         let (graph, a, b, c, d) = buildDiamondGraph()
 
         let order = graph.traverse.topological(from: a, using: TestPayload.extract)
@@ -194,8 +194,8 @@ struct TopologicalTests {
         #expect(cIndex < dIndex)
     }
 
-    @Test("Topological order detects cycles")
-    func cycleDetection() {
+    @Test
+    func `Topological order detects cycles`() {
         var builder = Graph.Sequential<TestTag, TestPayload>.Builder()
 
         // A -> B -> C -> A (cycle)
@@ -211,8 +211,8 @@ struct TopologicalTests {
         #expect(order.hasCycles)
     }
 
-    @Test("Topological order on linear graph")
-    func linearTopologicalOrder() {
+    @Test
+    func `Topological order on linear graph`() {
         let (graph, a, _, _) = buildLinearGraph()
 
         let order = graph.traverse.topological(from: a, using: TestPayload.extract)

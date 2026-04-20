@@ -19,8 +19,8 @@ extension TestPayload {
 
 @Suite("Graph.Reachability")
 struct ReachabilityTests {
-    @Test("Reachable from single root in DAG")
-    func reachableFromRoot() {
+    @Test
+    func `Reachable from single root in DAG`() {
         var builder = Graph.Sequential<TestTag, TestPayload>.Builder()
 
         // Diamond: A -> B, A -> C, B -> D, C -> D
@@ -39,8 +39,8 @@ struct ReachabilityTests {
         #expect(reachable.contains(d))
     }
 
-    @Test("Reachable from middle node")
-    func reachableFromMiddle() {
+    @Test
+    func `Reachable from middle node`() {
         var builder = Graph.Sequential<TestTag, TestPayload>.Builder()
 
         let d = builder.allocate(TestPayload(name: "D", successors: []))
@@ -58,8 +58,8 @@ struct ReachabilityTests {
         #expect(!reachable.contains(c))
     }
 
-    @Test("Reachable from multiple roots")
-    func reachableFromMultipleRoots() {
+    @Test
+    func `Reachable from multiple roots`() {
         var builder = Graph.Sequential<TestTag, TestPayload>.Builder()
 
         // Two disconnected chains: A -> B and C -> D
@@ -74,8 +74,8 @@ struct ReachabilityTests {
         #expect(reachable.count == 4)
     }
 
-    @Test("Reachable from leaf node")
-    func reachableFromLeaf() {
+    @Test
+    func `Reachable from leaf node`() {
         var builder = Graph.Sequential<TestTag, TestPayload>.Builder()
 
         let c = builder.allocate(TestPayload(name: "C", successors: []))
@@ -94,8 +94,8 @@ struct ReachabilityTests {
 
 @Suite("Graph.CycleDetection")
 struct CycleDetectionTests {
-    @Test("No cycles in DAG")
-    func noCyclesInDAG() {
+    @Test
+    func `No cycles in DAG`() {
         var builder = Graph.Sequential<TestTag, TestPayload>.Builder()
 
         let c = builder.allocate(TestPayload(name: "C", successors: []))
@@ -108,8 +108,8 @@ struct CycleDetectionTests {
         #expect(!graph.analyze(using: TestPayload.extract).hasCycles())
     }
 
-    @Test("Self-loop detected")
-    func selfLoopDetected() {
+    @Test
+    func `Self-loop detected`() {
         var builder = Graph.Sequential<TestTag, TestPayload>.Builder()
 
         let a = builder.allocate(TestPayload(name: "A", successors: []))
@@ -120,8 +120,8 @@ struct CycleDetectionTests {
         #expect(graph.analyze(using: TestPayload.extract).hasCycles(from: a))
     }
 
-    @Test("Cycle in graph detected")
-    func cycleDetected() {
+    @Test
+    func `Cycle in graph detected`() {
         var builder = Graph.Sequential<TestTag, TestPayload>.Builder()
 
         // A -> B -> C -> A
@@ -141,8 +141,8 @@ struct CycleDetectionTests {
 
 @Suite("Graph.StronglyConnectedComponents")
 struct SCCTests {
-    @Test("SCC in DAG (each node is its own SCC)")
-    func sccInDAG() {
+    @Test
+    func `SCC in DAG (each node is its own SCC)`() {
         var builder = Graph.Sequential<TestTag, TestPayload>.Builder()
 
         let c = builder.allocate(TestPayload(name: "C", successors: []))
@@ -158,8 +158,8 @@ struct SCCTests {
         #expect(sccs.allSatisfy { $0.count == 1 })
     }
 
-    @Test("SCC with cycle")
-    func sccWithCycle() {
+    @Test
+    func `SCC with cycle`() {
         var builder = Graph.Sequential<TestTag, TestPayload>.Builder()
 
         // A -> B -> C -> A (single SCC containing all three)
@@ -178,8 +178,8 @@ struct SCCTests {
         #expect(sccs[0].count == 3)
     }
 
-    @Test("Multiple SCCs")
-    func multipleSCCs() {
+    @Test
+    func `Multiple SCCs`() {
         var builder = Graph.Sequential<TestTag, TestPayload>.Builder()
 
         // Two cycles connected: (A <-> B) -> (C <-> D)
@@ -200,8 +200,8 @@ struct SCCTests {
         #expect(sccs.allSatisfy { $0.count == 2 })
     }
 
-    @Test("Self-loop is SCC")
-    func selfLoopSCC() {
+    @Test
+    func `Self-loop is SCC`() {
         var builder = Graph.Sequential<TestTag, TestPayload>.Builder()
 
         let a = builder.allocate(TestPayload(name: "A", successors: []))
