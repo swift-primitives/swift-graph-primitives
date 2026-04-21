@@ -12,6 +12,11 @@ let package = Package(
         .visionOS(.v26),
     ],
     products: [
+        // MARK: - Namespace
+        .library(
+            name: "Graph Namespace",
+            targets: ["Graph Namespace"]
+        ),
         .library(
             name: "Graph Primitives",
             targets: ["Graph Primitives"]
@@ -98,11 +103,19 @@ let package = Package(
         .package(path: "../swift-sequence-primitives"),
     ],
     targets: [
+        // MARK: - Namespace
+
+        .target(
+            name: "Graph Namespace",
+            dependencies: []
+        ),
+
         // MARK: - Core
 
         .target(
             name: "Graph Primitives Core",
             dependencies: [
+                "Graph Namespace",
                 .product(name: "Identity Primitives", package: "swift-identity-primitives"),
                 .product(name: "Index Primitives", package: "swift-index-primitives"),
                 .product(name: "Array Primitives", package: "swift-array-primitives"),
@@ -250,6 +263,7 @@ let package = Package(
         .target(
             name: "Graph Primitives",
             dependencies: [
+                "Graph Namespace",
                 "Graph Primitives Core",
                 "Graph DFS Primitives",
                 "Graph BFS Primitives",
