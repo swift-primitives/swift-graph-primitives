@@ -91,7 +91,7 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(path: "../swift-identity-primitives"),
+        .package(path: "../swift-tagged-primitives"),
         .package(path: "../swift-bit-primitives"),
         .package(path: "../swift-stack-primitives"),
         .package(path: "../swift-set-primitives"),
@@ -116,7 +116,7 @@ let package = Package(
             name: "Graph Primitives Core",
             dependencies: [
                 "Graph Namespace",
-                .product(name: "Identity Primitives", package: "swift-identity-primitives"),
+                .product(name: "Tagged Primitives", package: "swift-tagged-primitives"),
                 .product(name: "Index Primitives", package: "swift-index-primitives"),
                 .product(name: "Array Primitives", package: "swift-array-primitives"),
             ]

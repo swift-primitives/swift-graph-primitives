@@ -1,4 +1,4 @@
-public import Identity_Primitives
+public import Tagged_Primitives
 import Stack_Primitives
 import Bit_Vector_Primitives
 public import Array_Primitives

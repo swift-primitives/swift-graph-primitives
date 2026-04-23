@@ -1,4 +1,4 @@
-public import Identity_Primitives
+public import Tagged_Primitives
 
 extension Graph.Sequential.Traverse {
     /// Returns a first-visit accessor with the given adjacency extract.

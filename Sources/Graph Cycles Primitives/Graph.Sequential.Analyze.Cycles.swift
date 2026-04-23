@@ -1,4 +1,4 @@
-public import Identity_Primitives
+public import Tagged_Primitives
 
 extension Graph.Sequential.Analyze {
     /// Whether the graph contains any cycles reachable from the given roots.

@@ -46,7 +46,7 @@ Everything else—traversal algorithms, mutation strategies, serialization—is 
 **Decision**: Node identity is `Tagged<Tag, Int>` from Identity.Primitives.
 
 ```swift
-import Identity_Primitives
+import Tagged_Primitives
 
 extension Graph {
     /// A node's identity within a graph.
@@ -411,13 +411,13 @@ let package = Package(
         .library(name: "Graph Primitives", targets: ["Graph Primitives"]),
     ],
     dependencies: [
-        .package(path: "../swift-identity-primitives"),
+        .package(path: "../swift-tagged-primitives"),
     ],
     targets: [
         .target(
             name: "Graph Primitives",
             dependencies: [
-                .product(name: "Identity Primitives", package: "swift-identity-primitives"),
+                .product(name: "Tagged Primitives", package: "swift-tagged-primitives"),
             ],
             swiftSettings: [.enableExperimentalFeature("StrictMemorySafety")]
         ),

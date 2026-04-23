@@ -536,7 +536,7 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../swift-graph-primitives"),
-        .package(path: "../swift-identity-primitives"),  // May still need for other tags
+        .package(path: "../swift-tagged-primitives"),  // May still need for other tags
     ],
     targets: [
         .target(

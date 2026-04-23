@@ -1,4 +1,4 @@
-public import Identity_Primitives
+public import Tagged_Primitives
 
 extension Graph.Sequential {
     /// Returns a path accessor with the given adjacency extract.

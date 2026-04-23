@@ -403,7 +403,7 @@ Returns `nil` if any requested node is not a valid member of the graph (totality
 
 **File**: `/Users/coen/Developer/swift-primitives/swift-graph-primitives/Sources/Graph Primitives/exports.swift`
 ```swift
-@_exported import Identity_Primitives
+@_exported import Tagged_Primitives
 @_exported import Set_Primitives
 @_exported import Index_Primitives
 @_exported import Input_Primitives
