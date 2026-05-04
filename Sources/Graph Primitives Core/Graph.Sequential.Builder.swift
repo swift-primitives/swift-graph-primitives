@@ -19,18 +19,18 @@ extension Graph.Sequential {
     /// ```
     public struct Builder: ~Copyable {
         @usableFromInline
-        var storage: [Payload]
+        var storage: Array<Payload>
 
         /// Creates an empty builder.
         @inlinable
         public init() {
-            self.storage = [Payload]()
+            self.storage = Array<Payload>()
         }
 
         /// Creates a builder with reserved capacity.
         @inlinable
         public init(capacity: Graph.Node<Tag>.Count) {
-            self.storage = [Payload](initialCapacity: capacity.retag(Payload.self))
+            self.storage = Array<Payload>(initialCapacity: capacity.retag(Payload.self))
         }
 
         /// The number of nodes allocated so far.
