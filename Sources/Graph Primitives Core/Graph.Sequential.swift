@@ -1,6 +1,6 @@
-public import Tagged_Primitives
-public import Index_Primitives
 public import Array_Primitives
+public import Index_Primitives
+public import Tagged_Primitives
 
 extension Graph {
     /// An immutable graph with sequentially-allocated nodes.
@@ -55,4 +55,3 @@ extension Graph {
         }
     }
 }
-

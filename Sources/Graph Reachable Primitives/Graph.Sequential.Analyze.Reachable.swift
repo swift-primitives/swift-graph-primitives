@@ -1,8 +1,8 @@
-public import Tagged_Primitives
-public import Stack_Primitives
-internal import Bit_Vector_Primitives
 public import Array_Primitives
+internal import Bit_Vector_Primitives
 public import Set_Primitives
+public import Stack_Primitives
+public import Tagged_Primitives
 
 extension Graph.Sequential.Analyze {
     /// Returns the set of nodes reachable from the given roots.

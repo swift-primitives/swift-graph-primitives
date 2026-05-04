@@ -1,5 +1,5 @@
-import Testing
 import Graph_Primitives_Test_Support
+import Testing
 
 private enum TestTag {}
 
@@ -30,9 +30,9 @@ struct PayloadMappingTests {
 
         #expect(mapped.count == graph.count)
         #expect(mapped.count == 3)
-        #expect(mapped[a] == 2) // A has 2 edges
-        #expect(mapped[b] == 1) // B has 1 edge
-        #expect(mapped[c] == 0) // C has 0 edges
+        #expect(mapped[a] == 2)  // A has 2 edges
+        #expect(mapped[b] == 1)  // B has 1 edge
+        #expect(mapped[c] == 0)  // C has 0 edges
     }
 
     @Test

@@ -1,7 +1,7 @@
-public import Tagged_Primitives
-public import Stack_Primitives
-internal import Bit_Vector_Primitives
 public import Array_Primitives
+internal import Bit_Vector_Primitives
+public import Stack_Primitives
+public import Tagged_Primitives
 
 extension Graph.Sequential.Analyze {
     /// Computes transitive closure.

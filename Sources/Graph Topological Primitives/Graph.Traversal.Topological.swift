@@ -1,7 +1,7 @@
-public import Tagged_Primitives
-import Stack_Primitives
-import Bit_Vector_Primitives
 public import Array_Primitives
+import Bit_Vector_Primitives
+import Stack_Primitives
+public import Tagged_Primitives
 
 extension Graph.Traversal {
     /// Topological ordering of nodes in a directed acyclic graph.

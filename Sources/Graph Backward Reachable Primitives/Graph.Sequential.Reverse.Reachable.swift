@@ -1,8 +1,8 @@
-public import Tagged_Primitives
-public import Stack_Primitives
+public import Array_Primitives
 internal import Bit_Vector_Primitives
 public import Set_Primitives
-public import Array_Primitives
+public import Stack_Primitives
+public import Tagged_Primitives
 
 extension Graph.Sequential.Reverse {
     /// Nodes that can reach the target (backward reachability).

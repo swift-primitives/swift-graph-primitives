@@ -1,6 +1,6 @@
-public import Tagged_Primitives
-public import Set_Primitives
 public import Array_Primitives
+public import Set_Primitives
+public import Tagged_Primitives
 
 extension Graph.Sequential.Transform {
     /// Extracts induced subgraph on specified nodes.

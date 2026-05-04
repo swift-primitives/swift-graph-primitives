@@ -1,5 +1,5 @@
-import Testing
 import Graph_Primitives_Test_Support
+import Testing
 
 private enum TestTag {}
 

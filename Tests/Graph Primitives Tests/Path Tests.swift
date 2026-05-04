@@ -1,5 +1,5 @@
-import Testing
 import Graph_Primitives_Test_Support
+import Testing
 
 private enum TestTag {}
 
@@ -99,7 +99,7 @@ struct ShortestPathTests {
 
         let path = graph.path.shortest(from: a, to: d)
         #expect(path != nil)
-        #expect(path!.count == 3) // A -> (B or C) -> D
+        #expect(path!.count == 3)  // A -> (B or C) -> D
         #expect(path!.first == a)
         #expect(path!.last == d)
     }
@@ -146,7 +146,7 @@ struct ShortestPathTests {
 
         let path = graph.path.shortest(from: a, to: d)
         #expect(path != nil)
-        #expect(path!.count == 2) // A -> D
+        #expect(path!.count == 2)  // A -> D
     }
 }
 
@@ -179,7 +179,7 @@ struct WeightedPathTests {
         }
 
         #expect(result != nil)
-        #expect(result!.distance == 2) // A -> B -> D or A -> C -> D
+        #expect(result!.distance == 2)  // A -> B -> D or A -> C -> D
     }
 
     @Test
