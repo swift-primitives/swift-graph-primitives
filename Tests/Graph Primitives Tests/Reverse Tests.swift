@@ -184,7 +184,7 @@ struct BackwardReachabilityTests {
         _ = builder.allocate(Graph.Adjacency.List(adjacent: []))
 
         let graph = builder.build()
-        let invalid = Graph.Node<TestTag>(__unchecked: (), Ordinal(999))
+        let invalid = Graph.Node<TestTag>(_unchecked: Ordinal(999))
 
         let backwardReachable = graph.reverse.reachable(to: invalid)
 

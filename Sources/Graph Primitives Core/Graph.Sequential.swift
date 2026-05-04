@@ -51,7 +51,7 @@ extension Graph {
         /// All nodes in the graph, in allocation order.
         @inlinable
         public var nodes: some Swift.Sequence<Node<Tag>> {
-            (0..<Int(bitPattern: count)).lazy.map { Node<Tag>(__unchecked: (), Ordinal(UInt($0))) }
+            (0..<Int(bitPattern: count)).lazy.map { Node<Tag>(_unchecked: Ordinal(UInt($0))) }
         }
     }
 }

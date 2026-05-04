@@ -132,7 +132,7 @@ struct SubgraphTests {
         let graph = builder.build()
 
         // Create an invalid node
-        let invalidNode = Graph.Node<TestTag>(__unchecked: (), Ordinal(999))
+        let invalidNode = Graph.Node<TestTag>(_unchecked: Ordinal(999))
 
         // Subgraph with invalid node should return nil
         let subgraph = graph.transform.subgraph(inducedBy: orderedSet(a, invalidNode))

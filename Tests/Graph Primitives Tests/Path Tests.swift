@@ -56,7 +56,7 @@ struct PathExistsTests {
         let a = builder.allocate(Graph.Adjacency.List(adjacent: []))
 
         let graph = builder.build()
-        let invalid = Graph.Node<TestTag>(__unchecked: (), Ordinal(999))
+        let invalid = Graph.Node<TestTag>(_unchecked: Ordinal(999))
 
         #expect(!graph.path.exists(from: invalid, to: a))
         #expect(!graph.path.exists(from: a, to: invalid))

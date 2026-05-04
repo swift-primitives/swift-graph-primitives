@@ -66,7 +66,7 @@ extension Graph.Sequential.Transform {
             let oldPayload = graph.storage[node]
 
             let remappedPayload = remap.mapNodes(oldPayload) { oldNode in
-                Graph.Node<Tag>(__unchecked: (), Ordinal(UInt(oldToNew[oldNode])))
+                Graph.Node<Tag>(_unchecked: Ordinal(UInt(oldToNew[oldNode])))
             }
 
             _ = builder.allocate(remappedPayload)
@@ -121,7 +121,7 @@ extension Graph.Sequential.Transform where Payload == Graph.Adjacency.List<Tag> 
             for adjacent in oldPayload.adjacent {
                 let newIdx = oldToNew[adjacent]
                 if newIdx >= 0 {
-                    newAdjacent.append(Graph.Node<Tag>(__unchecked: (), Ordinal(UInt(newIdx))))
+                    newAdjacent.append(Graph.Node<Tag>(_unchecked: Ordinal(UInt(newIdx))))
                 }
             }
 
