@@ -42,7 +42,7 @@ extension Graph.Sequential.Transform {
         // WHY: bug is in `swift::Mangle::GenericSpecializationMangler::mangleForDebugInfo`
         //   self-consistency check (GenericSpecializationMangler.cpp:47).
         //   `for-in` over `Set.Ordered`'s `Swift.Sequence` conformance
-        //   sidesteps the Property.View/`Sequence.\`Protocol\`.forEach`
+        //   sidesteps the Property.Inout/`Sequence.\`Protocol\`.forEach`
         //   call chain that the inliner attempts to specialize.
         // TRACKING: Investigation findings in
         //   /Users/coen/Developer/HANDOFF-graph-primitives-sigabrt-earlyperf-inliner.md
@@ -108,7 +108,7 @@ extension Graph.Sequential.Transform where Payload == Graph.Adjacency.List<Tag> 
 
         // WORKAROUND for EarlyPerfInliner SIGABRT — see notes on the
         // sibling generic overload above. `for-in` over Set.Ordered's
-        // Swift.Sequence conformance avoids the inliner's Property.View
+        // Swift.Sequence conformance avoids the inliner's Property.Inout
         // specialization path that mangles to an undemangleable name.
         var sortedNodes = [Graph.Node<Tag>]()
         for node in nodes {
