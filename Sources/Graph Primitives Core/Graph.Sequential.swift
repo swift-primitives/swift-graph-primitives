@@ -1,6 +1,7 @@
 public import Array_Primitives
 public import Index_Primitives
 public import Tagged_Primitives
+public import Vector_Primitives
 
 extension Graph {
     /// An immutable graph with sequentially-allocated nodes.
@@ -49,9 +50,29 @@ extension Graph {
         }
 
         /// All nodes in the graph, in allocation order.
+        ///
+        /// Returns a `Vector_Primitives.Vector<Node<Tag>>` — an ecosystem-native,
+        /// zero-allocation finite-domain functor (`Vec n A = Fin n -> A`) that
+        /// generates each `Node<Tag>` on demand from the integer domain
+        /// `0..<count`. `Vector` conforms to both `Sequence_Primitives.Sequence.\`Protocol\``
+        /// and `Swift.Sequence` (when `Bound: Copyable`, which holds here),
+        /// so existing consumers using `for-in`, `.forEach`, `.map`, or
+        /// passing to `some Swift.Sequence<Node<Tag>>` parameters all keep
+        /// working unchanged.
+        ///
+        /// Returning `Vector` concretely (rather than `some Swift.Sequence<Node<Tag>>`)
+        /// also sidesteps a Swift 6.3.1 `PerformanceSILLinker` SIL-deserialization
+        /// mismatch where cross-module `@inlinable` callers see the opaque
+        /// form (`@_opaqueReturnTypeOf(...) __<...>`) but the SIL contains
+        /// the substituted concrete type. The Vector-backed accessor is the
+        /// structurally correct shape, not just a workaround — the prior
+        /// `some Swift.Sequence<...>` form was reaching for exactly the
+        /// "lazy index → typed bound" abstraction Vector codifies.
         @inlinable
-        public var nodes: some Swift.Sequence<Node<Tag>> {
-            (0..<Int(bitPattern: count)).lazy.map { Node<Tag>(_unchecked: Ordinal(UInt($0))) }
+        public var nodes: Vector<Node<Tag>> {
+            Vector(count: count.retag(Vector<Node<Tag>>.self)) { vIndex in
+                Node<Tag>(_unchecked: vIndex.position)
+            }
         }
     }
 }

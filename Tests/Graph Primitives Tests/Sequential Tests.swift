@@ -68,7 +68,7 @@ struct SequentialTests {
         _ = builder.allocate(TestPayload(name: "C", successors: []))
         let graph = builder.build()
 
-        let names = graph.nodes.map { graph[$0].name }
+        let names = graph.nodes.map { graph[$0].name }.collect()
         #expect(names == ["A", "B", "C"])
     }
 }

@@ -101,6 +101,7 @@ let package = Package(
         .package(path: "../swift-queue-primitives"),
         .package(path: "../swift-bit-vector-primitives"),
         .package(path: "../swift-sequence-primitives"),
+        .package(path: "../swift-vector-primitives"),
     ],
     targets: [
         // MARK: - Namespace
@@ -119,6 +120,7 @@ let package = Package(
                 .product(name: "Tagged Primitives", package: "swift-tagged-primitives"),
                 .product(name: "Index Primitives", package: "swift-index-primitives"),
                 .product(name: "Array Primitives", package: "swift-array-primitives"),
+                .product(name: "Vector Primitives", package: "swift-vector-primitives"),
             ]
         ),
 
