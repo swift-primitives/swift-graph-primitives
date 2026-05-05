@@ -31,9 +31,25 @@ extension Graph.Sequential.Transform {
     ) -> Graph.Sequential<Tag, Payload>? {
         let count = graph.count
 
-        // Collect nodes from set
+        // Collect nodes from set via explicit iteration.
+        // WORKAROUND: replaces `nodes.forEach { ... }` to avoid an
+        //   `EarlyPerfInliner` SIGABRT in `mangleForDebugInfo` when the
+        //   inliner specializes `Sequence.\`Protocol\`.forEach` with
+        //   `Self == Set<Tagged<Tag, Ordinal>>.Ordered`. The mangler
+        //   produces a debug-info name that the demangler cannot
+        //   round-trip (HCHCg pattern on conditional Hash.\`Protocol\`
+        //   conformance witness for nested protocols).
+        // WHY: bug is in `swift::Mangle::GenericSpecializationMangler::mangleForDebugInfo`
+        //   self-consistency check (GenericSpecializationMangler.cpp:47).
+        //   `for-in` over `Set.Ordered`'s `Swift.Sequence` conformance
+        //   sidesteps the Property.View/`Sequence.\`Protocol\`.forEach`
+        //   call chain that the inliner attempts to specialize.
+        // TRACKING: Investigation findings in
+        //   /Users/coen/Developer/HANDOFF-graph-primitives-sigabrt-earlyperf-inliner.md
+        // WHEN TO REMOVE: when swiftlang/swift fixes the
+        //   `mangleForDebugInfo` HCHCg-on-nested-protocol-witness bug.
         var sortedNodes = [Graph.Node<Tag>]()
-        nodes.forEach { node in
+        for node in nodes {
             sortedNodes.append(node)
         }
 
@@ -90,9 +106,12 @@ extension Graph.Sequential.Transform where Payload == Graph.Adjacency.List<Tag> 
     ) -> Graph.Sequential<Tag, Payload>? {
         let count = graph.count
 
-        // Collect nodes from set
+        // WORKAROUND for EarlyPerfInliner SIGABRT — see notes on the
+        // sibling generic overload above. `for-in` over Set.Ordered's
+        // Swift.Sequence conformance avoids the inliner's Property.View
+        // specialization path that mangles to an undemangleable name.
         var sortedNodes = [Graph.Node<Tag>]()
-        nodes.forEach { node in
+        for node in nodes {
             sortedNodes.append(node)
         }
 
