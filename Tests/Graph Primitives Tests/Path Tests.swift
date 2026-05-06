@@ -199,6 +199,14 @@ struct WeightedPathTests {
         #expect(weightedResult != nil)
         #expect(shortestPath != nil)
         #expect(weightedResult!.path.count == shortestPath!.count)
+        // reason: Graph distance equals path-length-as-edges minus one — the
+        // canonical graph-theoretic invariant (a path through N nodes contains
+        // N-1 edges; the unweighted shortest distance counts edges).
+        // `shortestPath` is stdlib `[Graph.Node<Tag>]?`, `distance` is stdlib
+        // `Int`; no typed Cardinal surface available at this assertion site.
+        // The math IS the length-minus-one expression; algebraic-flip rephrase
+        // obscures the graph-theoretic relationship.
+        // swiftlint:disable:next cardinal_count_minus_one_anti_pattern
         #expect(weightedResult!.distance == shortestPath!.count - 1)
     }
 

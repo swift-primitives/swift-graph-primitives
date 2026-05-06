@@ -41,7 +41,7 @@ extension Graph.Sequential.Analyze {
             callStack.append((root, rootAdjacents, 0, true))
 
             while !callStack.isEmpty {
-                let frameIndex = callStack.count - 1
+                let frameIndex = callStack.endIndex - 1
                 var frame = callStack[frameIndex]
                 let node = frame.node
 
@@ -99,7 +99,7 @@ extension Graph.Sequential.Analyze {
 
                 // Update parent's lowLink if there is a parent
                 if !callStack.isEmpty {
-                    let parent = callStack[callStack.count - 1].node
+                    let parent = callStack.last!.node
                     lowLink[parent] = min(lowLink[parent], lowLink[node])
                 }
             }
