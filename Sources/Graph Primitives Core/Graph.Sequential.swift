@@ -23,7 +23,7 @@ extension Graph {
     /// let graph = builder.build()
     /// print(graph[a])  // "A"
     /// ```
-    public struct Sequential<Tag, Payload>: Sendable where Payload: Sendable {
+    public struct Sequential<Tag, Payload> {
         public let storage: Array<Payload>.Indexed<Tag>
 
         @usableFromInline
@@ -76,3 +76,5 @@ extension Graph {
         }
     }
 }
+
+extension Graph.Sequential: Sendable where Payload: Sendable {}
