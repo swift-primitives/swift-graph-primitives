@@ -4,7 +4,7 @@ extension Graph.Sequential {
     public var traverse: Traverse { Traverse(graph: self) }
 
     /// Accessor type providing traversal operations.
-    public struct Traverse: Sendable where Payload: Sendable {
+    public struct Traverse {
         public let graph: Graph.Sequential<Tag, Payload>
 
         @usableFromInline
@@ -13,3 +13,5 @@ extension Graph.Sequential {
         }
     }
 }
+
+extension Graph.Sequential.Traverse: Sendable where Payload: Sendable {}
