@@ -51,7 +51,7 @@ extension Graph.Traversal {
             let visited = Bit.Vector(capacity: count.retag(Bit.self))
             let visiting = Bit.Vector(capacity: count.retag(Bit.self))
             var result: [Element] = []
-            result.reserveCapacity(Int(bitPattern: count))
+            result.reserveCapacity(count)
 
             // Stack uses two phases: true = entering, false = leaving
             var stack = Stack<(node: Graph.Node<Tag>, entering: Bool)>()
