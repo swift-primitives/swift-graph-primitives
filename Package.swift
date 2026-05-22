@@ -14,8 +14,8 @@ let package = Package(
     products: [
         // MARK: - Namespace
         .library(
-            name: "Graph Namespace",
-            targets: ["Graph Namespace"]
+            name: "Graph Primitive",
+            targets: ["Graph Primitive"]
         ),
         .library(
             name: "Graph Primitives",
@@ -107,7 +107,7 @@ let package = Package(
         // MARK: - Namespace
 
         .target(
-            name: "Graph Namespace",
+            name: "Graph Primitive",
             dependencies: []
         ),
 
@@ -116,7 +116,7 @@ let package = Package(
         .target(
             name: "Graph Primitives Core",
             dependencies: [
-                "Graph Namespace",
+                "Graph Primitive",
                 .product(name: "Tagged Primitives", package: "swift-tagged-primitives"),
                 .product(name: "Index Primitives", package: "swift-index-primitives"),
                 .product(name: "Array Primitives", package: "swift-array-primitives"),
@@ -265,7 +265,7 @@ let package = Package(
         .target(
             name: "Graph Primitives",
             dependencies: [
-                "Graph Namespace",
+                "Graph Primitive",
                 "Graph Primitives Core",
                 "Graph DFS Primitives",
                 "Graph BFS Primitives",
