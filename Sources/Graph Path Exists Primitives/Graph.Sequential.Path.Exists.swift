@@ -2,7 +2,7 @@ public import Array_Primitives
 public import Bit_Vector_Primitives
 public import Queue_Primitives
 public import Tagged_Primitives
-public import Vector_Primitives_Core
+public import Vector_Primitives
 
 extension Graph.Sequential.Path {
     /// Whether a path exists from source to target.

@@ -2,7 +2,7 @@ public import Array_Primitives
 import Bit_Vector_Primitives
 import Stack_Primitives
 public import Tagged_Primitives
-public import Vector_Primitives_Core
+public import Vector_Primitives
 
 extension Graph.Traversal {
     /// Topological ordering of nodes in a directed acyclic graph.

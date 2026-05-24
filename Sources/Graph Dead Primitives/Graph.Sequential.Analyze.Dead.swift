@@ -3,7 +3,7 @@ public import Bit_Vector_Primitives
 public import Set_Primitives
 public import Stack_Primitives
 public import Tagged_Primitives
-public import Vector_Primitives_Core
+public import Vector_Primitives
 
 extension Graph.Sequential.Analyze {
     /// Nodes unreachable from roots.
