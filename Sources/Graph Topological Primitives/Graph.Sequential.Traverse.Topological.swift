@@ -1,3 +1,5 @@
+public import Vector_Primitives_Core
+
 extension Graph.Sequential.Traverse {
     /// Returns a topological ordering of nodes reachable from the given roots.
     ///

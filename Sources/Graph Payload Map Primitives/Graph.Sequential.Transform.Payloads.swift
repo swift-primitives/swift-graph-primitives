@@ -1,3 +1,5 @@
+public import Vector_Primitives_Core
+
 extension Graph.Sequential.Transform {
     /// Transforms all payloads. Node identities are preserved.
     ///

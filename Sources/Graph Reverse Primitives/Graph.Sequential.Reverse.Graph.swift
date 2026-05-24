@@ -1,5 +1,6 @@
 public import Array_Primitives
 public import Tagged_Primitives
+public import Vector_Primitives_Core
 
 extension Graph.Sequential.Reverse {
     /// Creates a graph with all edges reversed.

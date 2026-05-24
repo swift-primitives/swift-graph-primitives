@@ -2,6 +2,7 @@ public import Array_Primitives
 public import Bit_Vector_Primitives
 public import Queue_Primitives
 public import Tagged_Primitives
+public import Vector_Primitives_Core
 
 extension Graph.Sequential.Path {
     /// Shortest path by hop count using BFS.

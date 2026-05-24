@@ -2,6 +2,7 @@ public import Array_Primitives
 public import Index_Primitives
 public import Tagged_Primitives
 public import Vector_Primitives
+public import Vector_Primitives_Core
 
 extension Graph {
     /// An immutable graph with sequentially-allocated nodes.

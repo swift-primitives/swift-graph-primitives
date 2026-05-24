@@ -3,6 +3,7 @@ public import Bit_Vector_Primitives
 public import Queue_Primitives
 internal import Sequence_Primitives
 public import Tagged_Primitives
+public import Vector_Primitives_Core
 
 extension Graph.Traversal.First {
     /// Breadth-first traversal over a graph.
