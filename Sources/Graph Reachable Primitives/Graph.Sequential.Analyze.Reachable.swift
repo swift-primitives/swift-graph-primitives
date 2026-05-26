@@ -1,5 +1,6 @@
 public import Array_Primitives
 public import Bit_Vector_Primitives
+public import Set_Ordered_Primitives
 public import Set_Primitives
 public import Stack_Primitives
 public import Tagged_Primitives

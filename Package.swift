@@ -95,6 +95,7 @@ let package = Package(
         .package(path: "../swift-bit-primitives"),
         .package(path: "../swift-stack-primitives"),
         .package(path: "../swift-set-primitives"),
+        .package(path: "../swift-set-ordered-primitives"),
         .package(path: "../swift-heap-primitives"),
         .package(path: "../swift-index-primitives"),
         .package(path: "../swift-array-primitives"),
@@ -161,6 +162,7 @@ let package = Package(
                 "Graph Primitives Core",
                 .product(name: "Stack Primitives", package: "swift-stack-primitives"),
                 .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
+                .product(name: "Set Ordered Primitives", package: "swift-set-ordered-primitives"),
                 .product(name: "Set Primitives", package: "swift-set-primitives"),
             ]
         ),
@@ -171,6 +173,7 @@ let package = Package(
                 "Graph Reachable Primitives",
                 .product(name: "Stack Primitives", package: "swift-stack-primitives"),
                 .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
+                .product(name: "Set Ordered Primitives", package: "swift-set-ordered-primitives"),
                 .product(name: "Set Primitives", package: "swift-set-primitives"),
             ]
         ),
@@ -237,6 +240,7 @@ let package = Package(
             name: "Graph Subgraph Primitives",
             dependencies: [
                 "Graph Primitives Core",
+                .product(name: "Set Ordered Primitives", package: "swift-set-ordered-primitives"),
                 .product(name: "Set Primitives", package: "swift-set-primitives"),
             ]
         ),
@@ -256,6 +260,7 @@ let package = Package(
                 "Graph Reverse Primitives",
                 .product(name: "Stack Primitives", package: "swift-stack-primitives"),
                 .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
+                .product(name: "Set Ordered Primitives", package: "swift-set-ordered-primitives"),
                 .product(name: "Set Primitives", package: "swift-set-primitives"),
             ]
         ),
