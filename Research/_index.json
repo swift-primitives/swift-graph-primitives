@@ -51,17 +51,6 @@
       "scope": null
     },
     {
-      "file": "graph-operations-audit.md",
-      "displayName": "graph-operations-audit.md",
-      "topic": "Canonical Graph ADT operations coverage audit",
-      "date": "2026-02-16",
-      "status": "RECOMMENDATION",
-      "statusDetail": null,
-      "statusRaw": "RECOMMENDATION",
-      "tier": null,
-      "scope": null
-    },
-    {
       "file": "graph-primitives-roadmap.md",
       "displayName": "graph-primitives-roadmap.md",
       "topic": "Graph-primitives gap analysis, prioritization, and non-goals",
