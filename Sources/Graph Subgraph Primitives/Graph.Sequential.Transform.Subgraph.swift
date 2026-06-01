@@ -32,27 +32,18 @@ extension Graph.Sequential.Transform {
     ) -> Graph.Sequential<Tag, Payload>? {
         let count = graph.count
 
-        // Collect nodes from set via explicit iteration.
-        // WORKAROUND: replaces `nodes.forEach { ... }` to avoid an
-        //   `EarlyPerfInliner` SIGABRT in `mangleForDebugInfo` when the
-        //   inliner specializes `Sequence.\`Protocol\`.forEach` with
-        //   `Self == Set<Tagged<Tag, Ordinal>>.Ordered`. The mangler
-        //   produces a debug-info name that the demangler cannot
-        //   round-trip (HCHCg pattern on conditional Hash.\`Protocol\`
-        //   conformance witness for nested protocols).
-        // WHY: bug is in `swift::Mangle::GenericSpecializationMangler::mangleForDebugInfo`
-        //   self-consistency check (GenericSpecializationMangler.cpp:47).
-        //   `for-in` over `Set.Ordered`'s `Swift.Sequence` conformance
-        //   sidesteps the Property.Inout/`Sequence.\`Protocol\`.forEach`
-        //   call chain that the inliner attempts to specialize.
-        // TRACKING: Investigation findings in
-        //   /Users/coen/Developer/HANDOFF-graph-primitives-sigabrt-earlyperf-inliner.md
-        // WHEN TO REMOVE: when swiftlang/swift fixes the
-        //   `mangleForDebugInfo` HCHCg-on-nested-protocol-witness bug.
+        // Collect nodes from set via the borrowing `Iterable.forEach`.
+        // `Set.Ordered` no longer conforms to `Swift.Sequence` (the
+        //   span-primitive iteration family is `~Copyable, ~Escapable`
+        //   end-to-end after the SE-0516 migration), so `for node in nodes`
+        //   over the dropped stdlib conformance is no longer available.
+        //   The current `Iterable.forEach` is the borrowing span-primitive
+        //   (`Iterator.Chunk`) iteration path — distinct from the old
+        //   `Sequence.\`Protocol\`.forEach` / Property.Inout chain that the
+        //   EarlyPerfInliner SIGABRT (mangleForDebugInfo HCHCg pattern)
+        //   referenced; that chain no longer exists post-SE-0516.
         var sortedNodes = [Graph.Node<Tag>]()
-        for node in nodes {
-            sortedNodes.append(node)
-        }
+        nodes.forEach { sortedNodes.append($0) }
 
         // Sort to ensure deterministic ordering
         sortedNodes.sort(by: <)
@@ -107,14 +98,12 @@ extension Graph.Sequential.Transform where Payload == Graph.Adjacency.List<Tag> 
     ) -> Graph.Sequential<Tag, Payload>? {
         let count = graph.count
 
-        // WORKAROUND for EarlyPerfInliner SIGABRT — see notes on the
-        // sibling generic overload above. `for-in` over Set.Ordered's
-        // Swift.Sequence conformance avoids the inliner's Property.Inout
-        // specialization path that mangles to an undemangleable name.
+        // Collect via the borrowing `Iterable.forEach` — see notes on the
+        // sibling generic overload above. `Set.Ordered` no longer conforms
+        // to `Swift.Sequence`; `Iterable.forEach` is the borrowing
+        // span-primitive (`Iterator.Chunk`) iteration path.
         var sortedNodes = [Graph.Node<Tag>]()
-        for node in nodes {
-            sortedNodes.append(node)
-        }
+        nodes.forEach { sortedNodes.append($0) }
 
         // Sort to ensure deterministic ordering
         sortedNodes.sort(by: <)
