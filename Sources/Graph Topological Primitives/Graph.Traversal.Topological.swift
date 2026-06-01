@@ -25,7 +25,7 @@ extension Graph.Traversal {
     ///     }
     /// }
     /// ```
-    public struct Topological<Tag, Payload, Adjacent: Swift.Sequence<Graph.Node<Tag>>>: Swift.Sequence {
+    public struct Topological<Tag: ~Copyable & ~Escapable, Payload, Adjacent: Swift.Sequence<Graph.Node<Tag>>>: Swift.Sequence {
         public typealias Element = (node: Graph.Node<Tag>, payload: Payload)
 
         @usableFromInline

@@ -2,7 +2,7 @@ extension Graph.Adjacency {
     /// Simple adjacency-list payload for computed graphs.
     ///
     /// Adjacency order is insertion order but **not guaranteed stable** across operations.
-    public struct List<Tag>: Sendable {
+    public struct List<Tag: ~Copyable & ~Escapable>: Sendable {
         public var adjacent: [Graph.Node<Tag>]
 
         @inlinable

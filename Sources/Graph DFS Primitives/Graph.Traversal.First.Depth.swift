@@ -17,7 +17,7 @@ extension Graph.Traversal.First {
     /// requiring `BidirectionalCollection` conformance from the adjacency sequence.
     /// If left-to-right visitation is important, ensure your payload's adjacency
     /// is ordered accordingly.
-    public struct Depth<Tag, Payload, Adjacent: Swift.Sequence<Graph.Node<Tag>>>: ~Copyable, Iterator.Chunk.`Protocol` {
+    public struct Depth<Tag: ~Copyable & ~Escapable, Payload, Adjacent: Swift.Sequence<Graph.Node<Tag>>>: ~Copyable, Iterator.Chunk.`Protocol` {
         public typealias Element = (node: Graph.Node<Tag>, payload: Payload)
         public typealias Failure = Never
 

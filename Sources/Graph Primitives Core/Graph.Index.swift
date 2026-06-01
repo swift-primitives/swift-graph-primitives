@@ -34,5 +34,5 @@ extension Graph {
     /// let dfgIdx: Graph.Index<DFGTag> = 0
     /// // cfgIdx == dfgIdx  // Does not compile - different types
     /// ```
-    public typealias Index<Tag> = Index_Primitives.Index<Tag>
+    public typealias Index<Tag: ~Copyable & ~Escapable> = Index_Primitives.Index<Tag>
 }

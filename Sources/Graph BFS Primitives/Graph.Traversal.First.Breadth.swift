@@ -11,7 +11,7 @@ extension Graph.Traversal.First {
     ///
     /// Visits nodes in breadth-first order starting from the specified roots.
     /// Each node is visited at most once, even if reachable from multiple paths.
-    public struct Breadth<Tag, Payload, Adjacent: Swift.Sequence<Graph.Node<Tag>>>: ~Copyable, Iterator.Chunk.`Protocol` {
+    public struct Breadth<Tag: ~Copyable & ~Escapable, Payload, Adjacent: Swift.Sequence<Graph.Node<Tag>>>: ~Copyable, Iterator.Chunk.`Protocol` {
         public typealias Element = (node: Graph.Node<Tag>, payload: Payload)
         public typealias Failure = Never
 

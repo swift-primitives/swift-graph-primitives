@@ -24,7 +24,7 @@ extension Graph {
     /// let graph = builder.build()
     /// print(graph[a])  // "A"
     /// ```
-    public struct Sequential<Tag, Payload> {
+    public struct Sequential<Tag: ~Copyable & ~Escapable, Payload> {
         public let storage: Tagged<Tag, Array<Payload>>
 
         @usableFromInline
@@ -78,4 +78,4 @@ extension Graph {
     }
 }
 
-extension Graph.Sequential: Sendable where Payload: Sendable {}
+extension Graph.Sequential: Sendable where Tag: ~Copyable & ~Escapable, Payload: Sendable {}

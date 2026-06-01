@@ -13,5 +13,5 @@ extension Graph {
     /// enum MyGraphTag {}
     /// let node: Graph.Node<MyGraphTag> = .zero
     /// ```
-    public typealias Node<Tag> = Index<Tag>
+    public typealias Node<Tag: ~Copyable & ~Escapable> = Index<Tag>
 }
