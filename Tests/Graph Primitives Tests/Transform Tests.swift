@@ -67,7 +67,12 @@ struct PayloadMappingTests {
 
 // MARK: - Induced Subgraph Tests
 
-@Suite("Graph.Sequential.Transform.Subgraph")
+// `inducedBy:` builds a `Set<Graph.Node>.Ordered` (= `Set<Tagged>.Ordered`),
+// whose insert SIGSEGVs on Swift 6.3.x (catalog §A9). Skipped until 6.4+.
+@Suite(
+    "Graph.Sequential.Transform.Subgraph",
+    .disabled(if: Toolchain.hasTaggedMetadataSIGSEGV, "§A9 Tagged metadata SIGSEGV in Set<Index>.Ordered.insert; fixed on Swift 6.4+")
+)
 struct SubgraphTests {
     @Test
     func `Induced subgraph drops edges to excluded nodes`() {

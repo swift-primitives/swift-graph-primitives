@@ -5,7 +5,12 @@ private enum TestTag {}
 
 // MARK: - Dead Nodes Tests
 
-@Suite("Graph.Sequential.Analyze.Dead")
+// `.dead(from:)` builds a `Set<Graph.Node>.Ordered` (= `Set<Tagged>.Ordered`),
+// whose insert SIGSEGVs on Swift 6.3.x (catalog §A9). Skipped until 6.4+.
+@Suite(
+    "Graph.Sequential.Analyze.Dead",
+    .disabled(if: Toolchain.hasTaggedMetadataSIGSEGV, "§A9 Tagged metadata SIGSEGV in Set<Index>.Ordered.insert; fixed on Swift 6.4+")
+)
 struct DeadNodesTests {
     @Test
     func `Dead nodes in disconnected graph`() {
