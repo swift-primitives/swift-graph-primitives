@@ -2,6 +2,7 @@ public import Array_Primitives
 public import Bit_Vector_Primitives
 public import Stack_Primitives
 public import Tagged_Primitives
+public import Tagged_Collection_Primitives
 public import Vector_Primitives
 
 extension Graph.Sequential.Analyze {
@@ -20,8 +21,8 @@ extension Graph.Sequential.Analyze {
 
         // Array-backed state: O(1) lookup by node
         // Use -1 as "not yet visited" sentinel for nodeIndex
-        var nodeIndex = Array<Int>.Fixed.Indexed<Tag>(repeating: -1, count: count)
-        var lowLink = Array<Int>.Fixed.Indexed<Tag>(repeating: 0, count: count)
+        var nodeIndex = Array<Int>.Fixed(repeating: -1, count: count.retag(Int.self))
+        var lowLink = Array<Int>.Fixed(repeating: 0, count: count.retag(Int.self))
         let onStack = Bit.Vector(capacity: count.retag(Bit.self))
 
         var index = 0
@@ -34,7 +35,7 @@ extension Graph.Sequential.Analyze {
 
         for root in roots {
             guard root < count else { continue }
-            if nodeIndex[root] != -1 { continue }
+            if nodeIndex[root.retag(Int.self)] != -1 { continue }
 
             // Push root
             let rootPayload = graph.storage[root]
@@ -48,8 +49,8 @@ extension Graph.Sequential.Analyze {
 
                 if frame.phase {
                     // Entering: initialize node
-                    nodeIndex[node] = index
-                    lowLink[node] = index
+                    nodeIndex[node.retag(Int.self)] = index
+                    lowLink[node.retag(Int.self)] = index
                     index += 1
                     sccStack.push(frame.node)
                     onStack[frame.node.retag(Bit.self)] = true
@@ -66,7 +67,7 @@ extension Graph.Sequential.Analyze {
                     callStack[frameIndex].adjIndex += 1
                     frame.adjIndex += 1
 
-                    if nodeIndex[adjacent] == -1 {
+                    if nodeIndex[adjacent.retag(Int.self)] == -1 {
                         // Not yet visited: push and recurse
                         let adjPayload = graph.storage[adjacent]
                         let adjAdjacents = Swift.Array(extract.adjacent(adjPayload))
@@ -75,7 +76,7 @@ extension Graph.Sequential.Analyze {
                         break
                     } else if onStack[adjacent.retag(Bit.self)] {
                         // On stack: update lowLink
-                        lowLink[node] = min(lowLink[node], nodeIndex[adjacent])
+                        lowLink[node.retag(Int.self)] = min(lowLink[node.retag(Int.self)], nodeIndex[adjacent.retag(Int.self)])
                     }
                     // else: already processed and not on stack, ignore
                 }
@@ -87,7 +88,7 @@ extension Graph.Sequential.Analyze {
                 // All adjacents processed: check for SCC root and pop
                 callStack.removeLast()
 
-                if lowLink[node] == nodeIndex[node] {
+                if lowLink[node.retag(Int.self)] == nodeIndex[node.retag(Int.self)] {
                     // Node is SCC root: pop component
                     var component = [Graph.Node<Tag>]()
                     repeat {
@@ -101,7 +102,7 @@ extension Graph.Sequential.Analyze {
                 // Update parent's lowLink if there is a parent
                 if !callStack.isEmpty {
                     let parent = callStack.last!.node
-                    lowLink[parent] = min(lowLink[parent], lowLink[node])
+                    lowLink[parent.retag(Int.self)] = min(lowLink[parent.retag(Int.self)], lowLink[node.retag(Int.self)])
                 }
             }
         }

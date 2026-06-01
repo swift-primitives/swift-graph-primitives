@@ -92,6 +92,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/swift-primitives/swift-tagged-primitives.git", branch: "main"),
+        .package(url: "https://github.com/swift-primitives/swift-tagged-collection-primitives.git", branch: "main"),
         .package(url: "https://github.com/swift-primitives/swift-bit-primitives.git", branch: "main"),
         .package(url: "https://github.com/swift-primitives/swift-stack-primitives.git", branch: "main"),
         .package(url: "https://github.com/swift-primitives/swift-set-primitives.git", branch: "main"),
@@ -120,6 +121,7 @@ let package = Package(
             dependencies: [
                 "Graph Primitive",
                 .product(name: "Tagged Primitives", package: "swift-tagged-primitives"),
+                .product(name: "Tagged Collection Primitives", package: "swift-tagged-collection-primitives"),
                 .product(name: "Index Primitives", package: "swift-index-primitives"),
                 .product(name: "Array Primitives", package: "swift-array-primitives"),
                 .product(name: "Vector Primitives", package: "swift-vector-primitives"),
@@ -135,6 +137,7 @@ let package = Package(
                 .product(name: "Stack Primitives", package: "swift-stack-primitives"),
                 .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
                 .product(name: "Iterator Chunk Primitives", package: "swift-iterator-primitives"),
+                .product(name: "Tagged Collection Primitives", package: "swift-tagged-collection-primitives"),
             ]
         ),
         .target(
@@ -144,6 +147,7 @@ let package = Package(
                 .product(name: "Queue Primitives", package: "swift-queue-primitives"),
                 .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
                 .product(name: "Iterator Chunk Primitives", package: "swift-iterator-primitives"),
+                .product(name: "Tagged Collection Primitives", package: "swift-tagged-collection-primitives"),
             ]
         ),
         .target(
@@ -152,6 +156,7 @@ let package = Package(
                 "Graph Primitives Core",
                 .product(name: "Stack Primitives", package: "swift-stack-primitives"),
                 .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
+                .product(name: "Tagged Collection Primitives", package: "swift-tagged-collection-primitives"),
             ]
         ),
 
@@ -165,6 +170,7 @@ let package = Package(
                 .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
                 .product(name: "Set Ordered Primitives", package: "swift-set-ordered-primitives"),
                 .product(name: "Set Primitives", package: "swift-set-primitives"),
+                .product(name: "Tagged Collection Primitives", package: "swift-tagged-collection-primitives"),
             ]
         ),
         .target(
@@ -176,6 +182,7 @@ let package = Package(
                 .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
                 .product(name: "Set Ordered Primitives", package: "swift-set-ordered-primitives"),
                 .product(name: "Set Primitives", package: "swift-set-primitives"),
+                .product(name: "Tagged Collection Primitives", package: "swift-tagged-collection-primitives"),
             ]
         ),
         .target(
@@ -184,6 +191,7 @@ let package = Package(
                 "Graph Primitives Core",
                 .product(name: "Stack Primitives", package: "swift-stack-primitives"),
                 .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
+                .product(name: "Tagged Collection Primitives", package: "swift-tagged-collection-primitives"),
             ]
         ),
         .target(
@@ -199,6 +207,7 @@ let package = Package(
                 "Graph Primitives Core",
                 .product(name: "Stack Primitives", package: "swift-stack-primitives"),
                 .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
+                .product(name: "Tagged Collection Primitives", package: "swift-tagged-collection-primitives"),
             ]
         ),
 
@@ -210,6 +219,7 @@ let package = Package(
                 "Graph Primitives Core",
                 .product(name: "Queue Primitives", package: "swift-queue-primitives"),
                 .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
+                .product(name: "Tagged Collection Primitives", package: "swift-tagged-collection-primitives"),
             ]
         ),
         .target(
@@ -218,6 +228,7 @@ let package = Package(
                 "Graph Primitives Core",
                 .product(name: "Queue Primitives", package: "swift-queue-primitives"),
                 .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
+                .product(name: "Tagged Collection Primitives", package: "swift-tagged-collection-primitives"),
             ]
         ),
         .target(
@@ -226,6 +237,7 @@ let package = Package(
                 "Graph Primitives Core",
                 .product(name: "Heap Primitives", package: "swift-heap-primitives"),
                 .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
+                .product(name: "Tagged Collection Primitives", package: "swift-tagged-collection-primitives"),
             ]
         ),
 
@@ -243,6 +255,7 @@ let package = Package(
                 "Graph Primitives Core",
                 .product(name: "Set Ordered Primitives", package: "swift-set-ordered-primitives"),
                 .product(name: "Set Primitives", package: "swift-set-primitives"),
+                .product(name: "Tagged Collection Primitives", package: "swift-tagged-collection-primitives"),
             ]
         ),
 
@@ -252,6 +265,7 @@ let package = Package(
             name: "Graph Reverse Primitives",
             dependencies: [
                 "Graph Primitives Core",
+                .product(name: "Tagged Collection Primitives", package: "swift-tagged-collection-primitives"),
             ]
         ),
         .target(
@@ -263,6 +277,7 @@ let package = Package(
                 .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
                 .product(name: "Set Ordered Primitives", package: "swift-set-ordered-primitives"),
                 .product(name: "Set Primitives", package: "swift-set-primitives"),
+                .product(name: "Tagged Collection Primitives", package: "swift-tagged-collection-primitives"),
             ]
         ),
 

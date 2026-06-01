@@ -2,6 +2,7 @@ public import Array_Primitives
 public import Set_Ordered_Primitives
 public import Set_Primitives
 public import Tagged_Primitives
+public import Tagged_Collection_Primitives
 
 extension Graph.Sequential.Transform {
     /// Extracts induced subgraph on specified nodes.
@@ -54,16 +55,16 @@ extension Graph.Sequential.Transform {
         }
 
         // Build old-to-new index mapping
-        var oldToNew = Array<Int>.Fixed.Indexed<Tag>(repeating: -1, count: count)
+        var oldToNew = Array<Int>.Fixed(repeating: -1, count: count.retag(Int.self))
         for (newIndex, node) in sortedNodes.enumerated() {
-            oldToNew[node] = newIndex
+            oldToNew[node.retag(Int.self)] = newIndex
         }
 
         // Validate that all edges target included nodes
         for node in sortedNodes {
             let payload = graph.storage[node]
             for adjacent in remap.adjacent(payload) {
-                guard oldToNew[adjacent] >= 0 else { return nil }
+                guard oldToNew[adjacent.retag(Int.self)] >= 0 else { return nil }
             }
         }
 
@@ -74,7 +75,7 @@ extension Graph.Sequential.Transform {
             let oldPayload = graph.storage[node]
 
             let remappedPayload = remap.mapNodes(oldPayload) { oldNode in
-                Graph.Node<Tag>(_unchecked: Ordinal(UInt(oldToNew[oldNode])))
+                Graph.Node<Tag>(_unchecked: Ordinal(UInt(oldToNew[oldNode.retag(Int.self)])))
             }
 
             _ = builder.allocate(remappedPayload)
@@ -114,9 +115,9 @@ extension Graph.Sequential.Transform where Payload == Graph.Adjacency.List<Tag> 
         }
 
         // Build old-to-new index mapping
-        var oldToNew = Array<Int>.Fixed.Indexed<Tag>(repeating: -1, count: count)
+        var oldToNew = Array<Int>.Fixed(repeating: -1, count: count.retag(Int.self))
         for (newIndex, node) in sortedNodes.enumerated() {
-            oldToNew[node] = newIndex
+            oldToNew[node.retag(Int.self)] = newIndex
         }
 
         // Create new storage with filtered and remapped adjacency
@@ -128,7 +129,7 @@ extension Graph.Sequential.Transform where Payload == Graph.Adjacency.List<Tag> 
             // Filter to only include edges where target is in the subgraph, then remap
             var newAdjacent = [Graph.Node<Tag>]()
             for adjacent in oldPayload.adjacent {
-                let newIdx = oldToNew[adjacent]
+                let newIdx = oldToNew[adjacent.retag(Int.self)]
                 if newIdx >= 0 {
                     newAdjacent.append(Graph.Node<Tag>(_unchecked: Ordinal(UInt(newIdx))))
                 }

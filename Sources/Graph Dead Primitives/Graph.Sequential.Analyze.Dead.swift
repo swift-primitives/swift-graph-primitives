@@ -4,6 +4,7 @@ public import Set_Ordered_Primitives
 public import Set_Primitives
 public import Stack_Primitives
 public import Tagged_Primitives
+public import Tagged_Collection_Primitives
 public import Vector_Primitives
 
 extension Graph.Sequential.Analyze {

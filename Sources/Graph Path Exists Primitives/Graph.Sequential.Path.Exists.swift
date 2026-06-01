@@ -2,6 +2,7 @@ public import Array_Primitives
 public import Bit_Vector_Primitives
 public import Queue_Primitives
 public import Tagged_Primitives
+public import Tagged_Collection_Primitives
 public import Vector_Primitives
 
 extension Graph.Sequential.Path {

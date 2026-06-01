@@ -1,5 +1,6 @@
 public import Array_Primitives
 public import Tagged_Primitives
+public import Tagged_Collection_Primitives
 public import Vector_Primitives
 
 extension Graph.Sequential.Reverse {
@@ -17,8 +18,9 @@ extension Graph.Sequential.Reverse {
             return builder.build()
         }
 
-        // Build reversed adjacency lists using typed indexed array
-        var reversedAdjacent = Array<[Graph.Node<Tag>]>.Fixed.Indexed<Tag>(repeating: [], count: count)
+        // Build reversed adjacency lists using a plain Array.Fixed; retag node
+        // indices into the Element domain at each access.
+        var reversedAdjacent = Array<[Graph.Node<Tag>]>.Fixed(repeating: [], count: count.retag([Graph.Node<Tag>].self))
 
         for source in graph.nodes {
             let payload = graph.storage[source]
@@ -26,14 +28,14 @@ extension Graph.Sequential.Reverse {
             for target in extract.adjacent(payload) {
                 // Original edge: source → target
                 // Reversed edge: target → source
-                reversedAdjacent[target].append(source)
+                reversedAdjacent[target.retag([Graph.Node<Tag>].self)].append(source)
             }
         }
 
         // Build the reversed graph
         var builder = Graph.Sequential<Tag, Graph.Adjacency.List<Tag>>.Builder(capacity: count)
         for source in graph.nodes {
-            _ = builder.allocate(Graph.Adjacency.List(adjacent: reversedAdjacent[source]))
+            _ = builder.allocate(Graph.Adjacency.List(adjacent: reversedAdjacent[source.retag([Graph.Node<Tag>].self)]))
         }
 
         return builder.build()

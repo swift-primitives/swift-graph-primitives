@@ -2,6 +2,7 @@ public import Array_Primitives
 public import Bit_Vector_Primitives
 public import Queue_Primitives
 public import Tagged_Primitives
+public import Tagged_Collection_Primitives
 public import Vector_Primitives
 
 extension Graph.Sequential.Path {
@@ -28,7 +29,7 @@ extension Graph.Sequential.Path {
 
         // BFS with bit-packed visited tracking and predecessor array
         let visited = Bit.Vector(capacity: count.retag(Bit.self))
-        var predecessors = Array<Graph.Node<Tag>?>.Fixed.Indexed<Tag>(repeating: nil, count: count)
+        var predecessors = Array<Graph.Node<Tag>?>.Fixed(repeating: nil, count: count.retag((Graph.Node<Tag>?).self))
         var queue = Queue<Graph.Node<Tag>>()
 
         visited[source.retag(Bit.self)] = true
@@ -40,7 +41,7 @@ extension Graph.Sequential.Path {
                 let adjIdx = adjacent.retag(Bit.self)
                 if !visited[adjIdx] {
                     visited[adjIdx] = true
-                    predecessors[adjacent] = node
+                    predecessors[adjacent.retag((Graph.Node<Tag>?).self)] = node
                     queue.enqueue(adjacent)
 
                     if adjacent == target {
@@ -58,7 +59,7 @@ extension Graph.Sequential.Path {
     @usableFromInline
     func reconstructPath(
         to target: Graph.Node<Tag>,
-        predecessors: borrowing Array<Graph.Node<Tag>?>.Fixed.Indexed<Tag>,
+        predecessors: borrowing Array<Graph.Node<Tag>?>.Fixed,
         source: Graph.Node<Tag>
     ) -> [Graph.Node<Tag>] {
         var path = [Graph.Node<Tag>]()
@@ -67,7 +68,7 @@ extension Graph.Sequential.Path {
         while let node = current {
             path.append(node)
             if node == source { break }
-            current = predecessors[node]
+            current = predecessors[node.retag((Graph.Node<Tag>?).self)]
         }
 
         path.reverse()

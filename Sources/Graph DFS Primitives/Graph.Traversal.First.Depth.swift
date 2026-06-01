@@ -3,6 +3,7 @@ public import Bit_Vector_Primitives
 internal import Iterator_Chunk_Primitives
 public import Stack_Primitives
 public import Tagged_Primitives
+public import Tagged_Collection_Primitives
 public import Vector_Primitives
 
 extension Graph.Traversal.First {
@@ -21,7 +22,7 @@ extension Graph.Traversal.First {
         public typealias Failure = Never
 
         @usableFromInline
-        let storage: Array<Payload>.Indexed<Tag>
+        let storage: Tagged<Tag, Array<Payload>>
 
         @usableFromInline
         let extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
@@ -37,7 +38,7 @@ extension Graph.Traversal.First {
 
         @usableFromInline
         init(
-            storage: Array<Payload>.Indexed<Tag>,
+            storage: Tagged<Tag, Array<Payload>>,
             roots: some Swift.Sequence<Graph.Node<Tag>>,
             extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
         ) {

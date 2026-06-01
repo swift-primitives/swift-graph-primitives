@@ -1,7 +1,7 @@
 public import Array_Primitives
 public import Index_Primitives
 public import Tagged_Primitives
-public import Vector_Primitives
+public import Tagged_Collection_Primitives
 public import Vector_Primitives
 
 extension Graph {
@@ -25,10 +25,10 @@ extension Graph {
     /// print(graph[a])  // "A"
     /// ```
     public struct Sequential<Tag, Payload> {
-        public let storage: Array<Payload>.Indexed<Tag>
+        public let storage: Tagged<Tag, Array<Payload>>
 
         @usableFromInline
-        init(storage: Array<Payload>.Indexed<Tag>) {
+        init(storage: Tagged<Tag, Array<Payload>>) {
             self.storage = storage
         }
 

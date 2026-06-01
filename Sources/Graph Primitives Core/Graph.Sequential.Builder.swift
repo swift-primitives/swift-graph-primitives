@@ -1,6 +1,7 @@
 public import Array_Primitives
 public import Index_Primitives
 public import Tagged_Primitives
+public import Tagged_Collection_Primitives
 
 extension Graph.Sequential {
     /// Mutable builder for constructing graphs.
@@ -63,7 +64,7 @@ extension Graph.Sequential {
         /// This consumes the builder.
         @inlinable
         public consuming func build() -> Graph.Sequential<Tag, Payload> {
-            Graph.Sequential(storage: Array<Payload>.Indexed<Tag>(storage))
+            Graph.Sequential(storage: Tagged<Tag, Array<Payload>>(storage))
         }
     }
 }
