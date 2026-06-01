@@ -102,6 +102,7 @@ let package = Package(
         .package(url: "https://github.com/swift-primitives/swift-queue-primitives.git", branch: "main"),
         .package(url: "https://github.com/swift-primitives/swift-bit-vector-primitives.git", branch: "main"),
         .package(url: "https://github.com/swift-primitives/swift-sequence-primitives.git", branch: "main"),
+        .package(url: "https://github.com/swift-primitives/swift-iterator-primitives.git", branch: "main"),
         .package(url: "https://github.com/swift-primitives/swift-vector-primitives.git", branch: "main"),
     ],
     targets: [
@@ -133,7 +134,7 @@ let package = Package(
                 "Graph Primitives Core",
                 .product(name: "Stack Primitives", package: "swift-stack-primitives"),
                 .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
-                .product(name: "Sequence Primitives", package: "swift-sequence-primitives"),
+                .product(name: "Iterator Chunk Primitives", package: "swift-iterator-primitives"),
             ]
         ),
         .target(
@@ -142,7 +143,7 @@ let package = Package(
                 "Graph Primitives Core",
                 .product(name: "Queue Primitives", package: "swift-queue-primitives"),
                 .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
-                .product(name: "Sequence Primitives", package: "swift-sequence-primitives"),
+                .product(name: "Iterator Chunk Primitives", package: "swift-iterator-primitives"),
             ]
         ),
         .target(

@@ -1,6 +1,6 @@
 public import Array_Primitives
 public import Bit_Vector_Primitives
-internal import Sequence_Primitives
+internal import Iterator_Chunk_Primitives
 public import Stack_Primitives
 public import Tagged_Primitives
 public import Vector_Primitives
@@ -16,8 +16,9 @@ extension Graph.Traversal.First {
     /// requiring `BidirectionalCollection` conformance from the adjacency sequence.
     /// If left-to-right visitation is important, ensure your payload's adjacency
     /// is ordered accordingly.
-    public struct Depth<Tag, Payload, Adjacent: Swift.Sequence<Graph.Node<Tag>>>: ~Copyable, Sequence.Iterator.`Protocol` {
+    public struct Depth<Tag, Payload, Adjacent: Swift.Sequence<Graph.Node<Tag>>>: ~Copyable, Iterator.Chunk.`Protocol` {
         public typealias Element = (node: Graph.Node<Tag>, payload: Payload)
+        public typealias Failure = Never
 
         @usableFromInline
         let storage: Array<Payload>.Indexed<Tag>
@@ -52,13 +53,13 @@ extension Graph.Traversal.First {
 
         @_lifetime(&self)
         @inlinable
-        public mutating func nextSpan(maximumCount: Cardinal) -> Span<Element> {
+        public mutating func next(maximumCount: some Carrier.`Protocol`<Cardinal>) -> Span<Element> {
             let ptr = unsafe withUnsafeMutablePointer(to: &_element) { p in
                 unsafe UnsafePointer<Element>(
                     unsafe UnsafeRawPointer(p).assumingMemoryBound(to: Element.self)
                 )
             }
-            guard maximumCount > .zero else {
+            guard maximumCount.underlying > .zero else {
                 let span = unsafe Span(_unsafeStart: ptr, count: 0)
                 return unsafe _overrideLifetime(span, mutating: &self)
             }

@@ -1,7 +1,7 @@
 public import Array_Primitives
 public import Bit_Vector_Primitives
 public import Queue_Primitives
-internal import Sequence_Primitives
+internal import Iterator_Chunk_Primitives
 public import Tagged_Primitives
 public import Vector_Primitives
 
@@ -10,8 +10,9 @@ extension Graph.Traversal.First {
     ///
     /// Visits nodes in breadth-first order starting from the specified roots.
     /// Each node is visited at most once, even if reachable from multiple paths.
-    public struct Breadth<Tag, Payload, Adjacent: Swift.Sequence<Graph.Node<Tag>>>: ~Copyable, Sequence.Iterator.`Protocol` {
+    public struct Breadth<Tag, Payload, Adjacent: Swift.Sequence<Graph.Node<Tag>>>: ~Copyable, Iterator.Chunk.`Protocol` {
         public typealias Element = (node: Graph.Node<Tag>, payload: Payload)
+        public typealias Failure = Never
 
         @usableFromInline
         let storage: Array<Payload>.Indexed<Tag>
@@ -50,13 +51,13 @@ extension Graph.Traversal.First {
 
         @_lifetime(&self)
         @inlinable
-        public mutating func nextSpan(maximumCount: Cardinal) -> Span<Element> {
+        public mutating func next(maximumCount: some Carrier.`Protocol`<Cardinal>) -> Span<Element> {
             let ptr = unsafe withUnsafeMutablePointer(to: &_element) { p in
                 unsafe UnsafePointer<Element>(
                     unsafe UnsafeRawPointer(p).assumingMemoryBound(to: Element.self)
                 )
             }
-            guard maximumCount > .zero else {
+            guard maximumCount.underlying > .zero else {
                 let span = unsafe Span(_unsafeStart: ptr, count: 0)
                 return unsafe _overrideLifetime(span, mutating: &self)
             }
