@@ -1,9 +1,12 @@
 public import Array_Primitives
 import Bit_Vector_Primitives
+public import Buffer_Linear_Primitive
+public import Column_Primitives
+public import Shared_Primitive
 import Stack_Primitives
+import Tagged_Collection_Primitives
 public import Tagged_Primitives
-public import Tagged_Collection_Primitives
-public import Vector_Primitives
+import Vector_Primitives
 
 extension Graph.Traversal {
     /// Topological ordering of nodes in a directed acyclic graph.
@@ -33,7 +36,7 @@ extension Graph.Traversal {
 
         @usableFromInline
         init(
-            storage: Tagged<Tag, Array<Payload>>,
+            storage: Tagged<Tag, Array<Column.Shared<Payload>>>,
             roots: some Swift.Sequence<Graph.Node<Tag>>,
             extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
         ) {
@@ -42,7 +45,7 @@ extension Graph.Traversal {
 
         @usableFromInline
         static func computeOrder(
-            storage: Tagged<Tag, Array<Payload>>,
+            storage: Tagged<Tag, Array<Column.Shared<Payload>>>,
             roots: some Swift.Sequence<Graph.Node<Tag>>,
             extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
         ) -> [Element]? {

@@ -36,12 +36,17 @@ struct ReachabilityTests {
 
         let graph = builder.build()
 
+        // `Set<S>.Ordered` is move-only on the direct column; #expect's autoclosure
+        // cannot capture it, so bind copyable results first.
         let reachable = graph.analyze(using: TestPayload.extract).reachable(from: a)
-        #expect(reachable.count == 4)
-        #expect(reachable.contains(a))
-        #expect(reachable.contains(b))
-        #expect(reachable.contains(c))
-        #expect(reachable.contains(d))
+        let count = reachable.count
+        let hasA = reachable.contains(a), hasB = reachable.contains(b)
+        let hasC = reachable.contains(c), hasD = reachable.contains(d)
+        #expect(count == 4)
+        #expect(hasA)
+        #expect(hasB)
+        #expect(hasC)
+        #expect(hasD)
     }
 
     @Test
@@ -56,11 +61,14 @@ struct ReachabilityTests {
         let graph = builder.build()
 
         let reachable = graph.analyze(using: TestPayload.extract).reachable(from: b)
-        #expect(reachable.count == 2)
-        #expect(reachable.contains(b))
-        #expect(reachable.contains(d))
-        #expect(!reachable.contains(a))
-        #expect(!reachable.contains(c))
+        let count = reachable.count
+        let hasB = reachable.contains(b), hasD = reachable.contains(d)
+        let hasA = reachable.contains(a), hasC = reachable.contains(c)
+        #expect(count == 2)
+        #expect(hasB)
+        #expect(hasD)
+        #expect(!hasA)
+        #expect(!hasC)
     }
 
     @Test
@@ -76,7 +84,8 @@ struct ReachabilityTests {
         let graph = builder.build()
 
         let reachable = graph.analyze(using: TestPayload.extract).reachable(from: [a, c])
-        #expect(reachable.count == 4)
+        let count = reachable.count
+        #expect(count == 4)
     }
 
     @Test
@@ -85,13 +94,15 @@ struct ReachabilityTests {
 
         let c = builder.allocate(TestPayload(name: "C", successors: []))
         let b = builder.allocate(TestPayload(name: "B", successors: [c]))
-        let a = builder.allocate(TestPayload(name: "A", successors: [b]))
+        _ = builder.allocate(TestPayload(name: "A", successors: [b]))
 
         let graph = builder.build()
 
         let reachable = graph.analyze(using: TestPayload.extract).reachable(from: c)
-        #expect(reachable.count == 1)
-        #expect(reachable.contains(c))
+        let count = reachable.count
+        let hasC = reachable.contains(c)
+        #expect(count == 1)
+        #expect(hasC)
     }
 }
 

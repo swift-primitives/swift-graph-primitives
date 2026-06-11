@@ -1,9 +1,13 @@
-public import Array_Primitives
 public import Bit_Vector_Primitives
-public import Heap_Primitives
-public import Tagged_Primitives
+public import Buffer_Linear_Bounded_Primitive
+public import Buffer_Linear_Primitive
+public import Column_Primitives
+public import Fixed_Primitives
+public import Heap_Primitive
+public import Shared_Primitive
 public import Tagged_Collection_Primitives
-public import Vector_Primitives
+public import Tagged_Primitives
+import Vector_Primitives
 
 extension Graph.Sequential.Path {
     /// Priority queue entry for Dijkstra's algorithm.
@@ -61,8 +65,8 @@ extension Graph.Sequential.Path {
         // Dijkstra's algorithm with heap-based priority queue
         var heap = Heap<Entry>()
         let visited = Bit.Vector(capacity: count.retag(Bit.self))
-        var distances = Array<Int>.Fixed(repeating: Int.max, count: count.retag(Int.self))
-        var predecessors = Array<Graph.Node<Tag>?>.Fixed(repeating: nil, count: count.retag((Graph.Node<Tag>?).self))
+        var distances = Fixed<Column.Bounded<Int>>(repeating: Int.max, count: count.retag(Int.self))
+        var predecessors = Fixed<Column.Bounded<Graph.Node<Tag>?>>(repeating: nil, count: count.retag((Graph.Node<Tag>?).self))
 
         distances[source.retag(Int.self)] = 0
         heap.push(Entry(node: source, distance: 0))
@@ -101,7 +105,7 @@ extension Graph.Sequential.Path {
     @usableFromInline
     func reconstructWeightedPath(
         to target: Graph.Node<Tag>,
-        predecessors: borrowing Array<Graph.Node<Tag>?>.Fixed,
+        predecessors: borrowing Fixed<Column.Bounded<Graph.Node<Tag>?>>,
         source: Graph.Node<Tag>
     ) -> [Graph.Node<Tag>] {
         var path = [Graph.Node<Tag>]()

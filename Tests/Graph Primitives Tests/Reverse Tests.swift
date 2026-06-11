@@ -15,7 +15,7 @@ struct ReversedGraphTests {
         let d = builder.allocate(Graph.Adjacency.List(adjacent: []))
         let b = builder.allocate(Graph.Adjacency.List(adjacent: [d]))
         let c = builder.allocate(Graph.Adjacency.List(adjacent: [d]))
-        let a = builder.allocate(Graph.Adjacency.List(adjacent: [b, c]))
+        _ = builder.allocate(Graph.Adjacency.List(adjacent: [b, c]))
 
         let graph = builder.build()
 
@@ -131,12 +131,18 @@ struct BackwardReachabilityTests {
         let graph = builder.build()
 
         // Backward reachable to C should be {A, B, C}
+        // `Set<S>.Ordered` is move-only on the direct column; #expect's autoclosure
+        // cannot capture it, so bind copyable results first.
         let backwardReachable = graph.reverse.reachable(to: c)
 
-        #expect(backwardReachable.contains(a))
-        #expect(backwardReachable.contains(b))
-        #expect(backwardReachable.contains(c))
-        #expect(backwardReachable.count == 3)
+        let hasA = backwardReachable.contains(a)
+        let hasB = backwardReachable.contains(b)
+        let hasC = backwardReachable.contains(c)
+        let count = backwardReachable.count
+        #expect(hasA)
+        #expect(hasB)
+        #expect(hasC)
+        #expect(count == 3)
     }
 
     @Test
@@ -153,10 +159,14 @@ struct BackwardReachabilityTests {
         // Backward reachable to C should only be {C}
         let backwardReachable = graph.reverse.reachable(to: c)
 
-        #expect(backwardReachable.contains(c))
-        #expect(!backwardReachable.contains(a))
-        #expect(!backwardReachable.contains(b))
-        #expect(backwardReachable.count == 1)
+        let hasC = backwardReachable.contains(c)
+        let hasA = backwardReachable.contains(a)
+        let hasB = backwardReachable.contains(b)
+        let count = backwardReachable.count
+        #expect(hasC)
+        #expect(!hasA)
+        #expect(!hasB)
+        #expect(count == 1)
     }
 
     @Test
@@ -169,8 +179,10 @@ struct BackwardReachabilityTests {
 
         let backwardReachable = graph.reverse.reachable(to: a)
 
-        #expect(backwardReachable.contains(a))
-        #expect(backwardReachable.count == 1)
+        let hasA = backwardReachable.contains(a)
+        let count = backwardReachable.count
+        #expect(hasA)
+        #expect(count == 1)
     }
 
     @Test
@@ -180,7 +192,8 @@ struct BackwardReachabilityTests {
 
         let backwardReachable = graph.reverse.reachable(to: invalid)
 
-        #expect(backwardReachable.isEmpty)
+        let isEmpty = backwardReachable.isEmpty
+        #expect(isEmpty)
     }
 
     @Test
@@ -193,7 +206,8 @@ struct BackwardReachabilityTests {
 
         let backwardReachable = graph.reverse.reachable(to: invalid)
 
-        #expect(backwardReachable.isEmpty)
+        let isEmpty = backwardReachable.isEmpty
+        #expect(isEmpty)
     }
 
     @Test
@@ -211,11 +225,16 @@ struct BackwardReachabilityTests {
         // Backward reachable to D should be {A, B, C, D}
         let backwardReachable = graph.reverse.reachable(to: d)
 
-        #expect(backwardReachable.contains(a))
-        #expect(backwardReachable.contains(b))
-        #expect(backwardReachable.contains(c))
-        #expect(backwardReachable.contains(d))
-        #expect(backwardReachable.count == 4)
+        let hasA = backwardReachable.contains(a)
+        let hasB = backwardReachable.contains(b)
+        let hasC = backwardReachable.contains(c)
+        let hasD = backwardReachable.contains(d)
+        let count = backwardReachable.count
+        #expect(hasA)
+        #expect(hasB)
+        #expect(hasC)
+        #expect(hasD)
+        #expect(count == 4)
     }
 
     @Test
@@ -233,9 +252,13 @@ struct BackwardReachabilityTests {
         // Backward reachable to any node should include all nodes (due to cycle)
         let backwardReachable = graph.reverse.reachable(to: a)
 
-        #expect(backwardReachable.contains(a))
-        #expect(backwardReachable.contains(b))
-        #expect(backwardReachable.contains(c))
-        #expect(backwardReachable.count == 3)
+        let hasA = backwardReachable.contains(a)
+        let hasB = backwardReachable.contains(b)
+        let hasC = backwardReachable.contains(c)
+        let count = backwardReachable.count
+        #expect(hasA)
+        #expect(hasB)
+        #expect(hasC)
+        #expect(count == 3)
     }
 }

@@ -1,8 +1,12 @@
-public import Array_Primitives
 public import Bit_Vector_Primitives
+public import Buffer_Linear_Bounded_Primitive
+public import Buffer_Linear_Primitive
+public import Column_Primitives
+public import Fixed_Primitives
+public import Shared_Primitive
 public import Stack_Primitives
-public import Tagged_Primitives
 public import Tagged_Collection_Primitives
+public import Tagged_Primitives
 public import Vector_Primitives
 
 extension Graph.Sequential.Analyze {
@@ -21,8 +25,8 @@ extension Graph.Sequential.Analyze {
         }
 
         // For each node, compute all reachable nodes
-        // Plain Array.Fixed scratch; retag node indices into the Element domain.
-        var closureAdjacent = Array<[Graph.Node<Tag>]>.Fixed(repeating: [], count: count.retag([Graph.Node<Tag>].self))
+        // Plain Fixed scratch; retag node indices into the Element domain.
+        var closureAdjacent = Fixed<Column.Bounded<[Graph.Node<Tag>]>>(repeating: [], count: count.retag([Graph.Node<Tag>].self))
 
         for source in graph.nodes {
             let visited = Bit.Vector(capacity: count.retag(Bit.self))

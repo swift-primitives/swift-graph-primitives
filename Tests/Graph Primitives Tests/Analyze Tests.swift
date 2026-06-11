@@ -24,13 +24,18 @@ struct DeadNodesTests {
 
         let graph = builder.build()
 
+        // `Set<S>.Ordered` is move-only on the direct column; #expect's autoclosure
+        // cannot capture it, so bind copyable results first.
         let dead = graph.analyze.dead(from: [a])
 
-        #expect(dead.contains(c))
-        #expect(dead.contains(d))
-        #expect(!dead.contains(a))
-        #expect(!dead.contains(b))
-        #expect(dead.count == 2)
+        let hasC = dead.contains(c), hasD = dead.contains(d)
+        let hasA = dead.contains(a), hasB = dead.contains(b)
+        let count = dead.count
+        #expect(hasC)
+        #expect(hasD)
+        #expect(!hasA)
+        #expect(!hasB)
+        #expect(count == 2)
     }
 
     @Test
@@ -46,7 +51,8 @@ struct DeadNodesTests {
 
         let dead = graph.analyze.dead(from: [a])
 
-        #expect(dead.isEmpty)
+        let isEmpty = dead.isEmpty
+        #expect(isEmpty)
     }
 
     @Test
@@ -61,10 +67,12 @@ struct DeadNodesTests {
 
         let dead = graph.analyze.dead(from: [] as [Graph.Node<TestTag>])
 
-        #expect(dead.count == 3)
-        #expect(dead.contains(a))
-        #expect(dead.contains(b))
-        #expect(dead.contains(c))
+        let count = dead.count
+        let hasA = dead.contains(a), hasB = dead.contains(b), hasC = dead.contains(c)
+        #expect(count == 3)
+        #expect(hasA)
+        #expect(hasB)
+        #expect(hasC)
     }
 
     @Test
@@ -73,7 +81,8 @@ struct DeadNodesTests {
 
         let dead = graph.analyze.dead(from: [] as [Graph.Node<TestTag>])
 
-        #expect(dead.isEmpty)
+        let isEmpty = dead.isEmpty
+        #expect(isEmpty)
     }
 
     @Test
@@ -91,12 +100,16 @@ struct DeadNodesTests {
 
         let dead = graph.analyze.dead(from: [a, c])
 
-        #expect(dead.contains(e))
-        #expect(!dead.contains(a))
-        #expect(!dead.contains(b))
-        #expect(!dead.contains(c))
-        #expect(!dead.contains(d))
-        #expect(dead.count == 1)
+        let hasE = dead.contains(e)
+        let hasA = dead.contains(a), hasB = dead.contains(b)
+        let hasC = dead.contains(c), hasD = dead.contains(d)
+        let count = dead.count
+        #expect(hasE)
+        #expect(!hasA)
+        #expect(!hasB)
+        #expect(!hasC)
+        #expect(!hasD)
+        #expect(count == 1)
     }
 }
 

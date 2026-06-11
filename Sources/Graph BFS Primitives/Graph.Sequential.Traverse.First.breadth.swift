@@ -1,3 +1,4 @@
+public import Buffer_Linear_Primitive
 public import Graph_Primitives_Core
 
 extension Graph.Sequential.Traverse.First {

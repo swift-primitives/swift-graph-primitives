@@ -1,10 +1,14 @@
+import Column_Primitives
 import Graph_Primitives_Test_Support
+import Hash_Indexed_Primitive
 import Testing
 
 private enum TestTag {}
 
-private func orderedSet(_ nodes: Graph.Node<TestTag>...) -> Set_Primitives.Set<Graph.Node<TestTag>>.Ordered {
-    var set = Set_Primitives.Set<Graph.Node<TestTag>>.Ordered()
+private func orderedSet(
+    _ nodes: Graph.Node<TestTag>...
+) -> Set_Primitives.Set<Hash.Indexed<Column.Heap<Graph.Node<TestTag>>>>.Ordered {
+    var set = Set_Primitives.Set<Hash.Indexed<Column.Heap<Graph.Node<TestTag>>>>.Ordered()
     for node in nodes {
         _ = set.insert(node)
     }
@@ -108,7 +112,7 @@ struct SubgraphTests {
         let d = builder.allocate(Graph.Adjacency.List(adjacent: []))
         let c = builder.allocate(Graph.Adjacency.List(adjacent: [d]))
         let b = builder.allocate(Graph.Adjacency.List(adjacent: [c, d]))
-        let a = builder.allocate(Graph.Adjacency.List(adjacent: [b]))
+        _ = builder.allocate(Graph.Adjacency.List(adjacent: [b]))
 
         let graph = builder.build()
 
@@ -132,7 +136,7 @@ struct SubgraphTests {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
 
         let a = builder.allocate(Graph.Adjacency.List(adjacent: []))
-        let b = builder.allocate(Graph.Adjacency.List(adjacent: [a]))
+        _ = builder.allocate(Graph.Adjacency.List(adjacent: [a]))
 
         let graph = builder.build()
 

@@ -1,7 +1,11 @@
 public import Array_Primitives
-public import Index_Primitives
-public import Tagged_Primitives
+public import Buffer_Linear_Primitive
+public import Buffer_Linear_Primitives
+public import Column_Primitives
+import Index_Primitives
+public import Shared_Primitive
 public import Tagged_Collection_Primitives
+public import Tagged_Primitives
 public import Vector_Primitives
 
 extension Graph {
@@ -14,6 +18,15 @@ extension Graph {
     /// The graph is immutable after construction via `Builder`. Use protocols like
     /// `Adjacency` on the `Payload` type to define edges.
     ///
+    /// ## Storage column
+    ///
+    /// Payloads live in `Array<Column.Shared<Payload>>` — the explicit CoW
+    /// value-semantic column. `Sequential` is a Copyable value type whose storage
+    /// is an immutable `let`: copies are box retains (no payload duplication),
+    /// which is exactly the sharing semantics an immutable graph wants. The
+    /// `Builder` mutates the array (its appends ride the column's mutation gate)
+    /// and hands the finished column over at `build()`.
+    ///
     /// ## Example
     ///
     /// ```swift
@@ -25,10 +38,10 @@ extension Graph {
     /// print(graph[a])  // "A"
     /// ```
     public struct Sequential<Tag: ~Copyable & ~Escapable, Payload> {
-        public let storage: Tagged<Tag, Array<Payload>>
+        public let storage: Tagged<Tag, Array<Column.Shared<Payload>>>
 
         @usableFromInline
-        init(storage: Tagged<Tag, Array<Payload>>) {
+        init(storage: Tagged<Tag, Array<Column.Shared<Payload>>>) {
             self.storage = storage
         }
 

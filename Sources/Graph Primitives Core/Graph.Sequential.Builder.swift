@@ -1,7 +1,10 @@
 public import Array_Primitives
-public import Index_Primitives
+public import Buffer_Linear_Primitive
+public import Column_Primitives
+import Index_Primitives
+public import Shared_Primitive
+import Tagged_Collection_Primitives
 public import Tagged_Primitives
-public import Tagged_Collection_Primitives
 
 extension Graph.Sequential {
     /// Mutable builder for constructing graphs.
@@ -20,18 +23,18 @@ extension Graph.Sequential {
     /// ```
     public struct Builder: ~Copyable {
         @usableFromInline
-        var storage: Array<Payload>
+        var storage: Array<Column.Shared<Payload>>
 
         /// Creates an empty builder.
         @inlinable
         public init() {
-            self.storage = Array<Payload>()
+            self.storage = Array<Column.Shared<Payload>>()
         }
 
         /// Creates a builder with reserved capacity.
         @inlinable
         public init(capacity: Graph.Node<Tag>.Count) {
-            self.storage = Array<Payload>(initialCapacity: capacity.retag(Payload.self))
+            self.storage = Array<Column.Shared<Payload>>(initialCapacity: capacity.retag(Payload.self))
         }
 
         /// The number of nodes allocated so far.
@@ -64,7 +67,7 @@ extension Graph.Sequential {
         /// This consumes the builder.
         @inlinable
         public consuming func build() -> Graph.Sequential<Tag, Payload> {
-            Graph.Sequential(storage: Tagged<Tag, Array<Payload>>(storage))
+            Graph.Sequential(storage: Tagged<Tag, Array<Column.Shared<Payload>>>(storage))
         }
     }
 }

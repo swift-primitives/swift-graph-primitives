@@ -1,6 +1,11 @@
-public import Array_Primitives
-public import Tagged_Primitives
+public import Buffer_Linear_Bounded_Primitive
+public import Buffer_Linear_Primitive
+public import Buffer_Linear_Primitives
+public import Column_Primitives
+public import Fixed_Primitives
+public import Shared_Primitive
 public import Tagged_Collection_Primitives
+public import Tagged_Primitives
 public import Vector_Primitives
 
 extension Graph.Sequential.Reverse {
@@ -18,9 +23,9 @@ extension Graph.Sequential.Reverse {
             return builder.build()
         }
 
-        // Build reversed adjacency lists using a plain Array.Fixed; retag node
+        // Build reversed adjacency lists using a plain Fixed scratch; retag node
         // indices into the Element domain at each access.
-        var reversedAdjacent = Array<[Graph.Node<Tag>]>.Fixed(repeating: [], count: count.retag([Graph.Node<Tag>].self))
+        var reversedAdjacent = Fixed<Column.Bounded<[Graph.Node<Tag>]>>(repeating: [], count: count.retag([Graph.Node<Tag>].self))
 
         for source in graph.nodes {
             let payload = graph.storage[source]

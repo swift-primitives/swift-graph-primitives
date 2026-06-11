@@ -1,10 +1,15 @@
 public import Array_Primitives
 public import Bit_Vector_Primitives
-public import Queue_Primitives
+public import Buffer_Linear_Primitive
+public import Buffer_Linear_Primitives
+public import Buffer_Ring_Primitive
+public import Column_Primitives
 internal import Iterator_Chunk_Primitives
-public import Tagged_Primitives
+public import Queue_Primitives
+public import Shared_Primitive
 public import Tagged_Collection_Primitives
-public import Vector_Primitives
+public import Tagged_Primitives
+import Vector_Primitives
 
 extension Graph.Traversal.First {
     /// Breadth-first traversal over a graph.
@@ -16,13 +21,13 @@ extension Graph.Traversal.First {
         public typealias Failure = Never
 
         @usableFromInline
-        let storage: Tagged<Tag, Array<Payload>>
+        let storage: Tagged<Tag, Array<Column.Shared<Payload>>>
 
         @usableFromInline
         let extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
 
         @usableFromInline
-        var queue: Queue<Graph.Node<Tag>>
+        var queue: Queue<Column.Ring<Graph.Node<Tag>>>
 
         @usableFromInline
         var visited: Bit.Vector
@@ -32,7 +37,7 @@ extension Graph.Traversal.First {
 
         @usableFromInline
         init(
-            storage: Tagged<Tag, Array<Payload>>,
+            storage: Tagged<Tag, Array<Column.Shared<Payload>>>,
             roots: some Swift.Sequence<Graph.Node<Tag>>,
             extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
         ) {

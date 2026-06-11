@@ -1,9 +1,13 @@
-public import Array_Primitives
 public import Bit_Vector_Primitives
+public import Buffer_Linear_Primitive
+public import Buffer_Linear_Primitives
+public import Buffer_Ring_Primitive
+public import Column_Primitives
 public import Queue_Primitives
-public import Tagged_Primitives
+public import Shared_Primitive
 public import Tagged_Collection_Primitives
-public import Vector_Primitives
+public import Tagged_Primitives
+import Vector_Primitives
 
 extension Graph.Sequential.Path {
     /// Whether a path exists from source to target.
@@ -29,7 +33,7 @@ extension Graph.Sequential.Path {
 
         // BFS with bit-packed visited tracking
         let visited = Bit.Vector(capacity: count.retag(Bit.self))
-        var queue = Queue<Graph.Node<Tag>>()
+        var queue = Queue<Column.Ring<Graph.Node<Tag>>>()
 
         visited[source.retag(Bit.self)] = true
         queue.enqueue(source)

@@ -1,9 +1,15 @@
-public import Array_Primitives
 public import Bit_Vector_Primitives
+public import Buffer_Linear_Bounded_Primitive
+public import Buffer_Linear_Primitive
+public import Buffer_Linear_Primitives
+public import Buffer_Ring_Primitive
+public import Column_Primitives
+public import Fixed_Primitives
 public import Queue_Primitives
-public import Tagged_Primitives
+public import Shared_Primitive
 public import Tagged_Collection_Primitives
-public import Vector_Primitives
+public import Tagged_Primitives
+import Vector_Primitives
 
 extension Graph.Sequential.Path {
     /// Shortest path by hop count using BFS.
@@ -29,8 +35,8 @@ extension Graph.Sequential.Path {
 
         // BFS with bit-packed visited tracking and predecessor array
         let visited = Bit.Vector(capacity: count.retag(Bit.self))
-        var predecessors = Array<Graph.Node<Tag>?>.Fixed(repeating: nil, count: count.retag((Graph.Node<Tag>?).self))
-        var queue = Queue<Graph.Node<Tag>>()
+        var predecessors = Fixed<Column.Bounded<Graph.Node<Tag>?>>(repeating: nil, count: count.retag((Graph.Node<Tag>?).self))
+        var queue = Queue<Column.Ring<Graph.Node<Tag>>>()
 
         visited[source.retag(Bit.self)] = true
         queue.enqueue(source)
@@ -59,7 +65,7 @@ extension Graph.Sequential.Path {
     @usableFromInline
     func reconstructPath(
         to target: Graph.Node<Tag>,
-        predecessors: borrowing Array<Graph.Node<Tag>?>.Fixed,
+        predecessors: borrowing Fixed<Column.Bounded<Graph.Node<Tag>?>>,
         source: Graph.Node<Tag>
     ) -> [Graph.Node<Tag>] {
         var path = [Graph.Node<Tag>]()

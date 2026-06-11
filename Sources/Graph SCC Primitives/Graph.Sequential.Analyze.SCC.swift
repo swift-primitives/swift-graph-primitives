@@ -1,8 +1,12 @@
-public import Array_Primitives
 public import Bit_Vector_Primitives
+public import Buffer_Linear_Bounded_Primitive
+public import Buffer_Linear_Primitive
+public import Column_Primitives
+public import Fixed_Primitives
+public import Shared_Primitive
 public import Stack_Primitives
-public import Tagged_Primitives
 public import Tagged_Collection_Primitives
+public import Tagged_Primitives
 public import Vector_Primitives
 
 extension Graph.Sequential.Analyze {
@@ -21,8 +25,8 @@ extension Graph.Sequential.Analyze {
 
         // Array-backed state: O(1) lookup by node
         // Use -1 as "not yet visited" sentinel for nodeIndex
-        var nodeIndex = Array<Int>.Fixed(repeating: -1, count: count.retag(Int.self))
-        var lowLink = Array<Int>.Fixed(repeating: 0, count: count.retag(Int.self))
+        var nodeIndex = Fixed<Column.Bounded<Int>>(repeating: -1, count: count.retag(Int.self))
+        var lowLink = Fixed<Column.Bounded<Int>>(repeating: 0, count: count.retag(Int.self))
         let onStack = Bit.Vector(capacity: count.retag(Bit.self))
 
         var index = 0

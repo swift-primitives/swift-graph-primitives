@@ -1,4 +1,6 @@
+public import Buffer_Linear_Primitive
 public import Graph_Primitives_Core
+import Shared_Primitive
 
 extension Graph.Sequential.Traverse.First {
     /// Returns a depth-first traversal starting from the given roots.

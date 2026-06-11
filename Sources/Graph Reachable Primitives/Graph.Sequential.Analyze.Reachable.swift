@@ -1,11 +1,14 @@
-public import Array_Primitives
 public import Bit_Vector_Primitives
+public import Buffer_Linear_Primitive
+public import Column_Primitives
+public import Hash_Indexed_Primitive
 public import Set_Ordered_Primitives
 public import Set_Primitives
+public import Shared_Primitive
 public import Stack_Primitives
-public import Tagged_Primitives
 public import Tagged_Collection_Primitives
-public import Vector_Primitives
+public import Tagged_Primitives
+import Vector_Primitives
 
 extension Graph.Sequential.Analyze {
     /// Returns the set of nodes reachable from the given roots.
@@ -16,9 +19,14 @@ extension Graph.Sequential.Analyze {
     /// - Returns: Ordered set of all nodes reachable from any root (includes roots themselves).
     /// - Complexity: O(V + E)
     @inlinable
-    public func reachable(from roots: some Swift.Sequence<Graph.Node<Tag>>) -> Set_Primitives.Set<Graph.Node<Tag>>.Ordered {
+    public func reachable(from roots: some Swift.Sequence<Graph.Node<Tag>>) -> Set_Primitives.Set<Hash.Indexed<Column.Heap<Graph.Node<Tag>>>>.Ordered {
         let count = graph.count
-        var result = Set_Primitives.Set<Graph.Node<Tag>>.Ordered()
+        // Capacity folds the former post-construction `reserve` into the
+        // column-pinned constructor (the W5 `Set<S>.Ordered` surface has no
+        // reserve; capacity is fixed at construction or grows on insert).
+        var result = Set_Primitives.Set<Hash.Indexed<Column.Heap<Graph.Node<Tag>>>>.Ordered(
+            minimumCapacity: count.retag(Graph.Node<Tag>.self)
+        )
         guard count > .zero else { return result }
 
         let visited = Bit.Vector(capacity: count.retag(Bit.self))
@@ -30,8 +38,6 @@ extension Graph.Sequential.Analyze {
                 stack.push(root)
             }
         }
-
-        result.reserve(count.retag(Graph.Node<Tag>.self))
 
         while let node = stack.pop() {
             let idx = node.retag(Bit.self)
@@ -59,7 +65,7 @@ extension Graph.Sequential.Analyze {
     /// - Returns: Ordered set of all nodes reachable from the root.
     /// - Complexity: O(V + E)
     @inlinable
-    public func reachable(from root: Graph.Node<Tag>) -> Set_Primitives.Set<Graph.Node<Tag>>.Ordered {
+    public func reachable(from root: Graph.Node<Tag>) -> Set_Primitives.Set<Hash.Indexed<Column.Heap<Graph.Node<Tag>>>>.Ordered {
         reachable(from: Swift.CollectionOfOne(root))
     }
 }

@@ -1,8 +1,14 @@
-public import Array_Primitives
+public import Buffer_Linear_Bounded_Primitive
+public import Buffer_Linear_Primitive
+public import Buffer_Linear_Primitives
+public import Column_Primitives
+public import Fixed_Primitives
+public import Hash_Indexed_Primitive
 public import Set_Ordered_Primitives
 public import Set_Primitives
-public import Tagged_Primitives
+public import Shared_Primitive
 public import Tagged_Collection_Primitives
+public import Tagged_Primitives
 
 extension Graph.Sequential.Transform {
     /// Extracts induced subgraph on specified nodes.
@@ -28,7 +34,7 @@ extension Graph.Sequential.Transform {
     /// - Complexity: O(n + m) where n is the number of nodes and m is the total edge count.
     @inlinable
     public func subgraph<Adjacent: Swift.Sequence<Graph.Node<Tag>>>(
-        inducedBy nodes: consuming Set_Primitives.Set<Graph.Node<Tag>>.Ordered,
+        inducedBy nodes: consuming Set_Primitives.Set<Hash.Indexed<Column.Heap<Graph.Node<Tag>>>>.Ordered,
         using remap: Graph.Remappable.Remap<Payload, Tag, Adjacent>
     ) -> Graph.Sequential<Tag, Payload>? {
         let count = graph.count
@@ -55,7 +61,7 @@ extension Graph.Sequential.Transform {
         }
 
         // Build old-to-new index mapping
-        var oldToNew = Array<Int>.Fixed(repeating: -1, count: count.retag(Int.self))
+        var oldToNew = Fixed<Column.Bounded<Int>>(repeating: -1, count: count.retag(Int.self))
         for (newIndex, node) in sortedNodes.enumerated() {
             oldToNew[node.retag(Int.self)] = newIndex
         }
@@ -95,7 +101,7 @@ extension Graph.Sequential.Transform where Payload == Graph.Adjacency.List<Tag> 
     /// - Returns: New graph with remapped adjacency, or `nil` if any node is invalid.
     @inlinable
     public func subgraph(
-        inducedBy nodes: consuming Set_Primitives.Set<Graph.Node<Tag>>.Ordered
+        inducedBy nodes: consuming Set_Primitives.Set<Hash.Indexed<Column.Heap<Graph.Node<Tag>>>>.Ordered
     ) -> Graph.Sequential<Tag, Payload>? {
         let count = graph.count
 
@@ -115,7 +121,7 @@ extension Graph.Sequential.Transform where Payload == Graph.Adjacency.List<Tag> 
         }
 
         // Build old-to-new index mapping
-        var oldToNew = Array<Int>.Fixed(repeating: -1, count: count.retag(Int.self))
+        var oldToNew = Fixed<Column.Bounded<Int>>(repeating: -1, count: count.retag(Int.self))
         for (newIndex, node) in sortedNodes.enumerated() {
             oldToNew[node.retag(Int.self)] = newIndex
         }
