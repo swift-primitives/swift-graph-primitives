@@ -6,6 +6,7 @@ extension Graph.Remappable {
     /// - **Node-domain**: `mapNodes` preserves adjacency semantics under node renaming.
     ///   Edge multiplicity and order are preserved.
     /// - **Totality**: `transform` closure must be total over all nodes referenced by this payload.
+    @frozen
     public struct Remap<Payload, Tag: ~Copyable & ~Escapable, Adjacent: Swift.Sequence<Graph.Node<Tag>>> {
         @usableFromInline
         let _adjacent: (Payload) -> Adjacent

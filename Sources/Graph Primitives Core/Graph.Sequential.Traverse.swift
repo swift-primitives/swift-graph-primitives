@@ -4,6 +4,7 @@ extension Graph.Sequential {
     public var traverse: Traverse { Traverse(graph: self) }
 
     /// Accessor type providing traversal operations.
+    @frozen
     public struct Traverse {
         public let graph: Graph.Sequential<Tag, Payload>
 

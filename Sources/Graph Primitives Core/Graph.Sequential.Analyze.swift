@@ -10,6 +10,7 @@ extension Graph.Sequential {
     }
 
     /// Accessor for graph analysis operations.
+    @frozen
     public struct Analyze<Adjacent: Swift.Sequence<Graph.Node<Tag>>> {
         public let graph: Graph.Sequential<Tag, Payload>
 

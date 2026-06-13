@@ -10,6 +10,7 @@ extension Graph.Sequential {
     }
 
     /// Accessor for path-finding operations.
+    @frozen
     public struct Path<Adjacent: Swift.Sequence<Graph.Node<Tag>>> {
         public let graph: Graph.Sequential<Tag, Payload>
 

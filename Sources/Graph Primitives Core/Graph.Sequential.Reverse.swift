@@ -10,6 +10,7 @@ extension Graph.Sequential {
     }
 
     /// Accessor for reverse graph operations.
+    @frozen
     public struct Reverse<Adjacent: Swift.Sequence<Graph.Node<Tag>>> {
         public let graph: Graph.Sequential<Tag, Payload>
 

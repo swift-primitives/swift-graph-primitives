@@ -21,6 +21,7 @@ extension Graph.Sequential {
     /// let b = builder.allocate(20)
     /// let graph = builder.build()
     /// ```
+    @frozen
     public struct Builder: ~Copyable {
         @usableFromInline
         var storage: Array<Column.Shared<Payload>>

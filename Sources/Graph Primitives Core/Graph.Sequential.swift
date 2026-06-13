@@ -37,6 +37,7 @@ extension Graph {
     /// let graph = builder.build()
     /// print(graph[a])  // "A"
     /// ```
+    @frozen
     public struct Sequential<Tag: ~Copyable & ~Escapable, Payload> {
         public let storage: Tagged<Tag, Array<Column.Shared<Payload>>>
 

@@ -15,6 +15,7 @@ extension Graph.Adjacency {
     /// }
     /// graph.analyze(using: extract).reachable(from: root)
     /// ```
+    @frozen
     public struct Extract<Payload, Tag: ~Copyable & ~Escapable, Adjacent: Swift.Sequence<Graph.Node<Tag>>> {
         @usableFromInline
         let _adjacent: (Payload) -> Adjacent

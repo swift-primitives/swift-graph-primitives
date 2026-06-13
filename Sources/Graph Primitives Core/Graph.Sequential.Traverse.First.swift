@@ -10,6 +10,7 @@ extension Graph.Sequential.Traverse {
     }
 
     /// Accessor type providing first-visit traversal strategies.
+    @frozen
     public struct First<Adjacent: Swift.Sequence<Graph.Node<Tag>>> {
         public let graph: Graph.Sequential<Tag, Payload>
 

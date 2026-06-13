@@ -1,5 +1,6 @@
 extension Graph.Default {
     /// Stores a default "hole" value for a payload type.
+    @frozen
     public struct Value<Payload> {
         @usableFromInline
         let _default: Payload
