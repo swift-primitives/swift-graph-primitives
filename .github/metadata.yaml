@@ -1,6 +1,6 @@
 # .github/metadata.yaml
 # Triaged by AI-assisted bulk pass (2026-04-29).
-description: "Graph types for Swift."
+description: "Graph.Sequential — an immutable directed graph with dense O(1) node storage, plus traversals (DFS/BFS/topological) and analyses (SCC, cycles, reachability, dead nodes); Tag-phantom-typed nodes."
 topics:
   - primitives
   - graph
