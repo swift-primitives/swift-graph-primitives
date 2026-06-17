@@ -5,7 +5,13 @@
     @TitleHeading("Swift Primitives")
 }
 
-Graph Primitives — umbrella catalog placeholder. Replace this line with a one-sentence
-description of what the package provides.
+Immutable directed graphs with sequentially-allocated nodes — typed node identity, the
+dense `Graph.Sequential` representation built by a `Builder`, and the traversal, analysis,
+path-finding, and transformation algorithms that operate over it.
 
 ## Topics
+
+### Essentials
+
+- <doc:Graph-Primitives-Scope>
+

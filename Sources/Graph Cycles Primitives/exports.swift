@@ -1,2 +1,2 @@
-@_exported public import Graph_Primitives_Core
+@_exported public import Graph_Sequential_Primitives
 @_exported public import Graph_Topological_Primitives

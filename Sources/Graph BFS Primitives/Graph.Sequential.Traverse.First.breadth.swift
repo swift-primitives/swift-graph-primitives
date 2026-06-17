@@ -1,5 +1,5 @@
 public import Buffer_Linear_Primitive
-public import Graph_Primitives_Core
+public import Graph_Sequential_Primitives
 
 extension Graph.Sequential.Traverse.First {
     /// Returns a breadth-first traversal starting from the given roots.

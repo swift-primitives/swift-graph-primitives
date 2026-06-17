@@ -67,7 +67,8 @@ The package is pre-1.0 — depend on `branch: "main"` until `0.1.0` is tagged. R
 | Product | Contents | When to import |
 |---------|----------|----------------|
 | `Graph Primitives` | Umbrella — the graph, its `Builder`, and all traversals/analyses | Most consumers |
-| `Graph Primitives Core` | `Graph.Sequential`, `Builder`, `Graph.Node`, adjacency | The graph type + construction only |
+| `Graph Sequential Primitives` | `Graph.Sequential`, its `Builder`, and the operation namespaces | The graph type + construction only |
+| `Graph Index` / `Adjacency` / `Traversal` / `Remappable Primitives` | Node identity / adjacency payload / traversal markers / node remapping | A single foundational sub-namespace |
 | `Graph DFS` / `BFS` / `Topological Primitives` | Depth-first / breadth-first / topological traversal | A single traversal |
 | `Graph SCC` / `Cycles` / `Reachable` / `Dead Primitives` | Strongly-connected components / cycles / reachability / dead-node analysis | A single analysis |
 

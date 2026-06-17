@@ -12,19 +12,32 @@ let package = Package(
         .visionOS(.v26),
     ],
     products: [
-        // MARK: - Namespace
+        // MARK: - Namespace + foundational sub-namespaces ([MOD-017] root + [MOD-031])
         .library(
             name: "Graph Primitive",
             targets: ["Graph Primitive"]
         ),
         .library(
-            name: "Graph Primitives",
-            targets: ["Graph Primitives"]
+            name: "Graph Index Primitives",
+            targets: ["Graph Index Primitives"]
         ),
         .library(
-            name: "Graph Primitives Core",
-            targets: ["Graph Primitives Core"]
+            name: "Graph Adjacency Primitives",
+            targets: ["Graph Adjacency Primitives"]
         ),
+        .library(
+            name: "Graph Traversal Primitives",
+            targets: ["Graph Traversal Primitives"]
+        ),
+        .library(
+            name: "Graph Sequential Primitives",
+            targets: ["Graph Sequential Primitives"]
+        ),
+        .library(
+            name: "Graph Remappable Primitives",
+            targets: ["Graph Remappable Primitives"]
+        ),
+        // MARK: - Algorithms
         .library(
             name: "Graph DFS Primitives",
             targets: ["Graph DFS Primitives"]
@@ -85,6 +98,12 @@ let package = Package(
             name: "Graph Backward Reachable Primitives",
             targets: ["Graph Backward Reachable Primitives"]
         ),
+        // MARK: - Umbrella
+        .library(
+            name: "Graph Primitives",
+            targets: ["Graph Primitives"]
+        ),
+        // MARK: - Test Support
         .library(
             name: "Graph Primitives Test Support",
             targets: ["Graph Primitives Test Support"]
@@ -111,19 +130,54 @@ let package = Package(
         .package(url: "https://github.com/swift-primitives/swift-vector-primitives.git", branch: "main"),
     ],
     targets: [
-        // MARK: - Namespace
-
+        // MARK: - Namespace + foundational sub-namespaces
+        //
+        // [MOD-017]: `Graph Primitive` (SINGULAR) owns the root `enum Graph {}` —
+        // zero external-package dependencies, the load-bearing invariant. [MOD-031]:
+        // each foundational sub-namespace is its own target. The legacy
+        // `Graph Primitives Core` funnel is dissolved; its external deps are now
+        // declared per sub-namespace ([MOD-002] amended), each target declaring
+        // exactly the modules its sources import ([MOD-038]).
+        //
+        // Depth note ([MOD-007] is a strive, not a gate): graph's foundational
+        // types are a genuine chain — identity (`Graph.Node`) → adjacency payload
+        // → the `Graph.Sequential` representation — and the algorithms layer two
+        // more levels on top (e.g. Dead→Reachable). Splitting every layer is the
+        // correct modularization even though it carries the longest path to
+        // edge-depth 5; each hop is an independent-consumer boundary ([MOD-008]).
+        // `Graph.Default` is the one fold — folded into `Graph Sequential
+        // Primitives` because its only consumer is `Graph.Sequential.Builder`
+        // ([MOD-008] no-independent-consumer), not to chase a depth number.
         .target(
             name: "Graph Primitive",
             dependencies: []
         ),
-
-        // MARK: - Core
-
         .target(
-            name: "Graph Primitives Core",
+            name: "Graph Index Primitives",
             dependencies: [
                 "Graph Primitive",
+                .product(name: "Index Primitives", package: "swift-index-primitives"),
+            ]
+        ),
+        .target(
+            name: "Graph Adjacency Primitives",
+            dependencies: [
+                "Graph Primitive",
+                "Graph Index Primitives",
+            ]
+        ),
+        .target(
+            name: "Graph Traversal Primitives",
+            dependencies: [
+                "Graph Primitive",
+            ]
+        ),
+        .target(
+            name: "Graph Sequential Primitives",
+            dependencies: [
+                "Graph Primitive",
+                "Graph Index Primitives",
+                "Graph Adjacency Primitives",
                 .product(name: "Tagged Primitives", package: "swift-tagged-primitives"),
                 .product(name: "Tagged Collection Primitives", package: "swift-tagged-collection-primitives"),
                 .product(name: "Index Primitives", package: "swift-index-primitives"),
@@ -135,47 +189,66 @@ let package = Package(
                 .product(name: "Vector Primitives", package: "swift-vector-primitives"),
             ]
         ),
+        .target(
+            name: "Graph Remappable Primitives",
+            dependencies: [
+                "Graph Primitive",
+                "Graph Adjacency Primitives",
+            ]
+        ),
 
         // MARK: - Traversal
 
         .target(
             name: "Graph DFS Primitives",
             dependencies: [
-                "Graph Primitives Core",
+                "Graph Sequential Primitives",
+                "Graph Traversal Primitives",
                 .product(name: "Stack Primitives", package: "swift-stack-primitives"),
                 .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
                 .product(name: "Iterator Chunk Primitives", package: "swift-iterator-primitives"),
                 .product(name: "Tagged Collection Primitives", package: "swift-tagged-collection-primitives"),
+                .product(name: "Tagged Primitives", package: "swift-tagged-primitives"),
+                .product(name: "Array Primitives", package: "swift-array-primitives"),
                 .product(name: "Column Primitives", package: "swift-column-primitives"),
                 .product(name: "Shared Primitive", package: "swift-shared-primitives"),
                 .product(name: "Buffer Linear Primitive", package: "swift-buffer-linear-primitives"),
+                .product(name: "Vector Primitives", package: "swift-vector-primitives"),
             ]
         ),
         .target(
             name: "Graph BFS Primitives",
             dependencies: [
-                "Graph Primitives Core",
+                "Graph Sequential Primitives",
+                "Graph Traversal Primitives",
                 .product(name: "Queue Primitives", package: "swift-queue-primitives"),
                 .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
                 .product(name: "Iterator Chunk Primitives", package: "swift-iterator-primitives"),
                 .product(name: "Tagged Collection Primitives", package: "swift-tagged-collection-primitives"),
+                .product(name: "Tagged Primitives", package: "swift-tagged-primitives"),
+                .product(name: "Array Primitives", package: "swift-array-primitives"),
                 .product(name: "Column Primitives", package: "swift-column-primitives"),
                 .product(name: "Shared Primitive", package: "swift-shared-primitives"),
                 .product(name: "Buffer Linear Primitive", package: "swift-buffer-linear-primitives"),
                 .product(name: "Buffer Linear Primitives", package: "swift-buffer-linear-primitives"),
                 .product(name: "Buffer Ring Primitive", package: "swift-buffer-ring-primitives"),
+                .product(name: "Vector Primitives", package: "swift-vector-primitives"),
             ]
         ),
         .target(
             name: "Graph Topological Primitives",
             dependencies: [
-                "Graph Primitives Core",
+                "Graph Sequential Primitives",
+                "Graph Traversal Primitives",
                 .product(name: "Stack Primitives", package: "swift-stack-primitives"),
                 .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
                 .product(name: "Tagged Collection Primitives", package: "swift-tagged-collection-primitives"),
+                .product(name: "Tagged Primitives", package: "swift-tagged-primitives"),
+                .product(name: "Array Primitives", package: "swift-array-primitives"),
                 .product(name: "Column Primitives", package: "swift-column-primitives"),
                 .product(name: "Shared Primitive", package: "swift-shared-primitives"),
                 .product(name: "Buffer Linear Primitive", package: "swift-buffer-linear-primitives"),
+                .product(name: "Vector Primitives", package: "swift-vector-primitives"),
             ]
         ),
 
@@ -184,7 +257,7 @@ let package = Package(
         .target(
             name: "Graph Reachable Primitives",
             dependencies: [
-                "Graph Primitives Core",
+                "Graph Sequential Primitives",
                 .product(name: "Stack Primitives", package: "swift-stack-primitives"),
                 .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
                 .product(name: "Set Ordered Primitives", package: "swift-set-ordered-primitives"),
@@ -194,12 +267,14 @@ let package = Package(
                 .product(name: "Shared Primitive", package: "swift-shared-primitives"),
                 .product(name: "Buffer Linear Primitive", package: "swift-buffer-linear-primitives"),
                 .product(name: "Tagged Collection Primitives", package: "swift-tagged-collection-primitives"),
+                .product(name: "Tagged Primitives", package: "swift-tagged-primitives"),
+                .product(name: "Vector Primitives", package: "swift-vector-primitives"),
             ]
         ),
         .target(
             name: "Graph Dead Primitives",
             dependencies: [
-                "Graph Primitives Core",
+                "Graph Sequential Primitives",
                 "Graph Reachable Primitives",
                 .product(name: "Stack Primitives", package: "swift-stack-primitives"),
                 .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
@@ -210,41 +285,48 @@ let package = Package(
                 .product(name: "Shared Primitive", package: "swift-shared-primitives"),
                 .product(name: "Buffer Linear Primitive", package: "swift-buffer-linear-primitives"),
                 .product(name: "Tagged Collection Primitives", package: "swift-tagged-collection-primitives"),
+                .product(name: "Tagged Primitives", package: "swift-tagged-primitives"),
+                .product(name: "Vector Primitives", package: "swift-vector-primitives"),
             ]
         ),
         .target(
             name: "Graph SCC Primitives",
             dependencies: [
-                "Graph Primitives Core",
+                "Graph Sequential Primitives",
                 .product(name: "Stack Primitives", package: "swift-stack-primitives"),
                 .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
                 .product(name: "Tagged Collection Primitives", package: "swift-tagged-collection-primitives"),
+                .product(name: "Tagged Primitives", package: "swift-tagged-primitives"),
                 .product(name: "Fixed Primitives", package: "swift-fixed-primitives"),
                 .product(name: "Column Primitives", package: "swift-column-primitives"),
                 .product(name: "Shared Primitive", package: "swift-shared-primitives"),
                 .product(name: "Buffer Linear Primitive", package: "swift-buffer-linear-primitives"),
                 .product(name: "Buffer Linear Bounded Primitive", package: "swift-buffer-linear-primitives"),
+                .product(name: "Vector Primitives", package: "swift-vector-primitives"),
             ]
         ),
         .target(
             name: "Graph Cycles Primitives",
             dependencies: [
-                "Graph Primitives Core",
+                "Graph Sequential Primitives",
                 "Graph Topological Primitives",
+                .product(name: "Tagged Primitives", package: "swift-tagged-primitives"),
             ]
         ),
         .target(
             name: "Graph Transitive Closure Primitives",
             dependencies: [
-                "Graph Primitives Core",
+                "Graph Sequential Primitives",
                 .product(name: "Stack Primitives", package: "swift-stack-primitives"),
                 .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
                 .product(name: "Tagged Collection Primitives", package: "swift-tagged-collection-primitives"),
+                .product(name: "Tagged Primitives", package: "swift-tagged-primitives"),
                 .product(name: "Fixed Primitives", package: "swift-fixed-primitives"),
                 .product(name: "Column Primitives", package: "swift-column-primitives"),
                 .product(name: "Shared Primitive", package: "swift-shared-primitives"),
                 .product(name: "Buffer Linear Primitive", package: "swift-buffer-linear-primitives"),
                 .product(name: "Buffer Linear Bounded Primitive", package: "swift-buffer-linear-primitives"),
+                .product(name: "Vector Primitives", package: "swift-vector-primitives"),
             ]
         ),
 
@@ -253,24 +335,27 @@ let package = Package(
         .target(
             name: "Graph Path Exists Primitives",
             dependencies: [
-                "Graph Primitives Core",
+                "Graph Sequential Primitives",
                 .product(name: "Queue Primitives", package: "swift-queue-primitives"),
                 .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
                 .product(name: "Tagged Collection Primitives", package: "swift-tagged-collection-primitives"),
+                .product(name: "Tagged Primitives", package: "swift-tagged-primitives"),
                 .product(name: "Column Primitives", package: "swift-column-primitives"),
                 .product(name: "Shared Primitive", package: "swift-shared-primitives"),
                 .product(name: "Buffer Linear Primitive", package: "swift-buffer-linear-primitives"),
                 .product(name: "Buffer Linear Primitives", package: "swift-buffer-linear-primitives"),
                 .product(name: "Buffer Ring Primitive", package: "swift-buffer-ring-primitives"),
+                .product(name: "Vector Primitives", package: "swift-vector-primitives"),
             ]
         ),
         .target(
             name: "Graph Shortest Path Primitives",
             dependencies: [
-                "Graph Primitives Core",
+                "Graph Sequential Primitives",
                 .product(name: "Queue Primitives", package: "swift-queue-primitives"),
                 .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
                 .product(name: "Tagged Collection Primitives", package: "swift-tagged-collection-primitives"),
+                .product(name: "Tagged Primitives", package: "swift-tagged-primitives"),
                 .product(name: "Fixed Primitives", package: "swift-fixed-primitives"),
                 .product(name: "Column Primitives", package: "swift-column-primitives"),
                 .product(name: "Shared Primitive", package: "swift-shared-primitives"),
@@ -278,13 +363,14 @@ let package = Package(
                 .product(name: "Buffer Linear Primitives", package: "swift-buffer-linear-primitives"),
                 .product(name: "Buffer Linear Bounded Primitive", package: "swift-buffer-linear-primitives"),
                 .product(name: "Buffer Ring Primitive", package: "swift-buffer-ring-primitives"),
+                .product(name: "Vector Primitives", package: "swift-vector-primitives"),
             ]
         ),
         .target(
             name: "Graph Weighted Path Primitives",
             dependencies: [
-                "Graph Primitives Core",
-                // Precise variant, not the umbrella ([MOD] import precision): graph
+                "Graph Sequential Primitives",
+                // Precise variant, not the umbrella ([MOD-015] import precision): graph
                 // uses only the base binary heap. The umbrella additionally pulls the
                 // MinMax variant, whose swift-memory-small-primitives dependency still
                 // spells the pre-W1 two-parameter Memory.Inline and does not compile
@@ -292,11 +378,13 @@ let package = Package(
                 .product(name: "Heap Primitive", package: "swift-heap-primitives"),
                 .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
                 .product(name: "Tagged Collection Primitives", package: "swift-tagged-collection-primitives"),
+                .product(name: "Tagged Primitives", package: "swift-tagged-primitives"),
                 .product(name: "Fixed Primitives", package: "swift-fixed-primitives"),
                 .product(name: "Column Primitives", package: "swift-column-primitives"),
                 .product(name: "Shared Primitive", package: "swift-shared-primitives"),
                 .product(name: "Buffer Linear Primitive", package: "swift-buffer-linear-primitives"),
                 .product(name: "Buffer Linear Bounded Primitive", package: "swift-buffer-linear-primitives"),
+                .product(name: "Vector Primitives", package: "swift-vector-primitives"),
             ]
         ),
 
@@ -305,17 +393,20 @@ let package = Package(
         .target(
             name: "Graph Payload Map Primitives",
             dependencies: [
-                "Graph Primitives Core",
+                "Graph Sequential Primitives",
+                .product(name: "Vector Primitives", package: "swift-vector-primitives"),
             ]
         ),
         .target(
             name: "Graph Subgraph Primitives",
             dependencies: [
-                "Graph Primitives Core",
+                "Graph Sequential Primitives",
+                "Graph Remappable Primitives",
                 .product(name: "Set Ordered Primitives", package: "swift-set-ordered-primitives"),
                 .product(name: "Set Primitives", package: "swift-set-primitives"),
                 .product(name: "Hash Indexed Primitive", package: "swift-hash-table-primitives"),
                 .product(name: "Tagged Collection Primitives", package: "swift-tagged-collection-primitives"),
+                .product(name: "Tagged Primitives", package: "swift-tagged-primitives"),
                 .product(name: "Fixed Primitives", package: "swift-fixed-primitives"),
                 .product(name: "Column Primitives", package: "swift-column-primitives"),
                 .product(name: "Shared Primitive", package: "swift-shared-primitives"),
@@ -330,20 +421,22 @@ let package = Package(
         .target(
             name: "Graph Reverse Primitives",
             dependencies: [
-                "Graph Primitives Core",
+                "Graph Sequential Primitives",
                 .product(name: "Tagged Collection Primitives", package: "swift-tagged-collection-primitives"),
+                .product(name: "Tagged Primitives", package: "swift-tagged-primitives"),
                 .product(name: "Fixed Primitives", package: "swift-fixed-primitives"),
                 .product(name: "Column Primitives", package: "swift-column-primitives"),
                 .product(name: "Shared Primitive", package: "swift-shared-primitives"),
                 .product(name: "Buffer Linear Primitive", package: "swift-buffer-linear-primitives"),
                 .product(name: "Buffer Linear Primitives", package: "swift-buffer-linear-primitives"),
                 .product(name: "Buffer Linear Bounded Primitive", package: "swift-buffer-linear-primitives"),
+                .product(name: "Vector Primitives", package: "swift-vector-primitives"),
             ]
         ),
         .target(
             name: "Graph Backward Reachable Primitives",
             dependencies: [
-                "Graph Primitives Core",
+                "Graph Sequential Primitives",
                 "Graph Reverse Primitives",
                 .product(name: "Stack Primitives", package: "swift-stack-primitives"),
                 .product(name: "Bit Vector Primitives", package: "swift-bit-vector-primitives"),
@@ -354,16 +447,23 @@ let package = Package(
                 .product(name: "Shared Primitive", package: "swift-shared-primitives"),
                 .product(name: "Buffer Linear Primitive", package: "swift-buffer-linear-primitives"),
                 .product(name: "Tagged Collection Primitives", package: "swift-tagged-collection-primitives"),
+                .product(name: "Tagged Primitives", package: "swift-tagged-primitives"),
+                .product(name: "Vector Primitives", package: "swift-vector-primitives"),
             ]
         ),
 
         // MARK: - Umbrella
-
+        //
+        // [MOD-005]: re-exports ALL sub-targets (root + 5 foundational + 15 algorithms).
         .target(
             name: "Graph Primitives",
             dependencies: [
                 "Graph Primitive",
-                "Graph Primitives Core",
+                "Graph Index Primitives",
+                "Graph Adjacency Primitives",
+                "Graph Traversal Primitives",
+                "Graph Sequential Primitives",
+                "Graph Remappable Primitives",
                 "Graph DFS Primitives",
                 "Graph BFS Primitives",
                 "Graph Topological Primitives",
