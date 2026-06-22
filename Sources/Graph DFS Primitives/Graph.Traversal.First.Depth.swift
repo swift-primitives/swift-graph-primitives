@@ -58,7 +58,7 @@ extension Graph.Traversal.First {
 
         @_lifetime(&self)
         @inlinable
-        public mutating func next(maximumCount: some Carrier.`Protocol`<Cardinal>) -> Span<Element> {
+        public mutating func next(maximumCount: some Carrier.`Protocol`<Cardinal>) -> Swift.Span<Element> {
             let ptr = unsafe withUnsafeMutablePointer(to: &_element) { p in
                 unsafe UnsafePointer<Element>(
                     unsafe UnsafeRawPointer(p).assumingMemoryBound(to: Element.self)
