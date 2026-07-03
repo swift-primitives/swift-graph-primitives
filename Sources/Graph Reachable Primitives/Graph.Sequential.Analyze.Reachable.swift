@@ -3,6 +3,8 @@ public import Buffer_Linear_Primitive
 public import Column_Primitives
 public import Hash_Indexed_Primitive
 public import Set_Ordered_Primitives
+// Hoisted carrier `__SetOrdered` spelled directly ([DS-025]/[DS-028]); not surfaced through the umbrella @_exported import.
+public import Set_Ordered_Primitive
 public import Set_Primitives
 public import Shared_Primitive
 public import Stack_Primitives
@@ -19,12 +21,12 @@ extension Graph.Sequential.Analyze {
     /// - Returns: Ordered set of all nodes reachable from any root (includes roots themselves).
     /// - Complexity: O(V + E)
     @inlinable
-    public func reachable(from roots: some Swift.Sequence<Graph.Node<Tag>>) -> Set_Primitives.Set<Hash.Indexed<Column.Heap<Graph.Node<Tag>>>>.Ordered {
+    public func reachable(from roots: some Swift.Sequence<Graph.Node<Tag>>) -> __SetOrdered<Hash.Indexed<Column.Heap<Graph.Node<Tag>>>> {
         let count = graph.count
         // Capacity folds the former post-construction `reserve` into the
         // column-pinned constructor (the W5 `Set<S>.Ordered` surface has no
         // reserve; capacity is fixed at construction or grows on insert).
-        var result = Set_Primitives.Set<Hash.Indexed<Column.Heap<Graph.Node<Tag>>>>.Ordered(
+        var result = __SetOrdered<Hash.Indexed<Column.Heap<Graph.Node<Tag>>>>(
             minimumCapacity: count.retag(Graph.Node<Tag>.self)
         )
         guard count > .zero else { return result }
@@ -65,7 +67,7 @@ extension Graph.Sequential.Analyze {
     /// - Returns: Ordered set of all nodes reachable from the root.
     /// - Complexity: O(V + E)
     @inlinable
-    public func reachable(from root: Graph.Node<Tag>) -> Set_Primitives.Set<Hash.Indexed<Column.Heap<Graph.Node<Tag>>>>.Ordered {
+    public func reachable(from root: Graph.Node<Tag>) -> __SetOrdered<Hash.Indexed<Column.Heap<Graph.Node<Tag>>>> {
         reachable(from: Swift.CollectionOfOne(root))
     }
 }

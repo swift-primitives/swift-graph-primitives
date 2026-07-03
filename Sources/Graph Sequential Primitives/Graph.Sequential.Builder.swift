@@ -1,4 +1,8 @@
 public import Array_Primitives
+// The hoisted carrier `__Array` is spelled directly (the builder rides the
+// `Shared` CoW column via `__Array<Column.Shared<Payload>>` per [DS-025]/[DS-028]);
+// the underscored carrier is not surfaced through the umbrella's `@_exported import`.
+public import Array_Primitive
 public import Buffer_Linear_Primitive
 public import Column_Primitives
 import Index_Primitives
@@ -24,18 +28,18 @@ extension Graph.Sequential {
     @frozen
     public struct Builder: ~Copyable {
         @usableFromInline
-        var storage: Array<Column.Shared<Payload>>
+        var storage: __Array<Column.Shared<Payload>>
 
         /// Creates an empty builder.
         @inlinable
         public init() {
-            self.storage = Array<Column.Shared<Payload>>()
+            self.storage = __Array<Column.Shared<Payload>>()
         }
 
         /// Creates a builder with reserved capacity.
         @inlinable
         public init(capacity: Graph.Node<Tag>.Count) {
-            self.storage = Array<Column.Shared<Payload>>(initialCapacity: capacity.retag(Payload.self))
+            self.storage = __Array<Column.Shared<Payload>>(initialCapacity: capacity.retag(Payload.self))
         }
 
         /// The number of nodes allocated so far.
@@ -68,7 +72,7 @@ extension Graph.Sequential {
         /// This consumes the builder.
         @inlinable
         public consuming func build() -> Graph.Sequential<Tag, Payload> {
-            Graph.Sequential(storage: Tagged<Tag, Array<Column.Shared<Payload>>>(storage))
+            Graph.Sequential(storage: Tagged<Tag, __Array<Column.Shared<Payload>>>(storage))
         }
     }
 }

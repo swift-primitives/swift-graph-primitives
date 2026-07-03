@@ -3,6 +3,8 @@ public import Buffer_Linear_Primitive
 public import Column_Primitives
 public import Hash_Indexed_Primitive
 public import Set_Ordered_Primitives
+// Hoisted carrier `__SetOrdered` spelled directly ([DS-025]/[DS-028]); not surfaced through the umbrella @_exported import.
+public import Set_Ordered_Primitive
 public import Set_Primitives
 public import Shared_Primitive
 public import Stack_Primitives
@@ -19,9 +21,9 @@ extension Graph.Sequential.Reverse {
     /// - Returns: Ordered set of nodes that can reach the target, including the target itself.
     /// - Complexity: O(V + E)
     @inlinable
-    public func reachable(to target: Graph.Node<Tag>) -> Set_Primitives.Set<Hash.Indexed<Column.Heap<Graph.Node<Tag>>>>.Ordered {
+    public func reachable(to target: Graph.Node<Tag>) -> __SetOrdered<Hash.Indexed<Column.Heap<Graph.Node<Tag>>>> {
         let count = graph.count
-        var result = Set_Primitives.Set<Hash.Indexed<Column.Heap<Graph.Node<Tag>>>>.Ordered()
+        var result = __SetOrdered<Hash.Indexed<Column.Heap<Graph.Node<Tag>>>>()
 
         guard count > .zero else { return result }
 

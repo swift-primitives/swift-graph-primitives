@@ -1,4 +1,6 @@
 public import Array_Primitives
+// Hoisted carrier spelled directly ([DS-025]/[DS-028]); not surfaced through the umbrella  import.
+public import Array_Primitive
 import Bit_Vector_Primitives
 public import Buffer_Linear_Primitive
 public import Column_Primitives
@@ -37,7 +39,7 @@ extension Graph.Traversal {
 
         @usableFromInline
         init(
-            storage: Tagged<Tag, Array<Column.Shared<Payload>>>,
+            storage: Tagged<Tag, __Array<Column.Shared<Payload>>>,
             roots: some Swift.Sequence<Graph.Node<Tag>>,
             extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
         ) {
@@ -46,7 +48,7 @@ extension Graph.Traversal {
 
         @usableFromInline
         static func computeOrder(
-            storage: Tagged<Tag, Array<Column.Shared<Payload>>>,
+            storage: Tagged<Tag, __Array<Column.Shared<Payload>>>,
             roots: some Swift.Sequence<Graph.Node<Tag>>,
             extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
         ) -> [Element]? {

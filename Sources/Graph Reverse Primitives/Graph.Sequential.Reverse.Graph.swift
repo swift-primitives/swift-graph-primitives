@@ -3,6 +3,8 @@ public import Buffer_Linear_Primitive
 public import Buffer_Linear_Primitives
 public import Column_Primitives
 public import Fixed_Primitives
+// Hoisted carrier spelled directly ([DS-025]/[DS-028]); not surfaced through the umbrella @_exported import.
+public import Fixed_Primitive
 public import Shared_Primitive
 public import Tagged_Collection_Primitives
 public import Tagged_Primitives
@@ -25,7 +27,7 @@ extension Graph.Sequential.Reverse {
 
         // Build reversed adjacency lists using a plain Fixed scratch; retag node
         // indices into the Element domain at each access.
-        var reversedAdjacent = Fixed<Column.Bounded<[Graph.Node<Tag>]>>(repeating: [], count: count.retag([Graph.Node<Tag>].self))
+        var reversedAdjacent = __Fixed<Column.Bounded<[Graph.Node<Tag>]>>(repeating: [], count: count.retag([Graph.Node<Tag>].self))
 
         for source in graph.nodes {
             let payload = graph.storage[source]

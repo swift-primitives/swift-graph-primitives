@@ -3,6 +3,8 @@ public import Buffer_Linear_Bounded_Primitive
 public import Buffer_Linear_Primitive
 public import Column_Primitives
 public import Fixed_Primitives
+// Hoisted carrier spelled directly ([DS-025]/[DS-028]); not surfaced through the umbrella @_exported import.
+public import Fixed_Primitive
 public import Shared_Primitive
 public import Stack_Primitives
 public import Tagged_Collection_Primitives
@@ -25,8 +27,8 @@ extension Graph.Sequential.Analyze {
 
         // Array-backed state: O(1) lookup by node
         // Use -1 as "not yet visited" sentinel for nodeIndex
-        var nodeIndex = Fixed<Column.Bounded<Int>>(repeating: -1, count: count.retag(Int.self))
-        var lowLink = Fixed<Column.Bounded<Int>>(repeating: 0, count: count.retag(Int.self))
+        var nodeIndex = __Fixed<Column.Bounded<Int>>(repeating: -1, count: count.retag(Int.self))
+        var lowLink = __Fixed<Column.Bounded<Int>>(repeating: 0, count: count.retag(Int.self))
         let onStack = Bit.Vector(capacity: count.retag(Bit.self))
 
         var index = 0

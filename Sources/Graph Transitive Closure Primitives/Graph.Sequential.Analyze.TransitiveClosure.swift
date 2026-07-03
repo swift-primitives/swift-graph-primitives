@@ -3,6 +3,8 @@ public import Buffer_Linear_Bounded_Primitive
 public import Buffer_Linear_Primitive
 public import Column_Primitives
 public import Fixed_Primitives
+// Hoisted carrier spelled directly ([DS-025]/[DS-028]); not surfaced through the umbrella @_exported import.
+public import Fixed_Primitive
 public import Shared_Primitive
 public import Stack_Primitives
 public import Tagged_Collection_Primitives
@@ -26,7 +28,7 @@ extension Graph.Sequential.Analyze {
 
         // For each node, compute all reachable nodes
         // Plain Fixed scratch; retag node indices into the Element domain.
-        var closureAdjacent = Fixed<Column.Bounded<[Graph.Node<Tag>]>>(repeating: [], count: count.retag([Graph.Node<Tag>].self))
+        var closureAdjacent = __Fixed<Column.Bounded<[Graph.Node<Tag>]>>(repeating: [], count: count.retag([Graph.Node<Tag>].self))
 
         for source in graph.nodes {
             let visited = Bit.Vector(capacity: count.retag(Bit.self))

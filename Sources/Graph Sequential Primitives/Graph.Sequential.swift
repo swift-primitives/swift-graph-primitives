@@ -1,4 +1,6 @@
 public import Array_Primitives
+// Hoisted carrier spelled directly ([DS-025]/[DS-028]); not surfaced through the umbrella  import.
+public import Array_Primitive
 public import Buffer_Linear_Primitive
 public import Buffer_Linear_Primitives
 public import Column_Primitives
@@ -20,7 +22,7 @@ extension Graph {
     ///
     /// ## Storage column
     ///
-    /// Payloads live in `Array<Column.Shared<Payload>>` — the explicit CoW
+    /// Payloads live in `__Array<Column.Shared<Payload>>` — the explicit CoW
     /// value-semantic column. `Sequential` is a Copyable value type whose storage
     /// is an immutable `let`: copies are box retains (no payload duplication),
     /// which is exactly the sharing semantics an immutable graph wants. The
@@ -39,10 +41,10 @@ extension Graph {
     /// ```
     @frozen
     public struct Sequential<Tag: ~Copyable & ~Escapable, Payload> {
-        public let storage: Tagged<Tag, Array<Column.Shared<Payload>>>
+        public let storage: Tagged<Tag, __Array<Column.Shared<Payload>>>
 
         @usableFromInline
-        init(storage: Tagged<Tag, Array<Column.Shared<Payload>>>) {
+        init(storage: Tagged<Tag, __Array<Column.Shared<Payload>>>) {
             self.storage = storage
         }
 

@@ -1,4 +1,5 @@
 import Column_Primitives
+import Set_Ordered_Primitive
 import Graph_Primitives_Test_Support
 import Hash_Indexed_Primitive
 import Testing
@@ -7,8 +8,8 @@ private enum TestTag {}
 
 private func orderedSet(
     _ nodes: Graph.Node<TestTag>...
-) -> Set_Primitives.Set<Hash.Indexed<Column.Heap<Graph.Node<TestTag>>>>.Ordered {
-    var set = Set_Primitives.Set<Hash.Indexed<Column.Heap<Graph.Node<TestTag>>>>.Ordered()
+) -> __SetOrdered<Hash.Indexed<Column.Heap<Graph.Node<TestTag>>>> {
+    var set = __SetOrdered<Hash.Indexed<Column.Heap<Graph.Node<TestTag>>>>()
     for node in nodes {
         _ = set.insert(node)
     }

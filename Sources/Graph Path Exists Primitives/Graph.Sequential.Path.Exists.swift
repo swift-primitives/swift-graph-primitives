@@ -4,6 +4,8 @@ public import Buffer_Linear_Primitives
 public import Buffer_Ring_Primitive
 public import Column_Primitives
 public import Queue_Primitives
+// Hoisted carrier spelled directly ([DS-025]/[DS-028]); not surfaced through the umbrella  import.
+public import Queue_Primitive
 public import Shared_Primitive
 public import Tagged_Collection_Primitives
 public import Tagged_Primitives
@@ -33,7 +35,7 @@ extension Graph.Sequential.Path {
 
         // BFS with bit-packed visited tracking
         let visited = Bit.Vector(capacity: count.retag(Bit.self))
-        var queue = Queue<Column.Ring<Graph.Node<Tag>>>()
+        var queue = __Queue<Column.Ring<Graph.Node<Tag>>>()
 
         visited[source.retag(Bit.self)] = true
         queue.enqueue(source)
