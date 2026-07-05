@@ -14,7 +14,7 @@ import Testing
 
 // W3 rider — GRAPH's own composition under concurrency (arc-1,
 // GOAL-tower-arc-shared-soundness §W3): the W5-2 migration (`827aea6`) stores
-// payloads in `Tagged<Tag, Array<Column.Shared<Payload>>>` behind an
+// payloads in `Tagged<Tag, Array<Payload>.Shared>` behind an
 // immutable-`let` read-side bridge — `Graph.Sequential`'s Sendable is the
 // CHECKED conditional chain (Graph.Sequential.swift:94), not an @unchecked
 // assertion. The adversarial surface is therefore pure concurrent BORROWING:

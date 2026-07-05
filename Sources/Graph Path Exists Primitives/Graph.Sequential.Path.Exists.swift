@@ -6,7 +6,7 @@ public import Column_Primitives
 public import Queue_Primitives
 // Hoisted carrier spelled directly ([DS-025]/[DS-028]); not surfaced through the umbrella  import.
 public import Queue_Primitive
-public import Shared_Primitive
+public import Ownership_Shared_Primitive
 public import Tagged_Collection_Primitives
 public import Tagged_Primitives
 import Vector_Primitives

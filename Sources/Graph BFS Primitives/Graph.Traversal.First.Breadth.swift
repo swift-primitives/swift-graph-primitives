@@ -10,7 +10,7 @@ internal import Iterator_Chunk_Primitives
 public import Queue_Primitives
 // Hoisted carrier spelled directly ([DS-025]/[DS-028]); not surfaced through the umbrella  import.
 public import Queue_Primitive
-public import Shared_Primitive
+public import Ownership_Shared_Primitive
 public import Tagged_Collection_Primitives
 public import Tagged_Primitives
 import Vector_Primitives
@@ -26,7 +26,7 @@ extension Graph.Traversal.First {
         public typealias Failure = Never
 
         @usableFromInline
-        let storage: Tagged<Tag, __Array<Column.Shared<Payload>>>
+        let storage: Tagged<Tag, Array<Payload>.Shared>
 
         @usableFromInline
         let extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
@@ -42,7 +42,7 @@ extension Graph.Traversal.First {
 
         @usableFromInline
         init(
-            storage: Tagged<Tag, __Array<Column.Shared<Payload>>>,
+            storage: Tagged<Tag, Array<Payload>.Shared>,
             roots: some Swift.Sequence<Graph.Node<Tag>>,
             extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
         ) {

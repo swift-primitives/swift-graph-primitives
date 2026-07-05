@@ -1,12 +1,13 @@
 public import Bit_Vector_Primitives
 public import Buffer_Linear_Bounded_Primitive
 public import Buffer_Linear_Primitive
+public import Buffer_Linear_Primitives
 public import Column_Primitives
 public import Fixed_Primitives
 // Hoisted carrier spelled directly ([DS-025]/[DS-028]); not surfaced through the umbrella @_exported import.
 public import Fixed_Primitive
 public import Heap_Primitive
-public import Shared_Primitive
+public import Ownership_Shared_Primitive
 public import Tagged_Collection_Primitives
 public import Tagged_Primitives
 import Vector_Primitives
@@ -73,7 +74,7 @@ extension Graph.Sequential.Path {
         distances[source.retag(Int.self)] = 0
         heap.push(Entry(node: source, distance: 0))
 
-        while let entry = heap.take {
+        while let entry = heap.pop() {
             // Skip if already visited (we may have duplicate entries with worse distances)
             let entryIdx = entry.node.retag(Bit.self)
             guard !visited[entryIdx] else { continue }

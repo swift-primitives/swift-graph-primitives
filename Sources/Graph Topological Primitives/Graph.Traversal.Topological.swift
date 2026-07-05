@@ -4,7 +4,7 @@ public import Array_Primitive
 import Bit_Vector_Primitives
 public import Buffer_Linear_Primitive
 public import Column_Primitives
-public import Shared_Primitive
+public import Ownership_Shared_Primitive
 import Stack_Primitives
 import Tagged_Collection_Primitives
 public import Tagged_Primitives
@@ -39,7 +39,7 @@ extension Graph.Traversal {
 
         @usableFromInline
         init(
-            storage: Tagged<Tag, __Array<Column.Shared<Payload>>>,
+            storage: Tagged<Tag, Array<Payload>.Shared>,
             roots: some Swift.Sequence<Graph.Node<Tag>>,
             extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
         ) {
@@ -48,7 +48,7 @@ extension Graph.Traversal {
 
         @usableFromInline
         static func computeOrder(
-            storage: Tagged<Tag, __Array<Column.Shared<Payload>>>,
+            storage: Tagged<Tag, Array<Payload>.Shared>,
             roots: some Swift.Sequence<Graph.Node<Tag>>,
             extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
         ) -> [Element]? {

@@ -6,7 +6,7 @@ public import Set_Ordered_Primitives
 // Hoisted carrier `__SetOrdered` spelled directly ([DS-025]/[DS-028]); not surfaced through the umbrella @_exported import.
 public import Set_Ordered_Primitive
 public import Set_Primitives
-public import Shared_Primitive
+public import Ownership_Shared_Primitive
 public import Stack_Primitives
 public import Tagged_Collection_Primitives
 public import Tagged_Primitives
