@@ -68,7 +68,15 @@ struct SequentialTests {
         _ = builder.allocate(TestPayload(name: "C", successors: []))
         let graph = builder.build()
 
-        let names = graph.nodes.map { graph[$0].name }
+        // Iterate the concrete `Vector.Iterator` (Swift.Sequence). The
+        // `Sequenceable.map { … }.collect()` eager-map path instantiates a
+        // generic `Sequence.Map<Vector<Tagged>>.Eager` wrapper whose metadata
+        // demangling trips the §A9 Tagged-metadata SIGSEGV on Swift 6.3.x; the
+        // direct loop sidesteps it and runs on the current toolchain.
+        var names: [String] = []
+        for node in graph.nodes {
+            names.append(graph[node].name)
+        }
         #expect(names == ["A", "B", "C"])
     }
 }
