@@ -3,6 +3,7 @@ public import Array_Primitives
 public import Array_Primitive
 public import Bit_Vector_Primitives
 public import Buffer_Linear_Primitive
+public import Buffer_Linear_Primitives
 public import Column_Primitives
 internal import Iterator_Chunk_Primitives
 public import Ownership_Shared_Primitive

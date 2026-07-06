@@ -1,6 +1,7 @@
 public import Bit_Vector_Primitives
 public import Buffer_Linear_Bounded_Primitive
 public import Buffer_Linear_Primitive
+public import Buffer_Linear_Primitives
 public import Column_Primitives
 public import Fixed_Primitives
 // Hoisted carrier spelled directly ([DS-025]/[DS-028]); not surfaced through the umbrella @_exported import.

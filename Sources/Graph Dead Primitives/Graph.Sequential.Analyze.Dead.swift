@@ -1,5 +1,6 @@
 public import Bit_Vector_Primitives
 public import Buffer_Linear_Primitive
+public import Buffer_Linear_Primitives
 public import Column_Primitives
 public import Hash_Indexed_Primitive
 public import Set_Ordered_Primitives
