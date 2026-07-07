@@ -14,6 +14,8 @@ extension Graph.Remappable {
         @usableFromInline
         let _mapNodes: (Payload, (Graph.Node<Tag>) -> Graph.Node<Tag>) -> Payload
 
+        /// Creates a remap from closures reading adjacent nodes and rewriting node
+        /// references within a payload.
         @inlinable
         public init(
             adjacent: @escaping (Payload) -> Adjacent,
@@ -23,11 +25,13 @@ extension Graph.Remappable {
             self._mapNodes = mapNodes
         }
 
+        /// Returns the nodes adjacent to `payload`.
         @inlinable
         public func adjacent(_ payload: Payload) -> Adjacent {
             _adjacent(payload)
         }
 
+        /// Returns a copy of `payload` with every node reference rewritten by `transform`.
         @inlinable
         public func mapNodes(_ payload: Payload, _ transform: (Graph.Node<Tag>) -> Graph.Node<Tag>) -> Payload {
             _mapNodes(payload, transform)

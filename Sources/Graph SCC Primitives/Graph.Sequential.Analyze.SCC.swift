@@ -3,9 +3,9 @@ public import Buffer_Linear_Bounded_Primitive
 public import Buffer_Linear_Primitive
 public import Buffer_Linear_Primitives
 public import Column_Primitives
-public import Fixed_Primitives
 // Hoisted carrier spelled directly ([DS-025]/[DS-028]); not surfaced through the umbrella @_exported import.
 public import Fixed_Primitive
+public import Fixed_Primitives
 public import Ownership_Shared_Primitive
 public import Stack_Primitives
 public import Tagged_Collection_Primitives
@@ -99,7 +99,7 @@ extension Graph.Sequential.Analyze {
                     // Node is SCC root: pop component
                     var component = [Graph.Node<Tag>]()
                     repeat {
-                        let w = sccStack.pop()!
+                        guard let w = sccStack.pop() else { break }
                         onStack[w.retag(Bit.self)] = false
                         component.append(w)
                     } while component.last != frame.node
@@ -107,8 +107,7 @@ extension Graph.Sequential.Analyze {
                 }
 
                 // Update parent's lowLink if there is a parent
-                if !callStack.isEmpty {
-                    let parent = callStack.last!.node
+                if let parent = callStack.last?.node {
                     lowLink[parent.retag(Int.self)] = min(lowLink[parent.retag(Int.self)], lowLink[node.retag(Int.self)])
                 }
             }

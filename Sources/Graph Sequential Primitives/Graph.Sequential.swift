@@ -1,6 +1,6 @@
-public import Array_Primitives
 // Hoisted carrier spelled directly ([DS-025]/[DS-028]); not surfaced through the umbrella  import.
 public import Array_Primitive
+public import Array_Primitives
 public import Buffer_Linear_Primitive
 public import Buffer_Linear_Primitives
 public import Column_Primitives
@@ -41,6 +41,7 @@ extension Graph {
     /// ```
     @frozen
     public struct Sequential<Tag: ~Copyable & ~Escapable, Payload> {
+        /// The payload column, keyed by node identity (`Tag`).
         public let storage: Tagged<Tag, Array<Payload>.Shared>
 
         @usableFromInline

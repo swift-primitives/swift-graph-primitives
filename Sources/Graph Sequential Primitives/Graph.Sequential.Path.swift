@@ -12,8 +12,10 @@ extension Graph.Sequential {
     /// Accessor for path-finding operations.
     @frozen
     public struct Path<Adjacent: Swift.Sequence<Graph.Node<Tag>>> {
+        /// The underlying graph.
         public let graph: Graph.Sequential<Tag, Payload>
 
+        /// The adjacency extract used to read edges from each node's payload.
         public let extract: Graph.Adjacency.Extract<Payload, Tag, Adjacent>
 
         @usableFromInline

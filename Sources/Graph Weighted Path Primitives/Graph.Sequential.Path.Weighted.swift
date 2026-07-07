@@ -3,9 +3,9 @@ public import Buffer_Linear_Bounded_Primitive
 public import Buffer_Linear_Primitive
 public import Buffer_Linear_Primitives
 public import Column_Primitives
-public import Fixed_Primitives
 // Hoisted carrier spelled directly ([DS-025]/[DS-028]); not surfaced through the umbrella @_exported import.
 public import Fixed_Primitive
+public import Fixed_Primitives
 public import Heap_Primitive
 public import Ownership_Shared_Primitive
 public import Tagged_Collection_Primitives
@@ -26,12 +26,12 @@ extension Graph.Sequential.Path {
         }
 
         @usableFromInline
-        static func < (lhs: Entry, rhs: Entry) -> Bool {
+        static func < (lhs: Self, rhs: Self) -> Bool {
             lhs.distance < rhs.distance
         }
 
         @usableFromInline
-        static func == (lhs: Entry, rhs: Entry) -> Bool {
+        static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.distance == rhs.distance && lhs.node == rhs.node
         }
     }

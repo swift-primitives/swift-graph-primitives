@@ -108,7 +108,7 @@ struct DepthFirstTests {
 
         var iter = graph.traverse.first(using: TestPayload.extract).depth(from: [] as [Graph.Node<TestTag>])
         var hasElements = false
-        while let _ = iter.next() { hasElements = true }
+        while iter.next() != nil { hasElements = true }
         #expect(!hasElements)
     }
 }

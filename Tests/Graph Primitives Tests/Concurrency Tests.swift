@@ -38,8 +38,9 @@ extension StormPayload {
 }
 
 /// Layered DAG, built bottom-up: every node in layer L points at every node in
-/// layer L+1; a single root tops the stack. Deterministic ids and successor
-/// order make every traversal order a fixed reference.
+/// layer L+1; a single root tops the stack.
+///
+/// Deterministic ids and successor order make every traversal order a fixed reference.
 private func buildLayeredGraph(
     layers: Int,
     width: Int
@@ -87,7 +88,7 @@ struct GraphConcurrencyTests {
         let (graph, root) = buildLayeredGraph(layers: 6, width: 5)
         let depthReference = depthOrder(graph, from: root)
         let breadthReference = breadthOrder(graph, from: root)
-        #expect(depthReference.count == 31)              // 6×5 + root, each exactly once
+        #expect(depthReference.count == 31)  // 6×5 + root, each exactly once
         #expect(breadthReference.count == 31)
         let outcomes = await withTaskGroup(of: Bool.self, returning: [Bool].self) { group in
             for t in 0..<width {
@@ -118,23 +119,24 @@ struct GraphConcurrencyTests {
         let breadthReference = breadthOrder(graph, from: root)
         let outcomes = await withTaskGroup(of: Bool.self, returning: [Bool].self) { group in
             for _ in 0..<6 {
-                group.addTask {                          // traversal lane
+                group.addTask {  // traversal lane
                     var good = true
                     for _ in 0..<30 {
-                        good = good && (depthOrder(graph, from: root) == depthReference)
+                        good =
+                            good && (depthOrder(graph, from: root) == depthReference)
                             && (breadthOrder(graph, from: root) == breadthReference)
                     }
                     return good
                 }
             }
             for _ in 0..<6 {
-                group.addTask {                          // copy-churn lane: retain/release
-                    var good = true                      // storms on the SAME shared boxes
+                group.addTask {  // copy-churn lane: retain/release
+                    var good = true  // storms on the SAME shared boxes
                     for _ in 0..<150 {
-                        let copy = graph                 // retains every column box
+                        let copy = graph  // retains every column box
                         var iter = copy.traverse.first(using: StormPayload.extract).depth(from: root)
                         good = good && (iter.next()?.payload.id == depthReference[0])
-                    }                                    // copy dies: releases every box
+                    }  // copy dies: releases every box
                     return good
                 }
             }

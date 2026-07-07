@@ -1,7 +1,7 @@
 import Column_Primitives
-import Set_Ordered_Primitive
 import Graph_Primitives_Test_Support
 import Hash_Indexed_Primitive
+import Set_Ordered_Primitive
 import Testing
 
 private enum TestTag {}

@@ -28,8 +28,10 @@ struct DeadNodesTests {
         // cannot capture it, so bind copyable results first.
         let dead = graph.analyze.dead(from: [a])
 
-        let hasC = dead.contains(c), hasD = dead.contains(d)
-        let hasA = dead.contains(a), hasB = dead.contains(b)
+        let hasC = dead.contains(c)
+        let hasD = dead.contains(d)
+        let hasA = dead.contains(a)
+        let hasB = dead.contains(b)
         let count = dead.count
         #expect(hasC)
         #expect(hasD)
@@ -68,7 +70,9 @@ struct DeadNodesTests {
         let dead = graph.analyze.dead(from: [] as [Graph.Node<TestTag>])
 
         let count = dead.count
-        let hasA = dead.contains(a), hasB = dead.contains(b), hasC = dead.contains(c)
+        let hasA = dead.contains(a)
+        let hasB = dead.contains(b)
+        let hasC = dead.contains(c)
         #expect(count == 3)
         #expect(hasA)
         #expect(hasB)
@@ -101,8 +105,10 @@ struct DeadNodesTests {
         let dead = graph.analyze.dead(from: [a, c])
 
         let hasE = dead.contains(e)
-        let hasA = dead.contains(a), hasB = dead.contains(b)
-        let hasC = dead.contains(c), hasD = dead.contains(d)
+        let hasA = dead.contains(a)
+        let hasB = dead.contains(b)
+        let hasC = dead.contains(c)
+        let hasD = dead.contains(d)
         let count = dead.count
         #expect(hasE)
         #expect(!hasA)

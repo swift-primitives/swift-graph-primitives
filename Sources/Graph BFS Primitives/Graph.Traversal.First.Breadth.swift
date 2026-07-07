@@ -1,16 +1,16 @@
-public import Array_Primitives
 // Hoisted carrier spelled directly ([DS-025]/[DS-028]); not surfaced through the umbrella  import.
 public import Array_Primitive
+public import Array_Primitives
 public import Bit_Vector_Primitives
 public import Buffer_Linear_Primitive
 public import Buffer_Linear_Primitives
 public import Buffer_Ring_Primitive
 public import Column_Primitives
 internal import Iterator_Chunk_Primitives
-public import Queue_Primitives
+public import Ownership_Shared_Primitive
 // Hoisted carrier spelled directly ([DS-025]/[DS-028]); not surfaced through the umbrella  import.
 public import Queue_Primitive
-public import Ownership_Shared_Primitive
+public import Queue_Primitives
 public import Tagged_Collection_Primitives
 public import Tagged_Primitives
 import Vector_Primitives
@@ -22,7 +22,9 @@ extension Graph.Traversal.First {
     /// Each node is visited at most once, even if reachable from multiple paths.
     @frozen
     public struct Breadth<Tag: ~Copyable & ~Escapable, Payload, Adjacent: Swift.Sequence<Graph.Node<Tag>>>: ~Copyable, Iterator.Chunk.`Protocol` {
+        /// A node paired with its payload, in breadth-first visitation order.
         public typealias Element = (node: Graph.Node<Tag>, payload: Payload)
+        /// This iterator never throws.
         public typealias Failure = Never
 
         @usableFromInline
@@ -60,6 +62,8 @@ extension Graph.Traversal.First {
             }
         }
 
+        /// Advances by up to `maximumCount` elements, returning them as a span over
+        /// internal single-element storage (`Iterator.Chunk` protocol requirement).
         @_lifetime(&self)
         @inlinable
         public mutating func next(maximumCount: some Carrier.`Protocol`<Cardinal>) -> Swift.Span<Element> {
@@ -81,6 +85,8 @@ extension Graph.Traversal.First {
             return unsafe _overrideLifetime(span, mutating: &self)
         }
 
+        /// Dequeues the next unvisited node in breadth-first order, enqueuing its
+        /// unvisited adjacents, or returns `nil` when the queue is exhausted.
         @inlinable
         public mutating func next() -> Element? {
             guard let node = queue.dequeue() else { return nil }

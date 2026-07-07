@@ -5,11 +5,13 @@ extension Graph.Default {
         @usableFromInline
         let _default: Payload
 
+        /// Creates a default value holder wrapping `value`.
         @inlinable
         public init(_ value: Payload) {
             self._default = value
         }
 
+        /// The wrapped default value.
         @inlinable
         public var value: Payload { _default }
     }

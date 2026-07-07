@@ -1,6 +1,6 @@
-public import Array_Primitives
 // Hoisted carrier spelled directly ([DS-025]/[DS-028]); not surfaced through the umbrella  import.
 public import Array_Primitive
+public import Array_Primitives
 public import Bit_Vector_Primitives
 public import Buffer_Linear_Primitive
 public import Buffer_Linear_Primitives
@@ -25,7 +25,9 @@ extension Graph.Traversal.First {
     /// is ordered accordingly.
     @frozen
     public struct Depth<Tag: ~Copyable & ~Escapable, Payload, Adjacent: Swift.Sequence<Graph.Node<Tag>>>: ~Copyable, Iterator.Chunk.`Protocol` {
+        /// A node paired with its payload, in depth-first visitation order.
         public typealias Element = (node: Graph.Node<Tag>, payload: Payload)
+        /// This iterator never throws.
         public typealias Failure = Never
 
         @usableFromInline
@@ -59,6 +61,8 @@ extension Graph.Traversal.First {
             }
         }
 
+        /// Advances by up to `maximumCount` elements, returning them as a span over
+        /// internal single-element storage (`Iterator.Chunk` protocol requirement).
         @_lifetime(&self)
         @inlinable
         public mutating func next(maximumCount: some Carrier.`Protocol`<Cardinal>) -> Swift.Span<Element> {
@@ -80,6 +84,8 @@ extension Graph.Traversal.First {
             return unsafe _overrideLifetime(span, mutating: &self)
         }
 
+        /// Pops the next unvisited node in depth-first order, pushing its unvisited
+        /// adjacents, or returns `nil` when the stack is exhausted.
         @inlinable
         public mutating func next() -> Element? {
             while let node = stack.pop() {

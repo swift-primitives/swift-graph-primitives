@@ -168,7 +168,7 @@ struct WeightedPathTests {
         let graph = builder.build()
 
         // Weight function: B edges = 1, C edges = 10, all others = 1
-        let result = graph.path.weighted(from: a, to: d) { payload, target in
+        let result = graph.path.weighted(from: a, to: d) { payload, _ in
             // Check if this is node C's edge
             if payload.adjacent.contains(d) && payload.adjacent.count == 1 && payload.adjacent.first == d {
                 // This could be B or C - we need to differentiate

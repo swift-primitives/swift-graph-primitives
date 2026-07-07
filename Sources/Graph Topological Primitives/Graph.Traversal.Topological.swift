@@ -1,6 +1,6 @@
-public import Array_Primitives
 // Hoisted carrier spelled directly ([DS-025]/[DS-028]); not surfaced through the umbrella  import.
 public import Array_Primitive
+public import Array_Primitives
 import Bit_Vector_Primitives
 public import Buffer_Linear_Primitive
 import Buffer_Linear_Primitives
@@ -33,6 +33,7 @@ extension Graph.Traversal {
     /// ```
     @frozen
     public struct Topological<Tag: ~Copyable & ~Escapable, Payload, Adjacent: Swift.Sequence<Graph.Node<Tag>>>: Swift.Sequence {
+        /// A node paired with its payload, in topological order.
         public typealias Element = (node: Graph.Node<Tag>, payload: Payload)
 
         @usableFromInline
@@ -115,6 +116,8 @@ extension Graph.Traversal {
         @inlinable
         public var hasCycles: Bool { elements == nil }
 
+        /// Returns an iterator over the topological order, or an empty iterator if
+        /// the graph has cycles.
         @inlinable
         public func makeIterator() -> IndexingIterator<[Element]> {
             (elements ?? []).makeIterator()

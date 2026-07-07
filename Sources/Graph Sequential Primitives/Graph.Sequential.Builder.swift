@@ -1,8 +1,8 @@
-public import Array_Primitives
 // The hoisted carrier `__Array` is spelled directly (the builder rides the
 // `Shared` CoW column via `Array<Payload>.Shared` per [DS-025]/[DS-028]);
 // the underscored carrier is not surfaced through the umbrella's `@_exported import`.
 public import Array_Primitive
+public import Array_Primitives
 public import Buffer_Linear_Primitive
 public import Column_Primitives
 import Index_Primitives
@@ -33,12 +33,20 @@ extension Graph.Sequential {
         /// Creates an empty builder.
         @inlinable
         public init() {
+            // `Array<Payload>` here is the institute's own typealias (shadows `Swift.Array`);
+            // `[Payload]` sugar is hardwired to `Swift.Array` and would silently change the type.
+            // swift-format-ignore: UseShorthandTypeNames
+            // swiftlint:disable:next syntactic_sugar
             self.storage = Array<Payload>.Shared()
         }
 
         /// Creates a builder with reserved capacity.
         @inlinable
         public init(capacity: Graph.Node<Tag>.Count) {
+            // `Array<Payload>` here is the institute's own typealias (shadows `Swift.Array`);
+            // `[Payload]` sugar is hardwired to `Swift.Array` and would silently change the type.
+            // swift-format-ignore: UseShorthandTypeNames
+            // swiftlint:disable:next syntactic_sugar
             self.storage = Array<Payload>.Shared(initialCapacity: capacity.retag(Payload.self))
         }
 

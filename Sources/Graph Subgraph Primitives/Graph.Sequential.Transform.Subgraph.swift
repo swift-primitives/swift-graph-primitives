@@ -2,15 +2,15 @@ public import Buffer_Linear_Bounded_Primitive
 public import Buffer_Linear_Primitive
 public import Buffer_Linear_Primitives
 public import Column_Primitives
-public import Fixed_Primitives
 // Hoisted carrier spelled directly ([DS-025]/[DS-028]); not surfaced through the umbrella @_exported import.
 public import Fixed_Primitive
+public import Fixed_Primitives
 public import Hash_Indexed_Primitive
-public import Set_Ordered_Primitives
+public import Ownership_Shared_Primitive
 // Hoisted carrier `__SetOrdered` spelled directly ([DS-025]/[DS-028]); not surfaced through the umbrella @_exported import.
 public import Set_Ordered_Primitive
+public import Set_Ordered_Primitives
 public import Set_Primitives
-public import Ownership_Shared_Primitive
 public import Tagged_Collection_Primitives
 public import Tagged_Primitives
 

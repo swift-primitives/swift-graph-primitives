@@ -6,6 +6,7 @@ extension Graph.Sequential {
     /// Accessor type providing traversal operations.
     @frozen
     public struct Traverse {
+        /// The underlying graph.
         public let graph: Graph.Sequential<Tag, Payload>
 
         @usableFromInline

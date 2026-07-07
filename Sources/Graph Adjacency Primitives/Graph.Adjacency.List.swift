@@ -4,8 +4,10 @@ extension Graph.Adjacency {
     /// Adjacency order is insertion order but **not guaranteed stable** across operations.
     @frozen
     public struct List<Tag: ~Copyable & ~Escapable>: Sendable {
+        /// The nodes this node has edges to.
         public var adjacent: [Graph.Node<Tag>]
 
+        /// Creates an adjacency list with the given adjacent nodes.
         @inlinable
         public init(adjacent: [Graph.Node<Tag>] = []) {
             self.adjacent = adjacent

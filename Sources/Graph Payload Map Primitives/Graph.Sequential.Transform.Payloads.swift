@@ -1,7 +1,9 @@
 public import Vector_Primitives
 
 extension Graph.Sequential.Transform {
-    /// Transforms all payloads. Node identities are preserved.
+    /// Transforms all payloads.
+    ///
+    /// Node identities are preserved.
     ///
     /// - Parameter transform: Closure mapping old payloads to new payloads.
     /// - Returns: A new graph with transformed payloads.
