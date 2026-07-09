@@ -13,7 +13,9 @@
 /// Institute-side code fix — the raw-storage wrapper was reverted on
 /// correctness grounds 2026-05-23 — so the affected suites are skipped on
 /// the buggy toolchain and run normally once the compiler ships the fix.
-public enum Toolchain {
+public enum Toolchain {}
+
+extension Toolchain {
     /// `true` on Swift compilers older than 6.4, where the §A9 `Tagged`
     /// metadata SIGSEGV fires. Used as the predicate for the
     /// `.disabled(if:)` trait on the affected graph suites. `.disabled(if:)`
