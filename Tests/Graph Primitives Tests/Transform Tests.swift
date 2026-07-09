@@ -18,8 +18,8 @@ private func orderedSet(
 
 // MARK: - Payload Mapping Tests
 
-@Suite("Graph.Sequential.Transform.Payloads")
-struct PayloadMappingTests {
+@Suite
+struct `Graph Sequential Transform Payloads Tests` {
     @Test
     func `Payload mapping preserves node count`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
@@ -75,10 +75,9 @@ struct PayloadMappingTests {
 // `inducedBy:` builds a `Set<Graph.Node>.Ordered` (= `Set<Tagged>.Ordered`),
 // whose insert SIGSEGVs on Swift 6.3.x (catalog §A9). Skipped until 6.4+.
 @Suite(
-    "Graph.Sequential.Transform.Subgraph",
     .disabled(if: Toolchain.hasTaggedMetadataSIGSEGV, "§A9 Tagged metadata SIGSEGV in Set<Index>.Ordered.insert; fixed on Swift 6.4+")
 )
-struct SubgraphTests {
+struct `Graph Sequential Transform Subgraph Tests` {
     @Test
     func `Induced subgraph drops edges to excluded nodes`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()

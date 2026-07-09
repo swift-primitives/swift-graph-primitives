@@ -5,8 +5,8 @@ private enum TestTag {}
 
 // MARK: - Reversed Graph Tests
 
-@Suite("Graph.Sequential.Reverse.Graph")
-struct ReversedGraphTests {
+@Suite
+struct `Graph Sequential Reverse Graph Tests` {
     @Test
     func `Reversed graph has same edge count`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
@@ -115,10 +115,9 @@ struct ReversedGraphTests {
 // `.reverse.reachable(to:)` builds a `Set<Graph.Node>.Ordered` (= `Set<Tagged>.Ordered`),
 // whose insert SIGSEGVs on Swift 6.3.x (catalog §A9). Skipped until 6.4+.
 @Suite(
-    "Graph.Sequential.Reverse.Reachable",
     .disabled(if: Toolchain.hasTaggedMetadataSIGSEGV, "§A9 Tagged metadata SIGSEGV in Set<Index>.Ordered.insert; fixed on Swift 6.4+")
 )
-struct BackwardReachabilityTests {
+struct `Graph Sequential Reverse Reachable Tests` {
     @Test
     func `Backward reachable equals forward reachable on reversed graph`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()

@@ -24,8 +24,8 @@ extension TestPayload {
 
 // MARK: - Sequential Tests
 
-@Suite("Graph.Sequential")
-struct SequentialTests {
+@Suite
+struct `Graph Sequential Tests` {
     @Test
     func `Empty graph has zero count`() {
         let builder = Graph.Sequential<TestTag, TestPayload>.Builder()
@@ -83,8 +83,8 @@ struct SequentialTests {
 
 // MARK: - Builder Tests
 
-@Suite("Graph.Sequential.Builder")
-struct BuilderTests {
+@Suite
+struct `Graph Sequential Builder Tests` {
     @Test
     func `Builder with capacity`() {
         var builder = Graph.Sequential<TestTag, TestPayload>.Builder(capacity: 10)

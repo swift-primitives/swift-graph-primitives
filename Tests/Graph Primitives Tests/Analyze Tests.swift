@@ -8,10 +8,9 @@ private enum TestTag {}
 // `.dead(from:)` builds a `Set<Graph.Node>.Ordered` (= `Set<Tagged>.Ordered`),
 // whose insert SIGSEGVs on Swift 6.3.x (catalog §A9). Skipped until 6.4+.
 @Suite(
-    "Graph.Sequential.Analyze.Dead",
     .disabled(if: Toolchain.hasTaggedMetadataSIGSEGV, "§A9 Tagged metadata SIGSEGV in Set<Index>.Ordered.insert; fixed on Swift 6.4+")
 )
-struct DeadNodesTests {
+struct `Graph Sequential Analyze Dead Tests` {
     @Test
     func `Dead nodes in disconnected graph`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
@@ -121,8 +120,8 @@ struct DeadNodesTests {
 
 // MARK: - Transitive Closure Tests
 
-@Suite("Graph.Sequential.Analyze.TransitiveClosure")
-struct TransitiveClosureTests {
+@Suite
+struct `Graph Sequential Analyze TransitiveClosure Tests` {
     @Test
     func `Transitive closure on diamond DAG has correct edge count`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()

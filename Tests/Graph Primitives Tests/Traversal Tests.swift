@@ -53,8 +53,8 @@ private func buildLinearGraph() -> (
 
 // MARK: - Depth-First Tests
 
-@Suite("Graph.Traversal.First.Depth")
-struct DepthFirstTests {
+@Suite
+struct `Graph Traversal First Depth Tests` {
     @Test
     func `DFS on linear graph`() {
         let (graph, a, _, _) = buildLinearGraph()
@@ -115,8 +115,8 @@ struct DepthFirstTests {
 
 // MARK: - Breadth-First Tests
 
-@Suite("Graph.Traversal.First.Breadth")
-struct BreadthFirstTests {
+@Suite
+struct `Graph Traversal First Breadth Tests` {
     @Test
     func `BFS on linear graph`() {
         let (graph, a, _, _) = buildLinearGraph()
@@ -170,8 +170,8 @@ struct BreadthFirstTests {
 
 // MARK: - Topological Tests
 
-@Suite("Graph.Traversal.Topological")
-struct TopologicalTests {
+@Suite
+struct `Graph Traversal Topological Tests` {
     @Test
     func `Topological order on DAG`() {
         let (graph, a, b, c, d) = buildDiamondGraph()

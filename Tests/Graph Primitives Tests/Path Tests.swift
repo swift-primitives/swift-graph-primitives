@@ -5,8 +5,8 @@ private enum TestTag {}
 
 // MARK: - Path Existence Tests
 
-@Suite("Graph.Sequential.Path.Exists")
-struct PathExistsTests {
+@Suite
+struct `Graph Sequential Path Exists Tests` {
     @Test
     func `Path exists in connected graph`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
@@ -65,8 +65,8 @@ struct PathExistsTests {
 
 // MARK: - Shortest Path Tests
 
-@Suite("Graph.Sequential.Path.Shortest")
-struct ShortestPathTests {
+@Suite
+struct `Graph Sequential Path Shortest Tests` {
     @Test
     func `Shortest path in linear graph`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
@@ -152,8 +152,8 @@ struct ShortestPathTests {
 
 // MARK: - Weighted Path Tests
 
-@Suite("Graph.Sequential.Path.Weighted")
-struct WeightedPathTests {
+@Suite
+struct `Graph Sequential Path Weighted Tests` {
     @Test
     func `Weighted path finds minimum weight`() {
         var builder = Graph.Sequential<TestTag, Graph.Adjacency.List<TestTag>>.Builder()
