@@ -80,8 +80,8 @@ private func breadthOrder(
     return visited
 }
 
-@Suite("Graph concurrency (W3 rider)")
-struct GraphConcurrencyTests {
+@Suite
+struct `Graph Sequential Concurrency (W3 rider) Tests` {
 
     @Test(arguments: [4, 16])
     func `concurrent traversals are bit-exact against the sequential references`(width: Int) async {
