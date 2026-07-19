@@ -55,9 +55,10 @@ private func buildLinearGraph() -> (
 
 /// A payload with NO Array/String/class-reference field: every field is a
 /// plain fixed-width integer, so the type has no extra inhabitants and
-/// `Optional<Element>` cannot borrow spare bits from it. This maximizes the
-/// chance of exposing a layout mismatch between `Element` and
-/// `Optional<Element>` (F-002's chunk iterators used to reinterpret a
+/// `Optional<Element>` cannot borrow spare bits from it.
+///
+/// This maximizes the chance of exposing a layout mismatch between `Element`
+/// and `Optional<Element>` (F-002's chunk iterators used to reinterpret a
 /// pointer into `Optional<Element>` storage as `Element`). Adjacency is
 /// supplied via a captured dictionary — not a stored `Array` field — so the
 /// payload itself stays free of extra inhabitants.

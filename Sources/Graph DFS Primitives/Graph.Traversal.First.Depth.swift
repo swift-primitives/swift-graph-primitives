@@ -13,16 +13,6 @@ public import Tagged_Primitives
 import Vector_Primitives
 
 extension Graph.Traversal.First {
-    /// Depth-first traversal over a graph.
-    ///
-    /// Visits nodes in depth-first order starting from the specified roots.
-    /// Each node is visited at most once, even if reachable from multiple paths.
-    ///
-    /// The traversal visits adjacent nodes in reverse adjacency order (last adjacent
-    /// node is visited first). This is a consequence of using a stack without
-    /// requiring `BidirectionalCollection` conformance from the adjacency sequence.
-    /// If left-to-right visitation is important, ensure your payload's adjacency
-    /// is ordered accordingly.
     // WHY: Category D (SP-5) — pointer-backed move-only iterator. `_elementBox`
     // WHY: is `@usableFromInline` (internal, not public); the only public surface
     // WHY: that touches it is `next(maximumCount:)`, which returns a
@@ -34,6 +24,16 @@ extension Graph.Traversal.First {
     // WHY: (re-confirmed on 6.3.3; empirically reproduced here too — see F-002
     // WHY: deviation notes in REPORT.md). A `final class`'s ARC-driven deinit is
     // WHY: the unaffected, well-trodden path.
+    /// Depth-first traversal over a graph.
+    ///
+    /// Visits nodes in depth-first order starting from the specified roots.
+    /// Each node is visited at most once, even if reachable from multiple paths.
+    ///
+    /// The traversal visits adjacent nodes in reverse adjacency order (last adjacent
+    /// node is visited first). This is a consequence of using a stack without
+    /// requiring `BidirectionalCollection` conformance from the adjacency sequence.
+    /// If left-to-right visitation is important, ensure your payload's adjacency
+    /// is ordered accordingly.
     @safe
     @frozen
     public struct Depth<Tag: ~Copyable & ~Escapable, Payload, Adjacent: Swift.Sequence<Graph.Node<Tag>>>: ~Copyable, Iterator.Chunk.`Protocol` {
@@ -42,8 +42,7 @@ extension Graph.Traversal.First {
         /// This iterator never throws.
         public typealias Failure = Never
 
-        /// Owns the single-element scratch storage backing `next(maximumCount:)`'s
-        /// returned `Span`.
+        /// Owns the single-element scratch storage backing the `Span` returned by `next(maximumCount:)`.
         ///
         /// [F-002] `next(maximumCount:)` used to be built from a pointer into
         /// `var _element: Element? = nil` storage, obtained via
